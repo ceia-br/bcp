@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/pagination.json",
+  "title": "Pagination",
+  "description": "Cursor-based pagination for list operations.",
+  "description_pt": "Paginação baseada em cursor para operações de listagem.",
+  "type": "object",
+  "$defs": {
+    "request": {
+      "type": "object",
+      "description": "Pagination parameters for requests.",
+      "description_pt": "Parâmetros de paginação para requisições.",
+      "properties": {
+        "cursor": {
+          "type": "string",
+          "description": "Opaque cursor from previous response.",
+          "description_pt": "Cursor opaco da resposta anterior."
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 10,
+          "description": "Requested page size. Implementations MAY clamp to a lower maximum.",
+          "description_pt": "Tamanho de página solicitado. As implementações PODEM limitar a um máximo menor."
+        }
+      }
+    },
+    "response": {
+      "type": "object",
+      "description": "Pagination information in responses.",
+      "description_pt": "Informações de paginação nas respostas.",
+      "properties": {
+        "cursor": {
+          "type": "string",
+          "description": "Cursor to fetch the next page of results. MUST be present when has_next_page is true.",
+          "description_pt": "Cursor para buscar a próxima página de resultados. DEVE estar presente quando has_next_page for true."
+        },
+        "has_next_page": {
+          "type": "boolean",
+          "description": "Whether more results are available.",
+          "description_pt": "Se há mais resultados disponíveis."
+        },
+        "total_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total number of matching items, if available.",
+          "description_pt": "Número total de itens correspondentes, se disponível."
+        }
+      },
+      "required": ["has_next_page"],
+      "if": {
+        "properties": { "has_next_page": { "const": true } },
+        "required": ["has_next_page"]
+      },
+      "then": {
+        "required": ["cursor"]
+      }
+    }
+  }
+}

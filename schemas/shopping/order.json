@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/order.json",
+  "name": "br.dev.bcp.shopping.order",
+  "title": "Order",
+  "description": "Order schema with line items, buyer-facing fulfillment expectations, and event logs.",
+  "description_pt": "Schema de order com itens de linha, expectativas de fulfillment voltadas ao comprador e logs de eventos.",
+  "$defs": {
+    "platform_schema": {
+      "title": "Platform Order Schema",
+      "description": "Platform's order capability configuration.",
+      "description_pt": "Configuração da capability de order da plataforma.",
+      "type": "object",
+      "required": [
+        "webhook_url"
+      ],
+      "properties": {
+        "webhook_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL where merchant sends order lifecycle events (webhooks).",
+          "description_pt": "URL para onde o lojista envia eventos do ciclo de vida do pedido (webhooks)."
+        }
+      }
+    }
+  },
+  "type": "object",
+  "required": [
+    "ucp",
+    "id",
+    "checkout_id",
+    "permalink_url",
+    "line_items",
+    "fulfillment",
+    "currency",
+    "totals"
+  ],
+  "properties": {
+    "ucp": {
+      "$ref": "../ucp.json#/$defs/response_order_schema"
+    },
+    "id": {
+      "type": "string",
+      "description": "Unique order identifier.",
+      "description_pt": "Identificador único do pedido."
+    },
+    "label": {
+      "type": "string",
+      "description": "Human-readable label for identifying the order. MUST only be provided by the business.",
+      "description_pt": "Rótulo legível por humanos para identificar o pedido. DEVE ser fornecido apenas pela empresa."
+    },
+    "checkout_id": {
+      "type": "string",
+      "description": "Associated checkout ID for reconciliation.",
+      "description_pt": "ID do checkout associado para conciliação."
+    },
+    "permalink_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Permalink to access the order on merchant site.",
+      "description_pt": "Permalink para acessar o pedido no site do lojista."
+    },
+    "line_items": {
+      "type": "array",
+      "items": {
+        "$ref": "types/order_line_item.json"
+      },
+      "description": "Line items representing what was purchased — can change post-order via edits or exchanges.",
+      "description_pt": "Itens de linha representando o que foi comprado — podem mudar após o pedido por meio de edições ou trocas."
+    },
+    "fulfillment": {
+      "type": "object",
+      "properties": {
+        "expectations": {
+          "type": "array",
+          "items": {
+            "$ref": "types/expectation.json"
+          },
+          "description": "Buyer-facing groups representing when/how items will be delivered. Can be split, merged, or adjusted post-order.",
+          "description_pt": "Grupos voltados ao comprador representando quando/como os itens serão entregues. Podem ser divididos, mesclados ou ajustados após o pedido."
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "types/fulfillment_event.json"
+          },
+          "description": "Append-only event log of actual shipments. Each event references line items by ID.",
+          "description_pt": "Log de eventos somente-acréscimo dos envios reais. Cada evento referencia itens de linha por ID."
+        }
+      },
+      "description": "Fulfillment data: buyer expectations and what actually happened.",
+      "description_pt": "Dados de fulfillment: as expectativas do comprador e o que de fato ocorreu."
+    },
+    "adjustments": {
+      "type": "array",
+      "items": {
+        "$ref": "types/adjustment.json"
+      },
+      "description": "Post-order events (refunds, returns, credits, disputes, cancellations, etc.) that exist independently of fulfillment.",
+      "description_pt": "Eventos pós-pedido (reembolsos, devoluções, créditos, disputas, cancelamentos, etc.) que existem independentemente do fulfillment."
+    },
+    "currency": {
+      "type": "string",
+      "description": "ISO 4217 currency code. MUST match the currency from the originating checkout session.",
+      "description_pt": "Código de moeda ISO 4217. DEVE corresponder à moeda da sessão de checkout de origem.",
+      "ucp_request": "omit"
+    },
+    "totals": {
+      "$ref": "types/totals.json",
+      "description": "Different totals for the order.",
+      "description_pt": "Diferentes totais do pedido."
+    },
+    "messages": {
+      "type": "array",
+      "items": {
+        "$ref": "types/message.json"
+      },
+      "description": "Business outcome messages (errors, warnings, informational). Present when the business needs to communicate status or issues to the platform.",
+      "description_pt": "Mensagens de resultado da empresa (erros, avisos, informativas). Presentes quando a empresa precisa comunicar status ou problemas à plataforma."
+    },
+    "attribution": {
+      "$ref": "types/attribution.json",
+      "description": "Snapshot of the attribution associated with the originating checkout. Read-only on the order.",
+      "description_pt": "Snapshot da atribuição associada ao checkout de origem. Somente leitura no pedido.",
+      "ucp_request": "omit"
+    }
+  }
+}

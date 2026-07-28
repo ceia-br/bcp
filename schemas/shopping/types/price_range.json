@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/price_range.json",
+  "title": "Price Range",
+  "description": "A price range representing minimum and maximum values (e.g., across product variants).",
+  "description_pt": "Uma faixa de preço representando valores mínimo e máximo (por exemplo, entre variantes de produto).",
+  "type": "object",
+  "required": [
+    "min",
+    "max"
+  ],
+  "properties": {
+    "min": {
+      "$ref": "price.json",
+      "description": "Minimum price in the range.",
+      "description_pt": "Preço mínimo da faixa."
+    },
+    "max": {
+      "$ref": "price.json",
+      "description": "Maximum price in the range.",
+      "description_pt": "Preço máximo da faixa."
+    }
+  }
+}

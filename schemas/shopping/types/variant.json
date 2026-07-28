@@ -1,0 +1,196 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/variant.json",
+  "title": "Variant",
+  "description": "A purchasable variant of a product with specific option selections.",
+  "description_pt": "Uma variante de um produto disponível para compra, com seleções de opção específicas.",
+  "type": "object",
+  "required": [
+    "id",
+    "title",
+    "description",
+    "price"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Global ID (GID) uniquely identifying this variant. Used as item.id in checkout.",
+      "description_pt": "ID Global (GID) que identifica exclusivamente esta variante. Usado como item.id no checkout."
+    },
+    "sku": {
+      "type": "string",
+      "description": "Business-assigned identifier for inventory and fulfillment.",
+      "description_pt": "Identificador atribuído pela empresa para estoque e fulfillment."
+    },
+    "barcodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "value"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Barcode standard. Well-known values: UPC, EAN, ISBN, GTIN, JAN.",
+            "description_pt": "Padrão de código de barras. Valores conhecidos: UPC, EAN, ISBN, GTIN, JAN."
+          },
+          "value": {
+            "type": "string",
+            "description": "Barcode value.",
+            "description_pt": "Valor do código de barras."
+          }
+        }
+      },
+      "description": "Industry-standard product identifiers for cross-reference and correlation.",
+      "description_pt": "Identificadores de produto padrão da indústria para referência cruzada e correlação."
+    },
+    "handle": {
+      "type": "string",
+      "description": "URL-safe variant handle/slug.",
+      "description_pt": "Handle/slug da variante seguro para URL."
+    },
+    "title": {
+      "type": "string",
+      "description": "Variant display title (e.g., 'Blue / Large').",
+      "description_pt": "Título de exibição da variante (por exemplo, 'Azul / Grande')."
+    },
+    "description": {
+      "$ref": "description.json",
+      "description": "Variant description in one or more formats.",
+      "description_pt": "Descrição da variante em um ou mais formatos."
+    },
+    "url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Canonical variant page URL.",
+      "description_pt": "URL canônica da página da variante."
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "$ref": "category.json"
+      },
+      "description": "Variant categories with optional taxonomy identifiers.",
+      "description_pt": "Categorias da variante com identificadores de taxonomia opcionais."
+    },
+    "price": {
+      "$ref": "price.json",
+      "description": "Current selling price.",
+      "description_pt": "Preço de venda atual."
+    },
+    "list_price": {
+      "$ref": "price.json",
+      "description": "List price before discounts (for strikethrough display).",
+      "description_pt": "Preço de tabela antes de descontos (para exibição riscada)."
+    },
+    "unit_price": {
+      "type": "object",
+      "description": "Price per standard unit of measurement. MAY be omitted when unit pricing does not apply.",
+      "description_pt": "Preço por unidade padrão de medida. PODE ser omitido quando a precificação por unidade não se aplica.",
+      "required": ["amount", "currency", "measure", "reference"],
+      "properties": {
+        "amount": {
+          "$ref": "amount.json",
+          "description": "Unit price in ISO 4217 minor units. Business MUST return precomputed unit price value: (variant.price / measure.value) * reference.value.",
+          "description_pt": "Preço unitário em unidades menores ISO 4217. A empresa DEVE retornar o valor de preço unitário pré-calculado: (variant.price / measure.value) * reference.value."
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$",
+          "description": "ISO 4217 currency code.",
+          "description_pt": "Código de moeda ISO 4217."
+        },
+        "measure": {
+          "type": "object",
+          "description": "Product quantity in packaging (e.g., 750ml bottle).",
+          "description_pt": "Quantidade do produto na embalagem (por exemplo, garrafa de 750ml).",
+          "required": ["value", "unit"],
+          "properties": {
+            "value": { "type": "number", "description": "Package quantity.", "description_pt": "Quantidade da embalagem." },
+            "unit": { "type": "string", "description": "Unit of measurement.", "description_pt": "Unidade de medida." }
+          }
+        },
+        "reference": {
+          "type": "object",
+          "description": "Denominator for unit price display (e.g., per 100ml, per 1kg).",
+          "description_pt": "Denominador para exibição do preço unitário (por exemplo, por 100ml, por 1kg).",
+          "required": ["value", "unit"],
+          "properties": {
+            "value": { "type": "integer", "description": "Reference quantity.", "description_pt": "Quantidade de referência." },
+            "unit": { "type": "string", "description": "Unit of measurement.", "description_pt": "Unidade de medida." }
+          }
+        }
+      }
+    },
+    "availability": {
+      "type": "object",
+      "description": "Variant availability for purchase.",
+      "description_pt": "Disponibilidade da variante para compra.",
+      "properties": {
+        "available": {
+          "type": "boolean",
+          "description": "Whether this variant can be purchased. See status for fulfillment details.",
+          "description_pt": "Se esta variante pode ser comprada. Veja status para detalhes de fulfillment."
+        },
+        "status": {
+          "type": "string",
+          "description": "Qualifies available with fulfillment state. Well-known values: `in_stock`, `backorder`, `preorder`, `out_of_stock`, `discontinued`.",
+          "description_pt": "Qualifica available com o estado de fulfillment. Valores conhecidos: `in_stock`, `backorder`, `preorder`, `out_of_stock`, `discontinued`."
+        }
+      }
+    },
+    "options": {
+      "type": "array",
+      "items": {
+        "$ref": "selected_option.json"
+      },
+      "description": "Option values that define this variant (e.g., Color: Blue, Size: Large).",
+      "description_pt": "Valores de opção que definem esta variante (por exemplo, Cor: Azul, Tamanho: Grande)."
+    },
+    "media": {
+      "type": "array",
+      "items": {
+        "$ref": "media.json"
+      },
+      "description": "Variant media (images, videos, 3D models). First item is the featured media for listings.",
+      "description_pt": "Mídia da variante (imagens, vídeos, modelos 3D). O primeiro item é a mídia em destaque para as listagens."
+    },
+    "rating": {
+      "$ref": "rating.json",
+      "description": "Variant rating.",
+      "description_pt": "Avaliação da variante."
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Variant tags for categorization and search.",
+      "description_pt": "Tags da variante para categorização e busca."
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Business-defined custom data extending the standard variant model.",
+      "description_pt": "Dados personalizados definidos pela empresa que estendem o modelo de variante padrão."
+    },
+    "seller": {
+      "type": "object",
+      "description": "Optional seller context for this variant.",
+      "description_pt": "Contexto opcional do vendedor para esta variante.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Seller display name.",
+          "description_pt": "Nome de exibição do vendedor."
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "link.json"
+          },
+          "description": "Seller policy and information links.",
+          "description_pt": "Links de políticas e informações do vendedor."
+        }
+      }
+    }
+  }
+}

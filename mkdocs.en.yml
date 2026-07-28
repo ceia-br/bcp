@@ -1,0 +1,72 @@
+INHERIT: mkdocs.yml
+
+site_name: Brazilian Commerce Protocol
+site_url: !ENV [SITE_URL, "https://bcp.dev.br/en/"]
+site_description: >-
+  The Brazilian Commerce Protocol (BCP) is an open protocol for decentralized
+  agentic commerce in Brazil, independently forked from UCP under br.dev.bcp.
+docs_dir: docs-en
+edit_uri: edit/main/docs-en/
+
+nav:
+  - Home: index.md
+  - Playground: playground.md
+  - Core Concepts: core-concepts.md
+  - Specification:
+      - Overview: specification/overview.md
+      - Glossary: specification/glossary.md
+      - Checkout Capability:
+          - Overview: specification/checkout.md
+          - Transports:
+              - Embedded Protocol: specification/embedded-protocol.md
+              - MCP: specification/checkout-mcp.md
+              - A2A: specification/checkout-a2a.md
+              - Embedded: specification/embedded-checkout.md
+          - AP2 Mandates Extension: specification/ap2-mandates.md
+          - Buyer Consent Extension: specification/buyer-consent.md
+          - Discounts Extension: specification/discount.md
+          - Fulfillment Extension: specification/fulfillment.md
+          - Brazilian Fiscal Identity Extension: specification/fiscal-identity.md
+          - Brazilian Tax Extension: specification/tax.md
+      - Cart Capability:
+          - Overview: specification/cart.md
+          - Transports:
+              - MCP: specification/cart-mcp.md
+              - Embedded: specification/embedded-cart.md
+      - Catalog Capability:
+          - Overview: specification/catalog/index.md
+          - Search: specification/catalog/search.md
+          - Lookup: specification/catalog/lookup.md
+          - Transports:
+              - MCP: specification/catalog/mcp.md
+      - Order Capability:
+          - Overview: specification/order.md
+          - Transports:
+              - MCP: specification/order-mcp.md
+          - Brazilian NF-e Extension: specification/nfe.md
+          - Brazilian Returns Extension: specification/returns.md
+      - Identity Linking Capability: specification/identity-linking.md
+      - Payment Handlers:
+          - Guide: specification/payment-handler-guide.md
+          - Template: specification/payment-handler-template.md
+          - Tokenization Guide: specification/tokenization-guide.md
+          - Pix Payment Handler: specification/pix-payment-handler.md
+      - Signatures: specification/signatures.md
+      - Reference: specification/reference.md
+      - Attribution: specification/attribution.md
+  - Roadmap: roadmap.md
+  - Partners: partners.md
+
+theme:
+  language: en
+
+extra:
+  bcp_version: draft
+  ucp_version: draft
+  alternate:
+    - name: Português (Brasil)
+      link: !ENV [BCP_PT_URL, "/latest/"]
+      lang: pt-BR
+    - name: English
+      link: !ENV [BCP_EN_URL, "/latest/en/"]
+      lang: en

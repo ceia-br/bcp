@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/reverse_domain_name.json",
+  "title": "Reverse Domain Name",
+  "description": "Reverse-domain identifier used for collision-safe namespacing of capabilities, services, handlers, eligibility claims, and extension-contributed keys. Must contain at least two dot-separated segments (e.g., 'br.dev.bcp.shopping.checkout', 'com.example.loyalty_gold').",
+  "description_pt": "Identificador em domínio reverso usado para namespacing seguro contra colisões de capabilities, serviços, handlers, declarações de elegibilidade e chaves contribuídas por extensões. Deve conter pelo menos dois segmentos separados por ponto (por exemplo, 'br.dev.bcp.shopping.checkout', 'com.example.loyalty_gold').",
+  "type": "string",
+  "pattern": "^[a-z][a-z0-9]*(?:\\.[a-z][a-z0-9_]*)+$"
+}

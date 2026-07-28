@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/warning_code.json",
+  "title": "Warning Code",
+  "description": "Warning code identifying the type of warning. Standard codes are defined in capability specs (see examples), and have standardized semantics; freeform codes are permitted.",
+  "description_pt": "Código de aviso que identifica o tipo de aviso. Códigos padrão são definidos nas specs de capabilities (veja os exemplos) e têm semântica padronizada; códigos de formato livre são permitidos.",
+  "type": "string",
+  "examples": [
+    "final_sale",
+    "prop65",
+    "fulfillment_changed",
+    "age_restricted"
+  ]
+}

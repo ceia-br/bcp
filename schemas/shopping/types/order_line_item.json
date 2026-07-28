@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/order_line_item.json",
+  "title": "Order Line Item",
+  "type": "object",
+  "required": [
+    "id",
+    "item",
+    "quantity",
+    "totals",
+    "status"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Line item identifier.",
+      "description_pt": "Identificador do item de linha."
+    },
+    "item": {
+      "$ref": "item.json",
+      "description": "Product data (id, title, price, image_url).",
+      "description_pt": "Dados do produto (id, title, price, image_url)."
+    },
+    "quantity": {
+      "type": "object",
+      "required": ["total", "fulfilled"],
+      "properties": {
+        "original": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Quantity from the original checkout.",
+          "description_pt": "Quantidade do checkout original."
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Current total active quantity. May differ from original due to post-order modifications (e.g., returns or cancellations).",
+          "description_pt": "Quantidade ativa total atual. Pode diferir da original devido a modificações pós-pedido (ex.: devoluções ou cancelamentos)."
+        },
+        "fulfilled": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Quantity fulfilled so far.",
+          "description_pt": "Quantidade atendida até agora."
+        }
+      },
+      "description": "Quantity tracking for the line item.",
+      "description_pt": "Rastreamento de quantidade para o item de linha."
+    },
+    "totals": {
+      "type": "array",
+      "items": {
+        "$ref": "total.json"
+      },
+      "description": "Line item totals breakdown.",
+      "description_pt": "Detalhamento dos totais do item de linha."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "processing",
+        "partial",
+        "fulfilled",
+        "removed"
+      ],
+      "description": "Derived status: removed if quantity.total == 0, fulfilled if quantity.total > 0 and quantity.fulfilled == quantity.total, partial if quantity.total > 0 and quantity.fulfilled > 0, otherwise processing.",
+      "description_pt": "Status derivado: removed se quantity.total == 0, fulfilled se quantity.total > 0 e quantity.fulfilled == quantity.total, partial se quantity.total > 0 e quantity.fulfilled > 0, caso contrário processing."
+    },
+    "parent_id": {
+      "type": "string",
+      "description": "Parent line item identifier for any nested structures.",
+      "description_pt": "Identificador do item de linha pai para quaisquer estruturas aninhadas."
+    }
+  }
+}

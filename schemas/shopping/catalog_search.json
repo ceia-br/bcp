@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/catalog_search.json",
+  "name": "br.dev.bcp.shopping.catalog.search",
+  "title": "Catalog Search",
+  "description": "Product catalog search capability.",
+  "description_pt": "Capability de busca no catálogo de produtos.",
+  "type": "object",
+  "$defs": {
+    "search_request": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "Free-text search query.",
+          "description_pt": "Consulta de busca em texto livre."
+        },
+        "context": {
+          "$ref": "types/context.json"
+        },
+        "signals": {
+          "$ref": "types/signals.json"
+        },
+        "attribution": {
+          "$ref": "types/attribution.json"
+        },
+        "filters": {
+          "$ref": "types/search_filters.json"
+        },
+        "pagination": {
+          "$ref": "types/pagination.json#/$defs/request"
+        }
+      }
+    },
+    "search_response": {
+      "type": "object",
+      "required": [
+        "ucp",
+        "products"
+      ],
+      "properties": {
+        "ucp": {
+          "$ref": "../ucp.json#/$defs/response_catalog_schema"
+        },
+        "products": {
+          "type": "array",
+          "items": {
+            "$ref": "types/product.json"
+          },
+          "description": "Products matching the search criteria.",
+          "description_pt": "Produtos que correspondem aos critérios de busca."
+        },
+        "pagination": {
+          "$ref": "types/pagination.json#/$defs/response"
+        },
+        "messages": {
+          "type": "array",
+          "items": {
+            "$ref": "types/message.json"
+          },
+          "description": "Errors, warnings, or informational messages about the search results.",
+          "description_pt": "Erros, avisos ou mensagens informativas sobre os resultados da busca."
+        }
+      }
+    }
+  }
+}

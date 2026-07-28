@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/signed_amount.json",
+  "title": "Signed Amount",
+  "description": "Monetary amount in the currency's minor unit as defined by ISO 4217. Refer to the currency's exponent to determine minor-to-major ratio (e.g., 2 for USD, 0 for JPY, 3 for KWD). May be negative — the sign is intrinsic to the value (e.g., discounts are negative, charges are positive).",
+  "description_pt": "Valor monetário na unidade menor da moeda, conforme definido pela ISO 4217. Consulte o expoente da moeda para determinar a razão entre unidade menor e maior (por exemplo, 2 para BRL, 2 para USD, 0 para JPY, 3 para KWD). Pode ser negativo — o sinal é intrínseco ao valor (por exemplo, descontos são negativos, cobranças são positivas).",
+  "type": "integer"
+}

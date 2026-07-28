@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/rating.json",
+  "title": "Rating",
+  "description": "Product rating aggregate.",
+  "description_pt": "Agregado de avaliação do produto.",
+  "type": "object",
+  "required": [
+    "value",
+    "scale_max"
+  ],
+  "properties": {
+    "value": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Average rating value.",
+      "description_pt": "Valor médio da avaliação."
+    },
+    "scale_min": {
+      "type": "number",
+      "minimum": 0,
+      "default": 1,
+      "description": "Minimum value on the rating scale (e.g., 1 for 1-5 stars).",
+      "description_pt": "Valor mínimo na escala de avaliação (por exemplo, 1 para 1-5 estrelas)."
+    },
+    "scale_max": {
+      "type": "number",
+      "minimum": 1,
+      "description": "Maximum value on the rating scale (e.g., 5 for 5-star).",
+      "description_pt": "Valor máximo na escala de avaliação (por exemplo, 5 para 5 estrelas)."
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of reviews contributing to the rating.",
+      "description_pt": "Número de avaliações que contribuem para a nota."
+    }
+  }
+}

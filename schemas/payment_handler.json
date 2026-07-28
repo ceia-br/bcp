@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/payment_handler.json",
+  "title": "Payment Handler",
+  "description": "Schema for BCP payment handlers. Handlers define how payment instruments are processed.",
+  "description_pt": "Schema para handlers de pagamento BCP. Os handlers definem como os instrumentos de pagamento são processados.",
+
+  "$defs": {
+    "base": {
+      "allOf": [
+        { "$ref": "ucp.json#/$defs/entity" },
+        {
+          "type": "object",
+          "required": ["id"]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "available_instruments": {
+              "type": "array",
+              "items": { "$ref": "shopping/types/available_payment_instrument.json" },
+              "description": "Instrument types this handler supports, with optional constraints. When absent, every instrument should be considered available.",
+              "description_pt": "Tipos de instrumento que este handler suporta, com restrições opcionais. Quando ausente, todo instrumento deve ser considerado disponível.",
+              "minItems": 1
+            }
+          }
+        }
+      ]
+    },
+
+    "platform_schema": {
+      "title": "Payment Handler (Platform Schema)",
+      "description": "Platform declaration for discovery profiles. May include partial config state required for discovery.",
+      "description_pt": "Declaração de plataforma para perfis de discovery. Pode incluir estado de config parcial necessário para o discovery.",
+      "allOf": [{ "$ref": "#/$defs/base" }, { "required": ["spec", "schema"] }]
+    },
+
+    "business_schema": {
+      "title": "Payment Handler (Business Schema)",
+      "description": "Business declaration for discovery profiles. May include partial config state required for discovery.",
+      "description_pt": "Declaração de empresa para perfis de discovery. Pode incluir estado de config parcial necessário para o discovery.",
+      "allOf": [{ "$ref": "#/$defs/base" }]
+    },
+
+    "response_schema": {
+      "title": "Payment Handler (Response Schema)",
+      "description": "Handler reference in responses. May include full config state for runtime usage of the handler.",
+      "description_pt": "Referência de handler em respostas. Pode incluir estado de config completo para o uso do handler em runtime.",
+      "allOf": [{ "$ref": "#/$defs/base" }]
+    }
+  }
+}

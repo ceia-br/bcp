@@ -1,0 +1,642 @@
+{
+  "id": "03-create-checkout",
+  "act": {
+    "pt-BR": "Checkout",
+    "en": "Checkout"
+  },
+  "title": {
+    "pt-BR": "Criar o checkout",
+    "en": "Create the checkout"
+  },
+  "narrative": {
+    "pt-BR": "O agente envia a intenção documentada e o vendedor cria o primeiro checkout completo, ainda incomplete e com os dados ausentes explícitos.",
+    "en": "The agent sends the documented intent and the seller creates the first full checkout, still incomplete and with missing data made explicit."
+  },
+  "conversation": [
+    {
+      "actor": "client",
+      "actor_label": {
+        "pt-BR": "Cliente",
+        "en": "Customer"
+      },
+      "text": {
+        "pt-BR": "Quero uma camiseta vermelha, tamanho M.",
+        "en": "I want a red T-shirt, size M."
+      }
+    },
+    {
+      "actor": "buyer_agent",
+      "actor_label": {
+        "pt-BR": "Agente cliente",
+        "en": "Buyer agent"
+      },
+      "text": {
+        "pt-BR": "Vou me conectar à Loja Vermelho e verificar o que ela oferece.",
+        "en": "I will connect to Loja Vermelho and check what it offers."
+      }
+    },
+    {
+      "actor": "buyer_agent",
+      "actor_label": {
+        "pt-BR": "Agente cliente",
+        "en": "Buyer agent"
+      },
+      "text": {
+        "pt-BR": "Encontrei a Camiseta Vermelha M por R$ 59,90.",
+        "en": "I found the Red T-shirt M for BRL 59.90."
+      }
+    },
+    {
+      "actor": "client",
+      "actor_label": {
+        "pt-BR": "Cliente",
+        "en": "Customer"
+      },
+      "text": {
+        "pt-BR": "Quero a vermelha M.",
+        "en": "I want the red one in size M."
+      }
+    },
+    {
+      "actor": "buyer_agent",
+      "actor_label": {
+        "pt-BR": "Agente cliente",
+        "en": "Buyer agent"
+      },
+      "text": {
+        "pt-BR": "A loja criou o checkout. Preciso confirmar seus dados e o endereço de entrega.",
+        "en": "The store created the checkout. I need to confirm your details and delivery address."
+      }
+    }
+  ],
+  "protocol": {
+    "badges": [
+      "A2A DataPart",
+      "BCP checkout"
+    ],
+    "request": {
+      "headers": {
+        "BCP-Agent": "profile=\"https://agente.exemplo/.well-known/bcp\"",
+        "A2A-Extensions": "https://bcp.dev.br/2026-04-08/specification/reference",
+        "A2A-Version": "1.0"
+      },
+      "body": {
+        "jsonrpc": "2.0",
+        "id": "rpc-03",
+        "method": "SendMessage",
+        "params": {
+          "message": {
+            "messageId": "msg-03-request",
+            "role": "ROLE_USER",
+            "parts": [
+              {
+                "data": {
+                  "action": "add_to_checkout",
+                  "product_id": "camiseta-vermelha-m",
+                  "quantity": 1
+                },
+                "mediaType": "application/json"
+              }
+            ],
+            "extensions": [
+              "https://bcp.dev.br/2026-04-08/specification/reference"
+            ],
+            "contextId": "ctx_playground_001"
+          }
+        }
+      }
+    },
+    "response": {
+      "jsonrpc": "2.0",
+      "id": "rpc-03",
+      "result": {
+        "message": {
+          "messageId": "msg-03-response",
+          "role": "ROLE_AGENT",
+          "parts": [
+            {
+              "text": "Preciso dos dados de entrega, CPF e consentimentos."
+            },
+            {
+              "data": {
+                "a2a.bcp.checkout": {
+                  "ucp": {
+                    "version": "2026-04-08",
+                    "capabilities": {
+                      "br.dev.bcp.shopping.checkout": [
+                        {
+                          "version": "2026-04-08"
+                        }
+                      ],
+                      "br.dev.bcp.shopping.fiscal_identity": [
+                        {
+                          "version": "2026-07-03",
+                          "extends": "br.dev.bcp.shopping.checkout"
+                        }
+                      ],
+                      "br.dev.bcp.shopping.tax": [
+                        {
+                          "version": "2026-07-14",
+                          "extends": "br.dev.bcp.shopping.checkout"
+                        }
+                      ],
+                      "br.dev.bcp.shopping.fulfillment": [
+                        {
+                          "version": "2026-04-08",
+                          "extends": "br.dev.bcp.shopping.checkout"
+                        }
+                      ],
+                      "br.dev.bcp.shopping.buyer_consent": [
+                        {
+                          "version": "2026-04-08",
+                          "extends": "br.dev.bcp.shopping.checkout"
+                        }
+                      ]
+                    },
+                    "payment_handlers": {
+                      "br.dev.bcp.pix": [
+                        {
+                          "id": "pix_playground_001",
+                          "version": "2026-07-08",
+                          "available_instruments": [
+                            {
+                              "type": "pix"
+                            }
+                          ],
+                          "config": {
+                            "environment": "sandbox",
+                            "payee_name": "Loja Vermelho"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "id": "chk_playground_001",
+                  "status": "incomplete",
+                  "currency": "BRL",
+                  "seller_identity": {
+                    "cnpj": "19131243000197",
+                    "legal_name": "Loja Vermelho Comércio de Vestuário Ltda"
+                  },
+                  "line_items": [
+                    {
+                      "id": "li_playground_001",
+                      "item": {
+                        "id": "camiseta-vermelha-m",
+                        "title": "Camiseta Vermelha M",
+                        "price": 5990
+                      },
+                      "quantity": 1,
+                      "ncm": "61091000",
+                      "taxes": [
+                        {
+                          "type": "icms",
+                          "rate": 0.10217,
+                          "base": 5990,
+                          "amount": 612,
+                          "authority": "state",
+                          "behavior": "inclusive"
+                        },
+                        {
+                          "type": "pis_cofins",
+                          "rate": 0.03706,
+                          "base": 5990,
+                          "amount": 222,
+                          "authority": "federal",
+                          "behavior": "inclusive"
+                        }
+                      ],
+                      "totals": [
+                        {
+                          "type": "subtotal",
+                          "amount": 5990
+                        }
+                      ]
+                    }
+                  ],
+                  "totals": [
+                    {
+                      "type": "subtotal",
+                      "amount": 5990
+                    },
+                    {
+                      "type": "tax",
+                      "display_text": "Tributos aproximados incluídos no preço",
+                      "amount": 834
+                    },
+                    {
+                      "type": "total",
+                      "amount": 5990
+                    }
+                  ],
+                  "messages": [
+                    {
+                      "type": "info",
+                      "path": "$.buyer",
+                      "content": "Informe comprador, CPF, destino, frete e consentimentos."
+                    }
+                  ],
+                  "links": [
+                    {
+                      "type": "privacy_policy",
+                      "url": "https://loja.exemplo/privacidade"
+                    },
+                    {
+                      "type": "terms_of_service",
+                      "url": "https://loja.exemplo/termos"
+                    }
+                  ],
+                  "expires_at": "2026-07-17T22:00:00Z"
+                }
+              },
+              "mediaType": "application/json"
+            }
+          ],
+          "extensions": [
+            "https://bcp.dev.br/2026-04-08/specification/reference"
+          ],
+          "contextId": "ctx_playground_001"
+        }
+      }
+    },
+    "checkout": {
+      "ucp": {
+        "version": "2026-04-08",
+        "capabilities": {
+          "br.dev.bcp.shopping.checkout": [
+            {
+              "version": "2026-04-08"
+            }
+          ],
+          "br.dev.bcp.shopping.fiscal_identity": [
+            {
+              "version": "2026-07-03",
+              "extends": "br.dev.bcp.shopping.checkout"
+            }
+          ],
+          "br.dev.bcp.shopping.tax": [
+            {
+              "version": "2026-07-14",
+              "extends": "br.dev.bcp.shopping.checkout"
+            }
+          ],
+          "br.dev.bcp.shopping.fulfillment": [
+            {
+              "version": "2026-04-08",
+              "extends": "br.dev.bcp.shopping.checkout"
+            }
+          ],
+          "br.dev.bcp.shopping.buyer_consent": [
+            {
+              "version": "2026-04-08",
+              "extends": "br.dev.bcp.shopping.checkout"
+            }
+          ]
+        },
+        "payment_handlers": {
+          "br.dev.bcp.pix": [
+            {
+              "id": "pix_playground_001",
+              "version": "2026-07-08",
+              "available_instruments": [
+                {
+                  "type": "pix"
+                }
+              ],
+              "config": {
+                "environment": "sandbox",
+                "payee_name": "Loja Vermelho"
+              }
+            }
+          ]
+        }
+      },
+      "id": "chk_playground_001",
+      "status": "incomplete",
+      "currency": "BRL",
+      "seller_identity": {
+        "cnpj": "19131243000197",
+        "legal_name": "Loja Vermelho Comércio de Vestuário Ltda"
+      },
+      "line_items": [
+        {
+          "id": "li_playground_001",
+          "item": {
+            "id": "camiseta-vermelha-m",
+            "title": "Camiseta Vermelha M",
+            "price": 5990
+          },
+          "quantity": 1,
+          "ncm": "61091000",
+          "taxes": [
+            {
+              "type": "icms",
+              "rate": 0.10217,
+              "base": 5990,
+              "amount": 612,
+              "authority": "state",
+              "behavior": "inclusive"
+            },
+            {
+              "type": "pis_cofins",
+              "rate": 0.03706,
+              "base": 5990,
+              "amount": 222,
+              "authority": "federal",
+              "behavior": "inclusive"
+            }
+          ],
+          "totals": [
+            {
+              "type": "subtotal",
+              "amount": 5990
+            }
+          ]
+        }
+      ],
+      "totals": [
+        {
+          "type": "subtotal",
+          "amount": 5990
+        },
+        {
+          "type": "tax",
+          "display_text": "Tributos aproximados incluídos no preço",
+          "amount": 834
+        },
+        {
+          "type": "total",
+          "amount": 5990
+        }
+      ],
+      "messages": [
+        {
+          "type": "info",
+          "path": "$.buyer",
+          "content": "Informe comprador, CPF, destino, frete e consentimentos."
+        }
+      ],
+      "links": [
+        {
+          "type": "privacy_policy",
+          "url": "https://loja.exemplo/privacidade"
+        },
+        {
+          "type": "terms_of_service",
+          "url": "https://loja.exemplo/termos"
+        }
+      ],
+      "expires_at": "2026-07-17T22:00:00Z"
+    },
+    "events": [
+      {
+        "title": {
+          "pt-BR": "Escolha e checkout",
+          "en": "Choice and checkout"
+        },
+        "description": {
+          "pt-BR": "A cliente confirma o match exato, o agente cliente solicita a inclusão e o vendedor cria o checkout.",
+          "en": "The customer confirms the exact match, the buyer agent requests it, and the seller creates the checkout."
+        },
+        "documents": [
+          {
+            "kind": "request",
+            "name": "add_to_checkout",
+            "payload": {
+              "headers": {
+                "BCP-Agent": "profile=\"https://agente.exemplo/.well-known/bcp\"",
+                "A2A-Extensions": "https://bcp.dev.br/2026-04-08/specification/reference",
+                "A2A-Version": "1.0"
+              },
+              "body": {
+                "jsonrpc": "2.0",
+                "id": "rpc-03",
+                "method": "SendMessage",
+                "params": {
+                  "message": {
+                    "messageId": "msg-03-request",
+                    "role": "ROLE_USER",
+                    "parts": [
+                      {
+                        "data": {
+                          "action": "add_to_checkout",
+                          "product_id": "camiseta-vermelha-m",
+                          "quantity": 1
+                        },
+                        "mediaType": "application/json"
+                      }
+                    ],
+                    "extensions": [
+                      "https://bcp.dev.br/2026-04-08/specification/reference"
+                    ],
+                    "contextId": "ctx_playground_001"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "kind": "response",
+            "name": "checkout",
+            "payload": {
+              "jsonrpc": "2.0",
+              "id": "rpc-03",
+              "result": {
+                "message": {
+                  "messageId": "msg-03-response",
+                  "role": "ROLE_AGENT",
+                  "parts": [
+                    {
+                      "text": "Preciso dos dados de entrega, CPF e consentimentos."
+                    },
+                    {
+                      "data": {
+                        "a2a.bcp.checkout": {
+                          "ucp": {
+                            "version": "2026-04-08",
+                            "capabilities": {
+                              "br.dev.bcp.shopping.checkout": [
+                                {
+                                  "version": "2026-04-08"
+                                }
+                              ],
+                              "br.dev.bcp.shopping.fiscal_identity": [
+                                {
+                                  "version": "2026-07-03",
+                                  "extends": "br.dev.bcp.shopping.checkout"
+                                }
+                              ],
+                              "br.dev.bcp.shopping.tax": [
+                                {
+                                  "version": "2026-07-14",
+                                  "extends": "br.dev.bcp.shopping.checkout"
+                                }
+                              ],
+                              "br.dev.bcp.shopping.fulfillment": [
+                                {
+                                  "version": "2026-04-08",
+                                  "extends": "br.dev.bcp.shopping.checkout"
+                                }
+                              ],
+                              "br.dev.bcp.shopping.buyer_consent": [
+                                {
+                                  "version": "2026-04-08",
+                                  "extends": "br.dev.bcp.shopping.checkout"
+                                }
+                              ]
+                            },
+                            "payment_handlers": {
+                              "br.dev.bcp.pix": [
+                                {
+                                  "id": "pix_playground_001",
+                                  "version": "2026-07-08",
+                                  "available_instruments": [
+                                    {
+                                      "type": "pix"
+                                    }
+                                  ],
+                                  "config": {
+                                    "environment": "sandbox",
+                                    "payee_name": "Loja Vermelho"
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "id": "chk_playground_001",
+                          "status": "incomplete",
+                          "currency": "BRL",
+                          "seller_identity": {
+                            "cnpj": "19131243000197",
+                            "legal_name": "Loja Vermelho Comércio de Vestuário Ltda"
+                          },
+                          "line_items": [
+                            {
+                              "id": "li_playground_001",
+                              "item": {
+                                "id": "camiseta-vermelha-m",
+                                "title": "Camiseta Vermelha M",
+                                "price": 5990
+                              },
+                              "quantity": 1,
+                              "ncm": "61091000",
+                              "taxes": [
+                                {
+                                  "type": "icms",
+                                  "rate": 0.10217,
+                                  "base": 5990,
+                                  "amount": 612,
+                                  "authority": "state",
+                                  "behavior": "inclusive"
+                                },
+                                {
+                                  "type": "pis_cofins",
+                                  "rate": 0.03706,
+                                  "base": 5990,
+                                  "amount": 222,
+                                  "authority": "federal",
+                                  "behavior": "inclusive"
+                                }
+                              ],
+                              "totals": [
+                                {
+                                  "type": "subtotal",
+                                  "amount": 5990
+                                }
+                              ]
+                            }
+                          ],
+                          "totals": [
+                            {
+                              "type": "subtotal",
+                              "amount": 5990
+                            },
+                            {
+                              "type": "tax",
+                              "display_text": "Tributos aproximados incluídos no preço",
+                              "amount": 834
+                            },
+                            {
+                              "type": "total",
+                              "amount": 5990
+                            }
+                          ],
+                          "messages": [
+                            {
+                              "type": "info",
+                              "path": "$.buyer",
+                              "content": "Informe comprador, CPF, destino, frete e consentimentos."
+                            }
+                          ],
+                          "links": [
+                            {
+                              "type": "privacy_policy",
+                              "url": "https://loja.exemplo/privacidade"
+                            },
+                            {
+                              "type": "terms_of_service",
+                              "url": "https://loja.exemplo/termos"
+                            }
+                          ],
+                          "expires_at": "2026-07-17T22:00:00Z"
+                        }
+                      },
+                      "mediaType": "application/json"
+                    }
+                  ],
+                  "extensions": [
+                    "https://bcp.dev.br/2026-04-08/specification/reference"
+                  ],
+                  "contextId": "ctx_playground_001"
+                }
+              }
+            }
+          }
+        ],
+        "conversation": [
+          {
+            "actor": "buyer_agent",
+            "text": {
+              "pt-BR": "Encontrei a Camiseta Vermelha M por R$ 59,90. É exatamente a cor e o tamanho que você pediu.",
+              "en": "I found the Red T-shirt M for BRL 59.90. It exactly matches the requested color and size."
+            }
+          },
+          {
+            "actor": "client",
+            "text": {
+              "pt-BR": "Perfeito, quero a vermelha M.",
+              "en": "Perfect, I want the red one in size M."
+            }
+          },
+          {
+            "actor": "buyer_agent",
+            "text": {
+              "pt-BR": "O vendedor adicionou ao checkout: 1 x Camiseta Vermelha M por R$ 59,90. A nota já sai com os tributos destacados: R$ 8,34 de ICMS e PIS/COFINS.",
+              "en": "The seller added 1 x Red T-shirt M to the checkout for BRL 59.90. The invoice will itemize BRL 8.34 in ICMS and PIS/COFINS taxes."
+            }
+          }
+        ],
+        "widget": {
+          "type": "products",
+          "items": [
+            {
+              "id": "camiseta-vermelha-m",
+              "title": "Camiseta Vermelha M",
+              "price": 5990,
+              "color": "#e0362f",
+              "meta": {
+                "pt-BR": "Vermelha, tamanho M, algodão",
+                "en": "Red, size M, cotton"
+              },
+              "badge": {
+                "pt-BR": "match exato",
+                "en": "exact match"
+              },
+              "best": true
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

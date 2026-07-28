@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/adjustment.json",
+  "title": "Adjustment",
+  "description": "Post-order event that exists independently of fulfillment. Typically represents money movements but can be any post-order change. Polymorphic type that can optionally reference line items.",
+  "description_pt": "Evento pós-pedido que existe independentemente do fulfillment. Normalmente representa movimentações de dinheiro, mas pode ser qualquer alteração pós-pedido. Tipo polimórfico que pode opcionalmente referenciar itens de linha.",
+  "type": "object",
+  "required": [
+    "id",
+    "type",
+    "occurred_at",
+    "status"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Adjustment event identifier.",
+      "description_pt": "Identificador do evento de ajuste."
+    },
+    "type": {
+      "type": "string",
+      "description": "Type of adjustment (open string). Typically money-related like: refund, return, credit, price_adjustment, dispute, cancellation. Can be any value that makes sense for the merchant's business.",
+      "description_pt": "Tipo de ajuste (string aberta). Normalmente relacionado a dinheiro, como: refund, return, credit, price_adjustment, dispute, cancellation. Pode ser qualquer valor que faça sentido para a empresa do merchant."
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "RFC 3339 timestamp when this adjustment occurred.",
+      "description_pt": "Timestamp RFC 3339 de quando este ajuste ocorreu."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "completed",
+        "failed"
+      ],
+      "description": "Adjustment status.",
+      "description_pt": "Status do ajuste."
+    },
+    "line_items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "quantity"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Line item ID reference.",
+            "description_pt": "Referência ao ID do item de linha."
+          },
+          "quantity": {
+            "type": "integer",
+            "description": "Signed quantity affected by this adjustment. Negative values represent reductions (e.g. returns); positive values represent additions (e.g. exchanges).",
+            "description_pt": "Quantidade com sinal afetada por este ajuste. Valores negativos representam reduções (ex.: devoluções); valores positivos representam adições (ex.: trocas)."
+          }
+        }
+      },
+      "description": "Which line items and quantities are affected (optional).",
+      "description_pt": "Quais itens de linha e quantidades são afetados (opcional)."
+    },
+    "totals": {
+      "type": "array",
+      "items": {
+        "$ref": "total.json"
+      },
+      "description": "Adjustment totals breakdown. Signed values - negative for money returned to buyer (refunds, credits), positive for additional charges (exchanges).",
+      "description_pt": "Detalhamento dos totais do ajuste. Valores com sinal - negativos para dinheiro devolvido ao buyer (reembolsos, créditos), positivos para cobranças adicionais (trocas)."
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable reason or description (e.g., 'Defective item', 'Customer requested').",
+      "description_pt": "Motivo ou descrição legível por humanos (ex.: 'Item defeituoso', 'Solicitado pelo cliente')."
+    }
+  }
+}

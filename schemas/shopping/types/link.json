@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/link.json",
+  "title": "Link",
+  "type": "object",
+  "required": [
+    "type",
+    "url"
+  ],
+  "properties": {
+    "type": {
+      "type": "string",
+      "description": "Type of link. Well-known values: `privacy_policy`, `terms_of_service`, `refund_policy`, `shipping_policy`, `faq`. Consumers SHOULD handle unknown values gracefully by displaying them using the `title` field or omitting the link.",
+      "description_pt": "Tipo do link. Valores conhecidos: `privacy_policy`, `terms_of_service`, `refund_policy`, `shipping_policy`, `faq`. Os consumidores DEVERIAM lidar de forma tolerante com valores desconhecidos, exibindo-os por meio do campo `title` ou omitindo o link."
+    },
+    "url": {
+      "type": "string",
+      "description": "The actual URL pointing to the content to be displayed.",
+      "description_pt": "A URL efetiva que aponta para o conteúdo a ser exibido.",
+      "format": "uri"
+    },
+    "title": {
+      "type": "string",
+      "description": "Optional display text for the link. When provided, use this instead of generating from type.",
+      "description_pt": "Texto de exibição opcional para o link. Quando fornecido, use-o em vez de gerar a partir do type."
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "scenario": "known-seller-pix-purchase",
+  "protocols": {
+    "BCP": "2026-04-08",
+    "A2A": "1.0"
+  },
+  "steps": [
+    "steps/01-connect-seller.json",
+    "steps/02-search-and-choose.json",
+    "steps/03-create-checkout.json",
+    "steps/04-delivery-data.json",
+    "steps/05-select-shipping.json",
+    "steps/06-present-pix.json",
+    "steps/07-pay-pix.json",
+    "steps/08-order-confirmation.json"
+  ],
+  "properties": {
+    "deterministic": true,
+    "network": false,
+    "llm": false,
+    "auction": false,
+    "known_seller": true,
+    "direct_pix": true
+  },
+  "validation": {
+    "bcp": "JSON Schema Draft 2020-12 local",
+    "a2a": "A2A SDK 1.x e invariantes do binding JSON-RPC"
+  }
+}

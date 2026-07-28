@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/detail_option_value.json",
+  "title": "Detail Option Value",
+  "description": "An option value with availability signals relative to the current selections. Used in get_product responses where selected context exists.",
+  "description_pt": "Um valor de opção com sinais de disponibilidade relativos às seleções atuais. Usado em respostas get_product onde existe um context de seleção.",
+  "type": "object",
+  "allOf": [{ "$ref": "option_value.json" }],
+  "properties": {
+    "available": {
+      "type": "boolean",
+      "description": "Whether a variant matching this value and the current option selections is purchasable.",
+      "description_pt": "Se uma variante que corresponde a este valor e às seleções de opção atuais pode ser comprada."
+    },
+    "exists": {
+      "type": "boolean",
+      "description": "Whether a variant matching this value and the current option selections exists in the catalog.",
+      "description_pt": "Se uma variante que corresponde a este valor e às seleções de opção atuais existe no catálogo."
+    }
+  }
+}

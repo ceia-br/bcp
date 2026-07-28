@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/discount.json",
+  "name": "br.dev.bcp.shopping.discount",
+  "title": "Discount Extension",
+  "description": "Extends Cart and Checkout with discount support, including discount codes, automatic discounts, and eligibility-triggered provisional discounts.",
+  "description_pt": "Estende Cart e Checkout com suporte a descontos, incluindo códigos de desconto, descontos automáticos e descontos provisórios acionados por elegibilidade.",
+  "$defs": {
+    "allocation": {
+      "type": "object",
+      "description": "Breakdown of how a discount amount was allocated to a specific target.",
+      "description_pt": "Detalhamento de como um valor de desconto foi alocado a um alvo específico.",
+      "required": [
+        "path",
+        "amount"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "JSONPath to the allocation target (e.g., '$.line_items[0]', '$.totals.shipping').",
+          "description_pt": "JSONPath para o alvo da alocação (ex.: '$.line_items[0]', '$.totals.shipping')."
+        },
+        "amount": {
+          "$ref": "types/amount.json",
+          "description": "Amount allocated to this target in ISO 4217 minor units.",
+          "description_pt": "Valor alocado a este alvo em unidades menores ISO 4217."
+        }
+      }
+    },
+    "applied_discount": {
+      "type": "object",
+      "description": "A discount that was successfully applied.",
+      "description_pt": "Um desconto que foi aplicado com sucesso.",
+      "required": [
+        "title",
+        "amount"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "The discount code. Omitted for automatic discounts.",
+          "description_pt": "O código de desconto. Omitido para descontos automáticos."
+        },
+        "title": {
+          "type": "string",
+          "description": "Human-readable discount name (e.g., 'Summer Sale 20% Off').",
+          "description_pt": "Nome do desconto legível por humanos (ex.: 'Summer Sale 20% Off')."
+        },
+        "amount": {
+          "$ref": "types/amount.json",
+          "description": "Total discount amount in ISO 4217 minor units.",
+          "description_pt": "Valor total do desconto em unidades menores ISO 4217."
+        },
+        "automatic": {
+          "type": "boolean",
+          "default": false,
+          "description": "True if applied automatically by merchant rules (no code required).",
+          "description_pt": "Verdadeiro se aplicado automaticamente por regras do lojista (sem necessidade de código)."
+        },
+        "method": {
+          "type": "string",
+          "enum": [
+            "each",
+            "across"
+          ],
+          "description": "Allocation method. 'each' = applied independently per item. 'across' = split proportionally by value.",
+          "description_pt": "Método de alocação. 'each' = aplicado independentemente por item. 'across' = dividido proporcionalmente por valor."
+        },
+        "priority": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Stacking order for discount calculation. Lower numbers applied first (1 = first).",
+          "description_pt": "Ordem de empilhamento para o cálculo do desconto. Números menores são aplicados primeiro (1 = primeiro)."
+        },
+        "provisional": {
+          "type": "boolean",
+          "default": false,
+          "description": "True if this discount requires additional verification.",
+          "description_pt": "Verdadeiro se este desconto requer verificação adicional."
+        },
+        "eligibility": {
+          "$ref": "types/reverse_domain_name.json",
+          "description": "The eligibility claim accepted by the Business for this discount. Corresponds to a value from context.eligibility. Omitted for code-based and non-eligibility automatic discounts.",
+          "description_pt": "A claim de elegibilidade aceita pela Empresa para este desconto. Corresponde a um valor de context.eligibility. Omitida para descontos baseados em código e automáticos não relacionados a elegibilidade."
+        },
+        "allocations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/allocation"
+          },
+          "description": "Breakdown of where this discount was allocated. Sum of allocation amounts equals total amount.",
+          "description_pt": "Detalhamento de onde este desconto foi alocado. A soma dos valores de alocação é igual ao valor total."
+        }
+      }
+    },
+    "discounts_object": {
+      "type": "object",
+      "description": "Discount codes input and applied discounts output.",
+      "description_pt": "Entrada de códigos de desconto e saída de descontos aplicados.",
+      "properties": {
+        "codes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Discount codes to apply. Case-insensitive. Replaces previously submitted codes. Send empty array to clear.",
+          "description_pt": "Códigos de desconto a aplicar. Não diferencia maiúsculas de minúsculas. Substitui os códigos enviados anteriormente. Envie um array vazio para limpar."
+        },
+        "applied": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/applied_discount"
+          },
+          "description": "Discounts successfully applied (code-based and automatic).",
+          "description_pt": "Descontos aplicados com sucesso (baseados em código e automáticos).",
+          "ucp_request": "omit"
+        }
+      }
+    },
+    "br.dev.bcp.shopping.cart": {
+      "title": "Cart with Discount",
+      "description": "Cart extended with discount capability.",
+      "description_pt": "Carrinho estendido com a capability de desconto.",
+      "allOf": [
+        {
+          "$ref": "cart.json"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "discounts": {
+              "$ref": "#/$defs/discounts_object",
+              "ucp_request": {
+                "create": "optional",
+                "update": "optional"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "br.dev.bcp.shopping.checkout": {
+      "title": "Checkout with Discount",
+      "description": "Checkout extended with discount capability.",
+      "description_pt": "Checkout estendido com a capability de desconto.",
+      "allOf": [
+        {
+          "$ref": "checkout.json"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "discounts": {
+              "$ref": "#/$defs/discounts_object",
+              "ucp_request": {
+                "create": "optional",
+                "update": "optional",
+                "complete": "omit"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

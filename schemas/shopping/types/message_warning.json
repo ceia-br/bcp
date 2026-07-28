@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/message_warning.json",
+  "title": "Message Warning",
+  "type": "object",
+  "required": [
+    "type",
+    "code",
+    "content"
+  ],
+  "properties": {
+    "type": {
+      "type": "string",
+      "const": "warning",
+      "description": "Message type discriminator.",
+      "description_pt": "Discriminador do tipo de mensagem."
+    },
+    "path": {
+      "type": "string",
+      "description": "JSONPath (RFC 9535) to related field (e.g., $.line_items[0]).",
+      "description_pt": "JSONPath (RFC 9535) para o campo relacionado (ex.: $.line_items[0])."
+    },
+    "code": {
+      "$ref": "warning_code.json"
+    },
+    "content": {
+      "type": "string",
+      "description": "Human-readable warning message that MUST be displayed.",
+      "description_pt": "Mensagem de aviso legível por humanos que DEVE ser exibida."
+    },
+    "content_type": {
+      "type": "string",
+      "enum": [
+        "plain",
+        "markdown"
+      ],
+      "default": "plain",
+      "description": "Content format, default = plain.",
+      "description_pt": "Formato do conteúdo, default = plain."
+    },
+    "presentation": {
+      "type": "string",
+      "default": "notice",
+      "description": "Rendering contract for this warning. 'notice' (default): platform MUST display, MAY dismiss. 'disclosure': platform MUST display in proximity to the path-referenced component, MUST NOT hide or auto-dismiss. See specification for full contract.",
+      "description_pt": "Contrato de renderização para este aviso. 'notice' (default): a plataforma DEVE exibir, PODE dispensar. 'disclosure': a plataforma DEVE exibir próximo ao componente referenciado pelo path, NÃO DEVE ocultar nem dispensar automaticamente. Ver a especificação para o contrato completo."
+    },
+    "image_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL to a required visual element (e.g., warning symbol, energy class label).",
+      "description_pt": "URL de um elemento visual obrigatório (ex.: símbolo de aviso, etiqueta de classe energética)."
+    },
+    "url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Reference URL for more information (e.g., regulatory site, registry entry, policy page).",
+      "description_pt": "URL de referência para mais informações (ex.: site regulatório, entrada de registro, página de política)."
+    }
+  }
+}

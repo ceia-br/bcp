@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/buyer_consent.json",
+  "name": "br.dev.bcp.shopping.buyer_consent",
+  "title": "Buyer Consent Extension",
+  "description": "Extends Checkout with buyer consent tracking for privacy compliance via the buyer object.",
+  "description_pt": "Estende o Checkout com rastreamento de consentimento do comprador para conformidade de privacidade, por meio do objeto buyer.",
+  "$defs": {
+    "consent": {
+      "type": "object",
+      "description": "User consent states for data processing",
+      "description_pt": "Estados de consentimento do usuário para o processamento de dados",
+      "properties": {
+        "analytics": {
+          "type": "boolean",
+          "description": "Consent for analytics and performance tracking.",
+          "description_pt": "Consentimento para analytics e rastreamento de desempenho."
+        },
+        "preferences": {
+          "type": "boolean",
+          "description": "Consent for storing user preferences.",
+          "description_pt": "Consentimento para armazenar as preferências do usuário."
+        },
+        "marketing": {
+          "type": "boolean",
+          "description": "Consent for marketing communications.",
+          "description_pt": "Consentimento para comunicações de marketing."
+        },
+        "sale_of_data": {
+          "type": "boolean",
+          "description": "Consent for selling data to third parties (CCPA).",
+          "description_pt": "Consentimento para venda de dados a terceiros (CCPA)."
+        }
+      }
+    },
+    "buyer": {
+      "title": "Buyer with Consent",
+      "description": "Buyer object extended with consent tracking.",
+      "description_pt": "Objeto buyer estendido com rastreamento de consentimento.",
+      "allOf": [
+        {
+          "$ref": "types/buyer.json"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "consent": {
+              "$ref": "#/$defs/consent",
+              "description": "Consent tracking fields.",
+              "description_pt": "Campos de rastreamento de consentimento."
+            }
+          }
+        }
+      ]
+    },
+    "br.dev.bcp.shopping.checkout": {
+      "title": "Checkout with Buyer Consent",
+      "description": "Checkout extended with consent tracking via buyer object.",
+      "description_pt": "Checkout estendido com rastreamento de consentimento por meio do objeto buyer.",
+      "allOf": [
+        {
+          "$ref": "checkout.json"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "buyer": {
+              "$ref": "#/$defs/buyer",
+              "description": "Buyer with consent tracking.",
+              "description_pt": "Comprador com rastreamento de consentimento.",
+              "ucp_request": {
+                "create": "optional",
+                "update": "optional",
+                "complete": "omit"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

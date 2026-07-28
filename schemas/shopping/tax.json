@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/tax.json",
+  "name": "br.dev.bcp.shopping.tax",
+  "title": "Tax Extension",
+  "description": "Extends Checkout and Order with the Brazilian tax breakdown: per-line-item tax details (type, rate, base, amount, authority, behavior) and the fiscal classification (NCM). Makes the aggregated `tax` totals line mandatory for price transparency. Tax types are an open vocabulary to survive the 2026-2033 tax reform transition, during which a single line item carries taxes from both the outgoing and the incoming system.",
+  "description_pt": "Estende Checkout e Order com o detalhamento tributário brasileiro: detalhes de imposto por item de linha (tipo, alíquota, base, valor, autoridade, comportamento) e a classificação fiscal (NCM). Torna a linha agregada `tax` de totais obrigatória para a transparência de preços. Os tipos de imposto são um vocabulário aberto para sobreviver à transição da reforma tributária de 2026-2033, durante a qual um único item de linha carrega impostos tanto do sistema de saída quanto do de entrada.",
+  "$defs": {
+    "tax_detail": {
+      "type": "object",
+      "description": "A single tax incidence on a line item.",
+      "description_pt": "Uma única incidência tributária sobre um item de linha.",
+      "required": ["type", "amount", "behavior"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Tax type. Well-known values: `icms`, `icms_st`, `difal`, `fcp`, `iss`, `ipi`, `pis`, `cofins` (current system); `ibs`, `cbs`, `is` (2026+ tax reform). Open vocabulary: clients MUST tolerate unknown values as the transition (2026-2033) changes the mix.",
+          "description_pt": "Tipo de imposto. Valores conhecidos: `icms`, `icms_st`, `difal`, `fcp`, `iss`, `ipi`, `pis`, `cofins` (sistema atual); `ibs`, `cbs`, `is` (reforma tributária de 2026+). Vocabulário aberto: os clientes DEVEM tolerar valores desconhecidos à medida que a transição (2026-2033) altera a composição.",
+          "examples": ["icms", "ibs", "cbs"]
+        },
+        "rate": {
+          "type": "number",
+          "description": "Applied rate as a decimal fraction (e.g., 0.009 for 0.9%). Indicative: `amount` is authoritative, and clients MUST NOT recompute it from `base` and `rate`.",
+          "description_pt": "Alíquota aplicada como fração decimal (ex.: 0.009 para 0,9%). Indicativa: `amount` é autoritativo, e os clientes NÃO DEVEM recalculá-lo a partir de `base` e `rate`.",
+          "minimum": 0
+        },
+        "base": {
+          "$ref": "types/amount.json",
+          "description": "Tax base (calculation base) for this incidence. MAY differ from the line item price, since a tax computed on a net base still reaches the consumer inside a tax-inclusive price.",
+          "description_pt": "Base de cálculo para esta incidência. PODE diferir do preço do item de linha, já que um imposto calculado sobre uma base líquida ainda chega ao consumidor dentro de um preço com imposto incluso."
+        },
+        "amount": {
+          "$ref": "types/amount.json",
+          "description": "Tax amount due for this incidence.",
+          "description_pt": "Valor de imposto devido para esta incidência."
+        },
+        "authority": {
+          "type": "string",
+          "description": "Federative level this tax funds, exposed so the consumer sees how much of the price goes to each level. Well-known values: `federal`, `state`, `municipal`. A tax shared between levels (e.g., IBS) MUST be reported as one entry per level, each with its own rate and amount. Open vocabulary: clients MUST tolerate unknown values as the 2026-2033 transition changes the mix.",
+          "description_pt": "Nível federativo que este imposto financia, exposto para que o consumidor veja quanto do preço vai para cada nível. Valores conhecidos: `federal`, `state`, `municipal`. Um imposto compartilhado entre níveis (ex.: IBS) DEVE ser reportado como uma entrada por nível, cada uma com sua própria alíquota e valor. Vocabulário aberto: os clientes DEVEM tolerar valores desconhecidos à medida que a transição de 2026-2033 altera a composição.",
+          "examples": ["federal", "state", "municipal"]
+        },
+        "behavior": {
+          "type": "string",
+          "description": "Where the amount sits relative to the line item price, which is what lets a client reconcile `totals`. Well-known values: `inclusive` (the amount is already contained in the price, so it MUST NOT be added to the subtotal) and `exclusive` (the amount is charged on top of the price). Businesses MUST state it on every entry: a line item can carry both behaviors at once during the transition. Open vocabulary: clients MUST tolerate unknown values.",
+          "description_pt": "Onde o valor se situa em relação ao preço do item de linha, que é o que permite a um cliente conciliar `totals`. Valores conhecidos: `inclusive` (o valor já está contido no preço, portanto NÃO DEVE ser somado ao subtotal) e `exclusive` (o valor é cobrado sobre o preço). As empresas DEVEM declará-lo em cada entrada: um item de linha pode carregar ambos os comportamentos ao mesmo tempo durante a transição. Vocabulário aberto: os clientes DEVEM tolerar valores desconhecidos.",
+          "examples": ["inclusive", "exclusive"]
+        }
+      }
+    },
+    "line_item": {
+      "title": "Line Item with Taxes",
+      "description": "Checkout line item extended with fiscal classification and tax breakdown.",
+      "description_pt": "Item de linha do checkout estendido com classificação fiscal e detalhamento tributário.",
+      "allOf": [
+        { "$ref": "types/line_item.json" },
+        {
+          "type": "object",
+          "properties": {
+            "ncm": {
+              "$ref": "types/ncm.json",
+              "ucp_request": "omit"
+            },
+            "taxes": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/tax_detail" },
+              "description": "Tax breakdown for this line item. One entry per tax incidence.",
+              "description_pt": "Detalhamento tributário para este item de linha. Uma entrada por incidência tributária.",
+              "ucp_request": "omit"
+            }
+          }
+        }
+      ]
+    },
+    "order_line_item": {
+      "title": "Order Line Item with Taxes",
+      "description": "Order line item extended with fiscal classification and tax breakdown.",
+      "description_pt": "Item de linha do pedido estendido com classificação fiscal e detalhamento tributário.",
+      "allOf": [
+        { "$ref": "types/order_line_item.json" },
+        {
+          "type": "object",
+          "properties": {
+            "ncm": {
+              "$ref": "types/ncm.json"
+            },
+            "taxes": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/tax_detail" },
+              "description": "Tax breakdown for this line item. One entry per tax incidence.",
+              "description_pt": "Detalhamento tributário para este item de linha. Uma entrada por incidência tributária."
+            }
+          }
+        }
+      ]
+    },
+    "br.dev.bcp.shopping.checkout": {
+      "title": "Checkout with Tax",
+      "description": "Checkout extended with the Brazilian tax breakdown. When this capability is active, responses MUST include at least one `tax` entry in `totals` with the approximate total tax amount.",
+      "description_pt": "Checkout estendido com o detalhamento tributário brasileiro. Quando esta capability está ativa, as respostas DEVEM incluir ao menos uma entrada `tax` em `totals` com o valor total aproximado de imposto.",
+      "allOf": [
+        { "$ref": "checkout.json" },
+        {
+          "type": "object",
+          "properties": {
+            "line_items": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/line_item" },
+              "ucp_request": {
+                "create": "required",
+                "update": "required",
+                "complete": "omit"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "br.dev.bcp.shopping.order": {
+      "title": "Order with Tax",
+      "description": "Order extended with the Brazilian tax breakdown, freezing the tax detail in the durable transaction record. Responses MUST include at least one `tax` entry in `totals`.",
+      "description_pt": "Order estendido com o detalhamento tributário brasileiro, congelando o detalhe de imposto no registro durável da transação. As respostas DEVEM incluir ao menos uma entrada `tax` em `totals`.",
+      "allOf": [
+        { "$ref": "order.json" },
+        {
+          "type": "object",
+          "properties": {
+            "line_items": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/order_line_item" }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

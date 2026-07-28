@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/payment_instrument.json",
+  "title": "Payment Instrument",
+  "description": "The base definition for any payment instrument. It links the instrument to a specific payment handler.",
+  "description_pt": "A definição base para qualquer instrumento de pagamento. Ele vincula o instrumento a um payment handler específico.",
+  "type": "object",
+  "required": [
+    "id",
+    "handler_id",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "A unique identifier for this instrument instance, assigned by the platform.",
+      "description_pt": "Um identificador único para esta instância de instrumento, atribuído pela plataforma."
+    },
+    "handler_id": {
+      "type": "string",
+      "description": "The unique identifier for the handler instance that produced this instrument. This corresponds to the 'id' field in the Payment Handler definition.",
+      "description_pt": "O identificador único da instância de handler que produziu este instrumento. Corresponde ao campo 'id' na definição do Payment Handler."
+    },
+    "type": {
+      "type": "string",
+      "description": "The broad category of the instrument (e.g., 'card', 'tokenized_card'). Specific schemas will constrain this to a constant value.",
+      "description_pt": "A categoria ampla do instrumento (ex.: 'card', 'tokenized_card'). Schemas específicos restringirão isto a um valor constante."
+    },
+    "billing_address": {
+      "$ref": "postal_address.json",
+      "description": "The billing address associated with this payment method.",
+      "description_pt": "O endereço de cobrança associado a este método de pagamento."
+    },
+    "credential": {
+      "$ref": "payment_credential.json"
+    },
+    "display": {
+      "type": "object",
+      "description": "Display information for this payment instrument. Each payment instrument schema defines its specific display properties, as outlined by the payment handler.",
+      "description_pt": "Informações de exibição para este instrumento de pagamento. Cada schema de instrumento de pagamento define suas propriedades de exibição específicas, conforme delineado pelo payment handler."
+    }
+  },
+  "additionalProperties": true,
+  "$defs": {
+    "selected_payment_instrument": {
+      "title": "Selected Payment Instrument",
+      "description": "A payment instrument with selection state.",
+      "description_pt": "Um instrumento de pagamento com estado de seleção.",
+      "allOf": [
+        { "$ref": "#" },
+        {
+          "type": "object",
+          "properties": {
+            "selected": {
+              "type": "boolean",
+              "description": "Whether this instrument is selected by the user.",
+              "description_pt": "Se este instrumento está selecionado pelo usuário."
+            }
+          }
+        }
+      ]
+    }
+  }
+}

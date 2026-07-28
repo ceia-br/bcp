@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/payment_identity.json",
+  "title": "Payment Identity",
+  "description": "Identity of a participant for token binding. The access_token uniquely identifies the participant who tokens should be bound to.",
+  "description_pt": "Identidade de um participante para vinculação de token. O access_token identifica de forma única o participante ao qual os tokens devem ser vinculados.",
+  "type": "object",
+  "required": ["access_token"],
+  "properties": {
+    "access_token": {
+      "type": "string",
+      "description": "Unique identifier for this participant, obtained during onboarding with the tokenizer.",
+      "description_pt": "Identificador único deste participante, obtido durante o onboarding com o tokenizer."
+    }
+  }
+}

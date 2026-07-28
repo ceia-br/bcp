@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/message_info.json",
+  "title": "Message Info",
+  "type": "object",
+  "required": [
+    "type",
+    "content"
+  ],
+  "properties": {
+    "type": {
+      "type": "string",
+      "const": "info",
+      "description": "Message type discriminator.",
+      "description_pt": "Discriminador do tipo de mensagem."
+    },
+    "path": {
+      "type": "string",
+      "description": "RFC 9535 JSONPath to the component the message refers to.",
+      "description_pt": "JSONPath (RFC 9535) para o componente ao qual a mensagem se refere."
+    },
+    "code": {
+      "$ref": "info_code.json"
+    },
+    "content_type": {
+      "type": "string",
+      "enum": [
+        "plain",
+        "markdown"
+      ],
+      "default": "plain",
+      "description": "Content format, default = plain.",
+      "description_pt": "Formato do conteúdo, default = plain."
+    },
+    "content": {
+      "type": "string",
+      "description": "Human-readable message.",
+      "description_pt": "Mensagem legível por humanos."
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/fulfillment_group.json",
+  "title": "Fulfillment Group",
+  "description": "A merchant-generated package/group of line items with fulfillment options.",
+  "description_pt": "Um pacote/grupo de itens de linha gerado pelo lojista, com opções de fulfillment.",
+  "type": "object",
+  "required": ["id", "line_item_ids"],
+  "additionalProperties": true,
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Group identifier for referencing merchant-generated groups in updates.",
+      "description_pt": "Identificador do grupo para referenciar grupos gerados pelo lojista em atualizações.",
+      "ucp_request": {"create": "omit", "update": "required"}
+    },
+    "line_item_ids": {
+      "type": "array",
+      "description": "Line item IDs included in this group/package.",
+      "description_pt": "IDs dos itens de linha incluídos neste grupo/pacote.",
+      "items": { "type": "string" },
+      "ucp_request": "omit"
+    },
+    "options": {
+      "type": "array",
+      "description": "Available fulfillment options for this group.",
+      "description_pt": "Opções de fulfillment disponíveis para este grupo.",
+      "items": { "$ref": "fulfillment_option.json" },
+      "ucp_request": "omit"
+    },
+    "selected_option_id": {
+      "type": ["string", "null"],
+      "description": "ID of the selected fulfillment option for this group.",
+      "description_pt": "ID da opção de fulfillment selecionada para este grupo."
+    }
+  }
+}

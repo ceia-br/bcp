@@ -1,0 +1,189 @@
+.bcp-pg {
+  --bcp-pg-accent: #56d68b;
+  --bcp-pg-client: #3f8cff;
+  --bcp-pg-border: color-mix(in srgb, var(--md-default-fg-color) 18%, transparent);
+  --bcp-pg-seller: #ffcf33;
+  --bcp-pg-surface: color-mix(in srgb, var(--md-default-bg-color) 92%, #56d68b 8%);
+  display: grid;
+  gap: 1.25rem;
+  margin: 1.5rem 0 2rem;
+}
+
+.bcp-pg-meta,
+.bcp-pg-protocol__badges,
+.bcp-pg-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.bcp-pg-badge {
+  border: 1px solid var(--bcp-pg-border);
+  border-radius: 999px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.65rem;
+  padding: 0.25rem 0.55rem;
+}
+
+.bcp-pg-progress {
+  display: flex;
+  gap: 0.35rem;
+  overflow-x: auto;
+  padding: 0.25rem 0;
+}
+
+.bcp-pg-progress__step {
+  aspect-ratio: 1;
+  background: transparent;
+  border: 1px solid var(--bcp-pg-border);
+  border-radius: 50%;
+  color: var(--md-default-fg-color);
+  cursor: pointer;
+  flex: 1 0 2.5rem;
+  font: inherit;
+  min-height: 2.5rem;
+}
+
+.bcp-pg-progress__step.is-complete {
+  border-color: var(--bcp-pg-accent);
+}
+
+.bcp-pg-progress__step[aria-current="step"] {
+  background: var(--bcp-pg-accent);
+  border-color: var(--bcp-pg-accent);
+  color: #06150c;
+  font-weight: 700;
+}
+
+.bcp-pg-progress__step:focus-visible,
+.bcp-pg-code__body:focus-visible {
+  outline: 0.15rem solid var(--bcp-pg-accent);
+  outline-offset: 0.1rem;
+}
+
+.bcp-pg-heading {
+  border-left: 0.2rem solid var(--bcp-pg-accent);
+  padding-left: 1rem;
+}
+
+.bcp-pg-kicker {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.7rem;
+  margin: 0 0 0.35rem;
+  text-transform: uppercase;
+}
+
+.bcp-pg-title,
+.bcp-pg-narrative {
+  margin: 0;
+}
+
+.bcp-pg-narrative {
+  margin-top: 0.5rem;
+}
+
+.bcp-pg-columns {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+}
+
+.bcp-pg-panel {
+  background: var(--bcp-pg-surface);
+  border: 1px solid var(--bcp-pg-border);
+  border-radius: 0.6rem;
+  min-width: 0;
+  padding: 1rem;
+}
+
+.bcp-pg-panel__title {
+  font-size: 1rem;
+  margin: 0 0 1rem;
+}
+
+.bcp-pg-messages,
+.bcp-pg-protocol {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.bcp-pg-message {
+  border-radius: 0.5rem;
+  max-width: 88%;
+  padding: 0.7rem 0.85rem;
+}
+
+.bcp-pg-message--client {
+  background: color-mix(in srgb, var(--bcp-pg-client) 18%, transparent);
+  justify-self: end;
+}
+
+.bcp-pg-message--buyer_agent {
+  background: color-mix(in srgb, var(--bcp-pg-accent) 16%, transparent);
+  justify-self: start;
+}
+
+.bcp-pg-message--seller_agent {
+  background: color-mix(in srgb, var(--bcp-pg-seller) 16%, transparent);
+  justify-self: start;
+}
+
+.bcp-pg-message__actor {
+  display: block;
+  font-size: 0.68rem;
+  margin-bottom: 0.25rem;
+  opacity: 0.75;
+  text-transform: uppercase;
+}
+
+.bcp-pg-message__text {
+  margin: 0;
+}
+
+.bcp-pg-code {
+  border: 1px solid var(--bcp-pg-border);
+  border-radius: 0.45rem;
+  overflow: hidden;
+}
+
+.bcp-pg-code__title {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.68rem;
+  margin: 0;
+  padding: 0.5rem 0.7rem;
+}
+
+.bcp-pg-code__body {
+  border-radius: 0;
+  font-size: 0.65rem;
+  margin: 0;
+  max-height: 25rem;
+  overflow: auto;
+}
+
+.bcp-pg-controls {
+  justify-content: flex-end;
+}
+
+.bcp-pg-controls .md-button:first-child {
+  margin-right: auto;
+}
+
+.bcp-pg-controls button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.bcp-pg-empty,
+.bcp-pg-error {
+  border: 1px dashed var(--bcp-pg-border);
+  border-radius: 0.45rem;
+  margin: 0;
+  padding: 1rem;
+}
+
+@media (max-width: 60rem) {
+  .bcp-pg-columns {
+    grid-template-columns: 1fr;
+  }
+}

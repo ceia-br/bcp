@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/fulfillment.json",
+  "title": "Fulfillment",
+  "description": "Container for fulfillment methods and availability.",
+  "description_pt": "Contêiner para métodos de fulfillment e disponibilidade.",
+  "type": "object",
+  "ucp_shared_request": true,
+  "properties": {
+    "methods": {
+      "type": "array",
+      "description": "Fulfillment methods for cart items.",
+      "description_pt": "Métodos de fulfillment para os itens do cart.",
+      "items": { "$ref": "fulfillment_method.json" }
+    },
+    "available_methods": {
+      "type": "array",
+      "description": "Inventory availability hints.",
+      "description_pt": "Dicas de disponibilidade de estoque.",
+      "items": { "$ref": "fulfillment_available_method.json" },
+      "ucp_request": "omit"
+    }
+  }
+}

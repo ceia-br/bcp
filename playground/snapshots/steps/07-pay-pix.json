@@ -1,0 +1,423 @@
+{
+  "id": "07-pay-pix",
+  "act": {
+    "pt-BR": "Pagamento",
+    "en": "Payment"
+  },
+  "title": {
+    "pt-BR": "Pagar via Pix",
+    "en": "Pay with Pix"
+  },
+  "narrative": {
+    "pt-BR": "A pessoa paga diretamente pelo QR code ou pelo código Pix. O playground simula a liquidação antes de avançar.",
+    "en": "The customer pays directly through the QR code or Pix string. The playground simulates settlement before advancing."
+  },
+  "conversation": [
+    {
+      "actor": "client",
+      "actor_label": {
+        "pt-BR": "Cliente",
+        "en": "Customer"
+      },
+      "text": {
+        "pt-BR": "Quero uma camiseta vermelha, tamanho M.",
+        "en": "I want a red T-shirt, size M."
+      }
+    },
+    {
+      "actor": "buyer_agent",
+      "actor_label": {
+        "pt-BR": "Agente cliente",
+        "en": "Buyer agent"
+      },
+      "text": {
+        "pt-BR": "Vou me conectar à Loja Vermelho e verificar o que ela oferece.",
+        "en": "I will connect to Loja Vermelho and check what it offers."
+      }
+    },
+    {
+      "actor": "buyer_agent",
+      "actor_label": {
+        "pt-BR": "Agente cliente",
+        "en": "Buyer agent"
+      },
+      "text": {
+        "pt-BR": "Encontrei a Camiseta Vermelha M por R$ 59,90.",
+        "en": "I found the Red T-shirt M for BRL 59.90."
+      }
+    },
+    {
+      "actor": "client",
+      "actor_label": {
+        "pt-BR": "Cliente",
+        "en": "Customer"
+      },
+      "text": {
+        "pt-BR": "Quero a vermelha M.",
+        "en": "I want the red one in size M."
+      }
+    },
+    {
+      "actor": "buyer_agent",
+      "actor_label": {
+        "pt-BR": "Agente cliente",
+        "en": "Buyer agent"
+      },
+      "text": {
+        "pt-BR": "A loja criou o checkout. Preciso confirmar seus dados e o endereço de entrega.",
+        "en": "The store created the checkout. I need to confirm your details and delivery address."
+      }
+    },
+    {
+      "actor": "client",
+      "actor_label": {
+        "pt-BR": "Cliente",
+        "en": "Customer"
+      },
+      "text": {
+        "pt-BR": "Os dados apresentados estão corretos. Não aceito consentimentos opcionais.",
+        "en": "The presented details are correct. I do not accept optional consent."
+      }
+    },
+    {
+      "actor": "buyer_agent",
+      "actor_label": {
+        "pt-BR": "Agente cliente",
+        "en": "Buyer agent"
+      },
+      "text": {
+        "pt-BR": "Dados aceitos. Há PAC por R$ 19,90 e SEDEX por R$ 34,90.",
+        "en": "Details accepted. PAC costs BRL 19.90 and SEDEX costs BRL 34.90."
+      }
+    },
+    {
+      "actor": "client",
+      "actor_label": {
+        "pt-BR": "Cliente",
+        "en": "Customer"
+      },
+      "text": {
+        "pt-BR": "Escolho PAC.",
+        "en": "I choose PAC."
+      }
+    },
+    {
+      "actor": "buyer_agent",
+      "actor_label": {
+        "pt-BR": "Agente cliente",
+        "en": "Buyer agent"
+      },
+      "text": {
+        "pt-BR": "O total com PAC é R$ 79,80. O checkout está pronto para pagamento.",
+        "en": "The total with PAC is BRL 79.80. The checkout is ready for payment."
+      }
+    },
+    {
+      "actor": "buyer_agent",
+      "actor_label": {
+        "pt-BR": "Agente cliente",
+        "en": "Buyer agent"
+      },
+      "text": {
+        "pt-BR": "A cobrança Pix de R$ 79,80 está pronta para pagamento.",
+        "en": "The BRL 79.80 Pix charge is ready for payment."
+      }
+    },
+    {
+      "actor": "client",
+      "actor_label": {
+        "pt-BR": "Cliente",
+        "en": "Customer"
+      },
+      "text": {
+        "pt-BR": "Vou pagar o Pix de R$ 79,80.",
+        "en": "I will pay the BRL 79.80 Pix charge."
+      }
+    },
+    {
+      "actor": "buyer_agent",
+      "actor_label": {
+        "pt-BR": "Agente cliente",
+        "en": "Buyer agent"
+      },
+      "text": {
+        "pt-BR": "Pagamento identificado. Vou buscar a confirmação do pedido.",
+        "en": "Payment identified. I will retrieve the order confirmation."
+      }
+    }
+  ],
+  "protocol": {
+    "badges": [
+      "Pix direto",
+      "liquidação demonstrativa"
+    ],
+    "checkout": {
+      "ucp": {
+        "version": "2026-04-08",
+        "capabilities": {
+          "br.dev.bcp.shopping.checkout": [
+            {
+              "version": "2026-04-08"
+            }
+          ],
+          "br.dev.bcp.shopping.fiscal_identity": [
+            {
+              "version": "2026-07-03",
+              "extends": "br.dev.bcp.shopping.checkout"
+            }
+          ],
+          "br.dev.bcp.shopping.tax": [
+            {
+              "version": "2026-07-14",
+              "extends": "br.dev.bcp.shopping.checkout"
+            }
+          ],
+          "br.dev.bcp.shopping.fulfillment": [
+            {
+              "version": "2026-04-08",
+              "extends": "br.dev.bcp.shopping.checkout"
+            }
+          ],
+          "br.dev.bcp.shopping.buyer_consent": [
+            {
+              "version": "2026-04-08",
+              "extends": "br.dev.bcp.shopping.checkout"
+            }
+          ]
+        },
+        "payment_handlers": {
+          "br.dev.bcp.pix": [
+            {
+              "id": "pix_playground_001",
+              "version": "2026-07-08",
+              "available_instruments": [
+                {
+                  "type": "pix"
+                }
+              ],
+              "config": {
+                "environment": "sandbox",
+                "payee_name": "Loja Vermelho"
+              }
+            }
+          ]
+        }
+      },
+      "id": "chk_playground_001",
+      "status": "ready_for_complete",
+      "currency": "BRL",
+      "seller_identity": {
+        "cnpj": "19131243000197",
+        "legal_name": "Loja Vermelho Comércio de Vestuário Ltda"
+      },
+      "line_items": [
+        {
+          "id": "li_playground_001",
+          "item": {
+            "id": "camiseta-vermelha-m",
+            "title": "Camiseta Vermelha M",
+            "price": 5990
+          },
+          "quantity": 1,
+          "ncm": "61091000",
+          "taxes": [
+            {
+              "type": "icms",
+              "rate": 0.10217,
+              "base": 5990,
+              "amount": 612,
+              "authority": "state",
+              "behavior": "inclusive"
+            },
+            {
+              "type": "pis_cofins",
+              "rate": 0.03706,
+              "base": 5990,
+              "amount": 222,
+              "authority": "federal",
+              "behavior": "inclusive"
+            }
+          ],
+          "totals": [
+            {
+              "type": "subtotal",
+              "amount": 5990
+            }
+          ]
+        }
+      ],
+      "totals": [
+        {
+          "type": "subtotal",
+          "amount": 5990
+        },
+        {
+          "type": "tax",
+          "display_text": "Tributos aproximados incluídos no preço",
+          "amount": 834
+        },
+        {
+          "type": "shipping",
+          "display_text": "PAC",
+          "amount": 1990
+        },
+        {
+          "type": "total",
+          "amount": 7980
+        }
+      ],
+      "links": [
+        {
+          "type": "privacy_policy",
+          "url": "https://loja.exemplo/privacidade"
+        },
+        {
+          "type": "terms_of_service",
+          "url": "https://loja.exemplo/termos"
+        }
+      ],
+      "expires_at": "2026-07-17T22:00:00Z",
+      "buyer": {
+        "first_name": "Ana",
+        "last_name": "Silva",
+        "email": "ana@example.com.br",
+        "phone_number": "+5562999990000",
+        "taxpayer_id": {
+          "kind": "cpf",
+          "value": "39053344705"
+        },
+        "consent": {
+          "analytics": false,
+          "preferences": false,
+          "marketing": false,
+          "sale_of_data": false
+        }
+      },
+      "context": {
+        "address_country": "BR",
+        "address_region": "GO",
+        "language": "pt-BR",
+        "currency": "BRL",
+        "intent": "camiseta vermelha tamanho M"
+      },
+      "fulfillment": {
+        "methods": [
+          {
+            "id": "ship_playground_001",
+            "type": "shipping",
+            "line_item_ids": [
+              "li_playground_001"
+            ],
+            "destinations": [
+              {
+                "id": "destination_playground_001",
+                "street_address": "Rua das Flores, 100",
+                "extended_address": "Apto 12",
+                "address_locality": "Goiânia",
+                "address_region": "GO",
+                "address_country": "BR",
+                "postal_code": "74000000",
+                "first_name": "Ana",
+                "last_name": "Silva",
+                "phone_number": "+5562999990000"
+              }
+            ],
+            "selected_destination_id": "destination_playground_001",
+            "groups": [
+              {
+                "id": "group_playground_001",
+                "line_item_ids": [
+                  "li_playground_001"
+                ],
+                "options": [
+                  {
+                    "id": "pac_playground_001",
+                    "title": "PAC",
+                    "description": "Entrega em 4 dias úteis",
+                    "carrier": "Correios",
+                    "earliest_fulfillment_time": "2026-07-22T12:00:00Z",
+                    "latest_fulfillment_time": "2026-07-22T21:00:00Z",
+                    "totals": [
+                      {
+                        "type": "shipping",
+                        "display_text": "PAC",
+                        "amount": 1990
+                      }
+                    ]
+                  },
+                  {
+                    "id": "sedex_playground_001",
+                    "title": "SEDEX",
+                    "description": "Entrega em 2 dias úteis",
+                    "carrier": "Correios",
+                    "earliest_fulfillment_time": "2026-07-20T12:00:00Z",
+                    "latest_fulfillment_time": "2026-07-20T21:00:00Z",
+                    "totals": [
+                      {
+                        "type": "shipping",
+                        "display_text": "SEDEX",
+                        "amount": 3490
+                      }
+                    ]
+                  }
+                ],
+                "selected_option_id": "pac_playground_001"
+              }
+            ]
+          }
+        ]
+      },
+      "payment": {
+        "instruments": [
+          {
+            "id": "instrument_playground_001",
+            "handler_id": "pix_playground_001",
+            "type": "pix",
+            "selected": true,
+            "credential": {
+              "type": "pix_charge",
+              "provider_payment_id": "pix_charge_playground_001",
+              "copia_e_cola": "00020126580014br.gov.bcb.pix0136playground-bcp-0015204000053039865802BR5912LojaExemplo6007Goiania62070503***6304ABCD",
+              "payment_url": "https://pagamentos.exemplo/pix/pix_charge_playground_001",
+              "expires_at": "2026-07-17T16:30:00Z",
+              "binding": {
+                "checkout_id": "chk_playground_001"
+              }
+            },
+            "display": {
+              "payee_name": "Loja Vermelho",
+              "description": "Pague R$ 79.80 via Pix. Cobrança demonstrativa."
+            }
+          }
+        ]
+      }
+    },
+    "events": [
+      {
+        "title": {
+          "pt-BR": "Pagamento via Pix",
+          "en": "Pay with Pix"
+        },
+        "description": {
+          "pt-BR": "A cliente paga diretamente por Pix. O botão simula a liquidação do mock.",
+          "en": "The customer pays directly with Pix. The button simulates mock settlement."
+        },
+        "documents": [],
+        "conversation": [
+          {
+            "actor": "buyer_agent",
+            "text": {
+              "pt-BR": "O Pix de R$ 79,80 está pronto. Escaneie o QR code ou copie o código para pagar.",
+              "en": "The BRL 79.80 Pix charge is ready. Scan the QR code or copy the code to pay."
+            }
+          }
+        ],
+        "widget": {
+          "type": "pix",
+          "amount": 7980,
+          "code": "00020126580014br.gov.bcb.pix0136playground-bcp-0015204000053039865802BR5912LojaExemplo6007Goiania62070503***6304ABCD"
+        }
+      }
+    ]
+  }
+}

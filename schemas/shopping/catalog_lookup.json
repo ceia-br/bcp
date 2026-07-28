@@ -1,0 +1,195 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/catalog_lookup.json",
+  "name": "br.dev.bcp.shopping.catalog.lookup",
+  "title": "Catalog Lookup",
+  "description": "Product/variant lookup by identifier. Supports batch retrieval (lookup_catalog) and single-product detail (get_product).",
+  "description_pt": "Consulta de produto/variante por identificador. Suporta recuperação em lote (lookup_catalog) e detalhe de produto único (get_product).",
+  "type": "object",
+  "$defs": {
+    "lookup_variant": {
+      "description": "Variant with required correlation metadata for lookup responses.",
+      "description_pt": "Variante com os metadados de correlação obrigatórios para respostas de consulta.",
+      "allOf": [
+        { "$ref": "types/variant.json" },
+        {
+          "required": ["inputs"],
+          "properties": {
+            "inputs": {
+              "type": "array",
+              "items": { "$ref": "types/input_correlation.json" },
+              "minItems": 1,
+              "description": "Which request identifiers resolved to this variant, and how. Each entry maps a request ID to its match type.",
+              "description_pt": "Quais identificadores da requisição resolveram para esta variante, e como. Cada entrada mapeia um ID de requisição ao seu tipo de correspondência."
+            }
+          }
+        }
+      ]
+    },
+    "lookup_request": {
+      "type": "object",
+      "description": "Request body for catalog lookup.",
+      "description_pt": "Corpo da requisição para consulta de catálogo.",
+      "required": ["ids"],
+      "properties": {
+        "ids": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "description": "Identifiers to lookup. Implementations MUST support product ID and variant ID; MAY support secondary identifiers (SKU, handle, etc.).",
+          "description_pt": "Identificadores a consultar. As implementações DEVEM suportar product ID e variant ID; PODEM suportar identificadores secundários (SKU, handle, etc.)."
+        },
+        "filters": {
+          "$ref": "types/search_filters.json",
+          "description": "Filter criteria to narrow returned products and variants. All specified filters combine with AND logic.",
+          "description_pt": "Critérios de filtro para restringir os produtos e variantes retornados. Todos os filtros especificados se combinam com lógica AND."
+        },
+        "context": {
+          "$ref": "types/context.json"
+        },
+        "signals": {
+          "$ref": "types/signals.json"
+        },
+        "attribution": {
+          "$ref": "types/attribution.json"
+        }
+      }
+    },
+    "lookup_response": {
+      "type": "object",
+      "required": [
+        "ucp",
+        "products"
+      ],
+      "properties": {
+        "ucp": {
+          "$ref": "../ucp.json#/$defs/response_catalog_schema"
+        },
+        "products": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              { "$ref": "types/product.json" },
+              {
+                "properties": {
+                  "variants": {
+                    "items": { "$ref": "#/$defs/lookup_variant" }
+                  }
+                }
+              }
+            ]
+          },
+          "description": "Products matching the requested identifiers. May contain fewer items if some identifiers not found, or more if identifiers match multiple products.",
+          "description_pt": "Produtos que correspondem aos identificadores solicitados. Pode conter menos itens se alguns identificadores não forem encontrados, ou mais se os identificadores corresponderem a múltiplos produtos."
+        },
+        "messages": {
+          "type": "array",
+          "items": {
+            "$ref": "types/message.json"
+          },
+          "description": "Errors, warnings, or informational messages about the requested items.",
+          "description_pt": "Erros, avisos ou mensagens informativas sobre os itens solicitados."
+        }
+      }
+    },
+    "get_product_request": {
+      "type": "object",
+      "description": "Request body for single-product retrieval. Supports interactive variant narrowing via selected and preferences.",
+      "description_pt": "Corpo da requisição para recuperação de produto único. Suporta o refinamento interativo de variantes por meio de selected e preferences.",
+      "required": ["id"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Product or variant identifier. Implementations MUST support product ID and variant ID.",
+          "description_pt": "Identificador de produto ou variante. As implementações DEVEM suportar product ID e variant ID."
+        },
+        "selected": {
+          "type": "array",
+          "items": {
+            "$ref": "types/selected_option.json"
+          },
+          "description": "Partial or full option selections for interactive variant narrowing. When provided, response option values include availability signals (available, exists) relative to these selections.",
+          "description_pt": "Seleções de opções parciais ou completas para o refinamento interativo de variantes. Quando fornecidas, os valores de opção na resposta incluem sinais de disponibilidade (available, exists) relativos a essas seleções."
+        },
+        "preferences": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Option names in relaxation priority order. When no exact variant matches all selections, the server drops options from the end of this list first. E.g., ['Color', 'Size'] keeps Color and relaxes Size.",
+          "description_pt": "Nomes de opções em ordem de prioridade de relaxamento. Quando nenhuma variante exata corresponde a todas as seleções, o servidor descarta opções a partir do fim desta lista primeiro. Ex.: ['Color', 'Size'] mantém Color e relaxa Size."
+        },
+        "filters": {
+          "$ref": "types/search_filters.json",
+          "description": "Filter criteria to narrow returned variants. All specified filters combine with AND logic.",
+          "description_pt": "Critérios de filtro para restringir as variantes retornadas. Todos os filtros especificados se combinam com lógica AND."
+        },
+        "context": {
+          "$ref": "types/context.json"
+        },
+        "signals": {
+          "$ref": "types/signals.json"
+        },
+        "attribution": {
+          "$ref": "types/attribution.json"
+        }
+      }
+    },
+    "detail_product": {
+      "description": "A product in a get_product response, extended with effective selections and availability signals on option values.",
+      "description_pt": "Um produto em uma resposta de get_product, estendido com seleções efetivas e sinais de disponibilidade nos valores de opção.",
+      "type": "object",
+      "allOf": [{ "$ref": "types/product.json" }],
+      "properties": {
+        "selected": {
+          "type": "array",
+          "items": { "$ref": "types/selected_option.json" },
+          "description": "Effective option selections that anchor the featured variant and availability signals. Required when the product has configurable options; may be empty or omitted for products with no option axes.",
+          "description_pt": "Seleções de opção efetivas que ancoram a variante em destaque e os sinais de disponibilidade. Obrigatórias quando o produto tem opções configuráveis; podem estar vazias ou omitidas para produtos sem eixos de opção."
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "values"],
+            "properties": {
+              "name": { "type": "string" },
+              "values": {
+                "type": "array",
+                "items": { "$ref": "types/detail_option_value.json" },
+                "minItems": 1
+              }
+            }
+          },
+          "description": "Product options with availability signals relative to the effective selections.",
+          "description_pt": "Opções de produto com sinais de disponibilidade relativos às seleções efetivas."
+        }
+      }
+    },
+    "get_product_response": {
+      "type": "object",
+      "required": [
+        "ucp",
+        "product"
+      ],
+      "properties": {
+        "ucp": {
+          "$ref": "../ucp.json#/$defs/response_catalog_schema"
+        },
+        "product": {
+          "$ref": "#/$defs/detail_product",
+          "description": "The requested product with full detail. Singular — this is a single-resource operation.",
+          "description_pt": "O produto solicitado com detalhe completo. Singular — esta é uma operação de recurso único."
+        },
+        "messages": {
+          "type": "array",
+          "items": {
+            "$ref": "types/message.json"
+          },
+          "description": "Warnings or informational messages about the product (e.g., price recently changed, limited availability).",
+          "description_pt": "Avisos ou mensagens informativas sobre o produto (ex.: preço alterado recentemente, disponibilidade limitada)."
+        }
+      }
+    }
+  }
+}

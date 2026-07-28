@@ -1,0 +1,607 @@
+{
+  "id": "02-search-and-choose",
+  "act": {
+    "pt-BR": "Busca",
+    "en": "Search"
+  },
+  "title": {
+    "pt-BR": "Buscar e escolher o produto",
+    "en": "Search and choose the product"
+  },
+  "narrative": {
+    "pt-BR": "A busca e a resposta usam texto porque o BCP não define binding A2A de catálogo. A escolha humana ainda não altera o checkout.",
+    "en": "Search and response use text because BCP does not define an A2A catalog binding. The human choice does not modify the checkout yet."
+  },
+  "conversation": [
+    {
+      "actor": "client",
+      "actor_label": {
+        "pt-BR": "Cliente",
+        "en": "Customer"
+      },
+      "text": {
+        "pt-BR": "Quero uma camiseta vermelha, tamanho M.",
+        "en": "I want a red T-shirt, size M."
+      }
+    },
+    {
+      "actor": "buyer_agent",
+      "actor_label": {
+        "pt-BR": "Agente cliente",
+        "en": "Buyer agent"
+      },
+      "text": {
+        "pt-BR": "Vou me conectar à Loja Vermelho e verificar o que ela oferece.",
+        "en": "I will connect to Loja Vermelho and check what it offers."
+      }
+    },
+    {
+      "actor": "buyer_agent",
+      "actor_label": {
+        "pt-BR": "Agente cliente",
+        "en": "Buyer agent"
+      },
+      "text": {
+        "pt-BR": "Encontrei a Camiseta Vermelha M por R$ 59,90.",
+        "en": "I found the Red T-shirt M for BRL 59.90."
+      }
+    },
+    {
+      "actor": "client",
+      "actor_label": {
+        "pt-BR": "Cliente",
+        "en": "Customer"
+      },
+      "text": {
+        "pt-BR": "Quero a vermelha M.",
+        "en": "I want the red one in size M."
+      }
+    }
+  ],
+  "protocol": {
+    "badges": [
+      "A2A TextPart",
+      "MCP search_catalog",
+      "BCP catalog.search"
+    ],
+    "request": {
+      "headers": {
+        "BCP-Agent": "profile=\"https://agente.exemplo/.well-known/bcp\"",
+        "A2A-Extensions": "https://bcp.dev.br/2026-04-08/specification/reference",
+        "A2A-Version": "1.0"
+      },
+      "body": {
+        "jsonrpc": "2.0",
+        "id": "rpc-02",
+        "method": "SendMessage",
+        "params": {
+          "message": {
+            "messageId": "msg-02-request",
+            "role": "ROLE_USER",
+            "parts": [
+              {
+                "text": "Procuro uma camiseta vermelha, tamanho M."
+              }
+            ],
+            "extensions": [
+              "https://bcp.dev.br/2026-04-08/specification/reference"
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "jsonrpc": "2.0",
+      "id": "rpc-02",
+      "result": {
+        "message": {
+          "messageId": "msg-02-response",
+          "role": "ROLE_AGENT",
+          "parts": [
+            {
+              "text": "Encontrei Camiseta Vermelha M, Camiseta Vermelha G e Camiseta Azul M."
+            }
+          ],
+          "extensions": [
+            "https://bcp.dev.br/2026-04-08/specification/reference"
+          ],
+          "contextId": "ctx_playground_001"
+        }
+      }
+    },
+    "internal": {
+      "title": {
+        "pt-BR": "Consulta interna ao catálogo do vendedor",
+        "en": "Seller-side catalog lookup"
+      },
+      "description": {
+        "pt-BR": "Após receber a intenção por A2A, o agente vendedor consulta seu catálogo BCP por MCP antes de responder.",
+        "en": "After receiving the intent over A2A, the seller agent queries its BCP catalog over MCP before replying."
+      },
+      "request": {
+        "jsonrpc": "2.0",
+        "id": "mcp-02",
+        "method": "tools/call",
+        "params": {
+          "name": "search_catalog",
+          "arguments": {
+            "meta": {
+              "ucp-agent": {
+                "profile": "https://agente.exemplo/.well-known/bcp"
+              }
+            },
+            "catalog": {
+              "query": "camiseta vermelha tamanho M",
+              "context": {
+                "address_country": "BR",
+                "address_region": "GO",
+                "language": "pt-BR",
+                "currency": "BRL",
+                "intent": "camiseta vermelha tamanho M"
+              },
+              "pagination": {
+                "limit": 10
+              }
+            }
+          }
+        }
+      },
+      "response": {
+        "jsonrpc": "2.0",
+        "id": "mcp-02",
+        "result": {
+          "structuredContent": {
+            "ucp": {
+              "version": "2026-04-08",
+              "capabilities": {
+                "br.dev.bcp.shopping.catalog.search": [
+                  {
+                    "version": "2026-04-08"
+                  }
+                ]
+              }
+            },
+            "products": [
+              {
+                "id": "camiseta-vermelha-m",
+                "handle": "camiseta-vermelha-m",
+                "title": "Camiseta Vermelha M",
+                "description": {
+                  "plain": "Camiseta vermelha, tamanho M, em algodão."
+                },
+                "url": "https://loja.exemplo/produtos/camiseta-vermelha-m",
+                "price_range": {
+                  "min": {
+                    "amount": 5990,
+                    "currency": "BRL"
+                  },
+                  "max": {
+                    "amount": 5990,
+                    "currency": "BRL"
+                  }
+                },
+                "variants": [
+                  {
+                    "id": "camiseta-vermelha-m",
+                    "title": "Camiseta Vermelha M",
+                    "description": {
+                      "plain": "Camiseta vermelha, tamanho M, em algodão."
+                    },
+                    "price": {
+                      "amount": 5990,
+                      "currency": "BRL"
+                    },
+                    "availability": {
+                      "available": true,
+                      "status": "in_stock"
+                    }
+                  }
+                ],
+                "tags": [
+                  "camiseta",
+                  "algodão"
+                ]
+              },
+              {
+                "id": "camiseta-vermelha-g",
+                "handle": "camiseta-vermelha-g",
+                "title": "Camiseta Vermelha G",
+                "description": {
+                  "plain": "Camiseta vermelha, tamanho G, em algodão."
+                },
+                "url": "https://loja.exemplo/produtos/camiseta-vermelha-g",
+                "price_range": {
+                  "min": {
+                    "amount": 5990,
+                    "currency": "BRL"
+                  },
+                  "max": {
+                    "amount": 5990,
+                    "currency": "BRL"
+                  }
+                },
+                "variants": [
+                  {
+                    "id": "camiseta-vermelha-g",
+                    "title": "Camiseta Vermelha G",
+                    "description": {
+                      "plain": "Camiseta vermelha, tamanho G, em algodão."
+                    },
+                    "price": {
+                      "amount": 5990,
+                      "currency": "BRL"
+                    },
+                    "availability": {
+                      "available": true,
+                      "status": "in_stock"
+                    }
+                  }
+                ],
+                "tags": [
+                  "camiseta",
+                  "algodão"
+                ]
+              },
+              {
+                "id": "camiseta-azul-m",
+                "handle": "camiseta-azul-m",
+                "title": "Camiseta Azul M",
+                "description": {
+                  "plain": "Camiseta azul, tamanho M, em algodão."
+                },
+                "url": "https://loja.exemplo/produtos/camiseta-azul-m",
+                "price_range": {
+                  "min": {
+                    "amount": 5990,
+                    "currency": "BRL"
+                  },
+                  "max": {
+                    "amount": 5990,
+                    "currency": "BRL"
+                  }
+                },
+                "variants": [
+                  {
+                    "id": "camiseta-azul-m",
+                    "title": "Camiseta Azul M",
+                    "description": {
+                      "plain": "Camiseta azul, tamanho M, em algodão."
+                    },
+                    "price": {
+                      "amount": 5990,
+                      "currency": "BRL"
+                    },
+                    "availability": {
+                      "available": true,
+                      "status": "in_stock"
+                    }
+                  }
+                ],
+                "tags": [
+                  "camiseta",
+                  "algodão"
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "events": [
+      {
+        "title": {
+          "pt-BR": "Busca no catálogo",
+          "en": "Catalog search"
+        },
+        "description": {
+          "pt-BR": "O vendedor consulta o catálogo e devolve o match exato seguido das alternativas mais próximas.",
+          "en": "The seller searches the catalog and returns the exact match followed by the closest alternatives."
+        },
+        "documents": [
+          {
+            "kind": "request",
+            "name": "A2A SendMessage",
+            "payload": {
+              "headers": {
+                "BCP-Agent": "profile=\"https://agente.exemplo/.well-known/bcp\"",
+                "A2A-Extensions": "https://bcp.dev.br/2026-04-08/specification/reference",
+                "A2A-Version": "1.0"
+              },
+              "body": {
+                "jsonrpc": "2.0",
+                "id": "rpc-02",
+                "method": "SendMessage",
+                "params": {
+                  "message": {
+                    "messageId": "msg-02-request",
+                    "role": "ROLE_USER",
+                    "parts": [
+                      {
+                        "text": "Procuro uma camiseta vermelha, tamanho M."
+                      }
+                    ],
+                    "extensions": [
+                      "https://bcp.dev.br/2026-04-08/specification/reference"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "kind": "request",
+            "name": "catalog.search",
+            "payload": {
+              "jsonrpc": "2.0",
+              "id": "mcp-02",
+              "method": "tools/call",
+              "params": {
+                "name": "search_catalog",
+                "arguments": {
+                  "meta": {
+                    "ucp-agent": {
+                      "profile": "https://agente.exemplo/.well-known/bcp"
+                    }
+                  },
+                  "catalog": {
+                    "query": "camiseta vermelha tamanho M",
+                    "context": {
+                      "address_country": "BR",
+                      "address_region": "GO",
+                      "language": "pt-BR",
+                      "currency": "BRL",
+                      "intent": "camiseta vermelha tamanho M"
+                    },
+                    "pagination": {
+                      "limit": 10
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "kind": "response",
+            "name": "catalog.search",
+            "payload": {
+              "jsonrpc": "2.0",
+              "id": "mcp-02",
+              "result": {
+                "structuredContent": {
+                  "ucp": {
+                    "version": "2026-04-08",
+                    "capabilities": {
+                      "br.dev.bcp.shopping.catalog.search": [
+                        {
+                          "version": "2026-04-08"
+                        }
+                      ]
+                    }
+                  },
+                  "products": [
+                    {
+                      "id": "camiseta-vermelha-m",
+                      "handle": "camiseta-vermelha-m",
+                      "title": "Camiseta Vermelha M",
+                      "description": {
+                        "plain": "Camiseta vermelha, tamanho M, em algodão."
+                      },
+                      "url": "https://loja.exemplo/produtos/camiseta-vermelha-m",
+                      "price_range": {
+                        "min": {
+                          "amount": 5990,
+                          "currency": "BRL"
+                        },
+                        "max": {
+                          "amount": 5990,
+                          "currency": "BRL"
+                        }
+                      },
+                      "variants": [
+                        {
+                          "id": "camiseta-vermelha-m",
+                          "title": "Camiseta Vermelha M",
+                          "description": {
+                            "plain": "Camiseta vermelha, tamanho M, em algodão."
+                          },
+                          "price": {
+                            "amount": 5990,
+                            "currency": "BRL"
+                          },
+                          "availability": {
+                            "available": true,
+                            "status": "in_stock"
+                          }
+                        }
+                      ],
+                      "tags": [
+                        "camiseta",
+                        "algodão"
+                      ]
+                    },
+                    {
+                      "id": "camiseta-vermelha-g",
+                      "handle": "camiseta-vermelha-g",
+                      "title": "Camiseta Vermelha G",
+                      "description": {
+                        "plain": "Camiseta vermelha, tamanho G, em algodão."
+                      },
+                      "url": "https://loja.exemplo/produtos/camiseta-vermelha-g",
+                      "price_range": {
+                        "min": {
+                          "amount": 5990,
+                          "currency": "BRL"
+                        },
+                        "max": {
+                          "amount": 5990,
+                          "currency": "BRL"
+                        }
+                      },
+                      "variants": [
+                        {
+                          "id": "camiseta-vermelha-g",
+                          "title": "Camiseta Vermelha G",
+                          "description": {
+                            "plain": "Camiseta vermelha, tamanho G, em algodão."
+                          },
+                          "price": {
+                            "amount": 5990,
+                            "currency": "BRL"
+                          },
+                          "availability": {
+                            "available": true,
+                            "status": "in_stock"
+                          }
+                        }
+                      ],
+                      "tags": [
+                        "camiseta",
+                        "algodão"
+                      ]
+                    },
+                    {
+                      "id": "camiseta-azul-m",
+                      "handle": "camiseta-azul-m",
+                      "title": "Camiseta Azul M",
+                      "description": {
+                        "plain": "Camiseta azul, tamanho M, em algodão."
+                      },
+                      "url": "https://loja.exemplo/produtos/camiseta-azul-m",
+                      "price_range": {
+                        "min": {
+                          "amount": 5990,
+                          "currency": "BRL"
+                        },
+                        "max": {
+                          "amount": 5990,
+                          "currency": "BRL"
+                        }
+                      },
+                      "variants": [
+                        {
+                          "id": "camiseta-azul-m",
+                          "title": "Camiseta Azul M",
+                          "description": {
+                            "plain": "Camiseta azul, tamanho M, em algodão."
+                          },
+                          "price": {
+                            "amount": 5990,
+                            "currency": "BRL"
+                          },
+                          "availability": {
+                            "available": true,
+                            "status": "in_stock"
+                          }
+                        }
+                      ],
+                      "tags": [
+                        "camiseta",
+                        "algodão"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "kind": "response",
+            "name": "A2A SendMessage",
+            "payload": {
+              "jsonrpc": "2.0",
+              "id": "rpc-02",
+              "result": {
+                "message": {
+                  "messageId": "msg-02-response",
+                  "role": "ROLE_AGENT",
+                  "parts": [
+                    {
+                      "text": "Encontrei Camiseta Vermelha M, Camiseta Vermelha G e Camiseta Azul M."
+                    }
+                  ],
+                  "extensions": [
+                    "https://bcp.dev.br/2026-04-08/specification/reference"
+                  ],
+                  "contextId": "ctx_playground_001"
+                }
+              }
+            }
+          }
+        ],
+        "conversation": [
+          {
+            "actor": "buyer_agent",
+            "text": {
+              "pt-BR": "Procuro uma camiseta vermelha, tamanho M.",
+              "en": "I am looking for a red T-shirt, size M."
+            }
+          },
+          {
+            "actor": "seller_agent",
+            "text": {
+              "pt-BR": "Vou buscar o match exato e as alternativas mais próximas.",
+              "en": "I will search for the exact match and the closest alternatives."
+            }
+          },
+          {
+            "actor": "seller_agent",
+            "text": {
+              "pt-BR": "Encontrei três opções. A Camiseta Vermelha M é o match exato.",
+              "en": "I found three options. The Red T-shirt M is the exact match."
+            }
+          }
+        ],
+        "widget": {
+          "type": "products",
+          "items": [
+            {
+              "id": "camiseta-vermelha-m",
+              "title": "Camiseta Vermelha M",
+              "price": 5990,
+              "color": "#e0362f",
+              "meta": {
+                "pt-BR": "Vermelha, tamanho M, algodão",
+                "en": "Red, size M, cotton"
+              },
+              "badge": {
+                "pt-BR": "match exato",
+                "en": "exact match"
+              },
+              "best": true
+            },
+            {
+              "id": "camiseta-vermelha-g",
+              "title": "Camiseta Vermelha G",
+              "price": 5990,
+              "color": "#e0362f",
+              "meta": {
+                "pt-BR": "Vermelha, tamanho G, algodão",
+                "en": "Red, size L, cotton"
+              },
+              "badge": {
+                "pt-BR": "mesma cor",
+                "en": "same color"
+              },
+              "best": false
+            },
+            {
+              "id": "camiseta-azul-m",
+              "title": "Camiseta Azul M",
+              "price": 5990,
+              "color": "#2f6fe0",
+              "meta": {
+                "pt-BR": "Azul, tamanho M, algodão",
+                "en": "Blue, size M, cotton"
+              },
+              "badge": {
+                "pt-BR": "mesmo tamanho",
+                "en": "same size"
+              },
+              "best": false
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

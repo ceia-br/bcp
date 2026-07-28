@@ -1,0 +1,21 @@
+<footer class="md-footer bcp-site-footer">
+  <div class="bcp-footer__inner md-grid">
+    <div class="bcp-footer__brand">
+      <svg class="bcp-footer__mark" viewBox="0 0 96 80" aria-hidden="true">
+        <path d="M30 12 L14 12 Q8 12 8 18 L8 62 Q8 68 14 68 L30 68" fill="none" stroke="#00c07a" stroke-width="9" stroke-linecap="round" />
+        <path d="M66 12 L82 12 Q88 12 88 18 L88 62 Q88 68 82 68 L66 68" fill="none" stroke="#ffcf33" stroke-width="9" stroke-linecap="round" />
+        <line x1="37" y1="40" x2="59" y2="40" stroke="#f4f5f2" stroke-width="6" stroke-linecap="round" />
+      </svg>
+      {% if config.theme.language == "pt-BR" %}
+        <span>© 2026 Autores do BCP. Licenciado sob Apache 2.0.</span>
+      {% else %}
+        <span>© 2026 BCP Authors. Licensed under Apache 2.0.</span>
+      {% endif %}
+    </div>
+    <nav class="bcp-footer__links" aria-label="Parceiros e repositório">
+      <a href="https://akcit.ufg.br/" target="_blank" rel="noopener">AKCIT</a>
+      <a href="https://ceia.ufg.br/" target="_blank" rel="noopener">CEIA-UFG</a>
+      <a href="{{ config.repo_url }}" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</footer>

@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/signals.json",
+  "title": "Signals",
+  "description": "Environment data provided by the platform to support authorization and abuse prevention. Values MUST NOT be buyer-asserted claims — platforms provide signals based on direct observation or independently verifiable third-party attestations. All signal keys MUST use reverse-domain naming to ensure provenance and prevent collisions when multiple extensions contribute to the shared namespace.",
+  "description_pt": "Dados de ambiente fornecidos pela plataforma para apoiar a autorização e a prevenção de abusos. Os valores NÃO DEVEM ser declarações afirmadas pelo comprador — as plataformas fornecem sinais com base em observação direta ou em atestações de terceiros verificáveis de forma independente. Todas as chaves de sinal DEVEM usar nomenclatura em domínio reverso para garantir a proveniência e prevenir colisões quando múltiplas extensões contribuem para o namespace compartilhado.",
+  "type": "object",
+  "propertyNames": {
+    "pattern": "^[a-z][a-z0-9]*(?:\\.[a-z][a-z0-9_]*)+$",
+    "description": "Reverse-domain identifier (e.g., br.dev.bcp.buyer_ip, com.example.device_id).",
+    "description_pt": "Identificador em domínio reverso (por exemplo, br.dev.bcp.buyer_ip, com.example.device_id)."
+  },
+  "properties": {
+    "br.dev.bcp.buyer_ip": {
+      "type": "string",
+      "description": "Client's IP address (IPv4 or IPv6).",
+      "description_pt": "Endereço IP do cliente (IPv4 ou IPv6)."
+    },
+    "br.dev.bcp.user_agent": {
+      "type": "string",
+      "description": "Client's HTTP User-Agent header or equivalent.",
+      "description_pt": "Cabeçalho HTTP User-Agent do cliente ou equivalente."
+    }
+  },
+  "additionalProperties": true
+}

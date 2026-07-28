@@ -1,0 +1,738 @@
+{
+  "id": "01-connect-seller",
+  "act": {
+    "pt-BR": "Descoberta",
+    "en": "Discovery"
+  },
+  "title": {
+    "pt-BR": "Conectar ao vendedor",
+    "en": "Connect to the seller"
+  },
+  "narrative": {
+    "pt-BR": "O domínio já é conhecido. O agente consulta o perfil BCP, segue até o Agent Card A2A 1.0 e negocia a extensão antes da primeira mensagem.",
+    "en": "The domain is already known. The agent fetches the BCP profile, follows it to the A2A 1.0 Agent Card, and negotiates the extension before the first message."
+  },
+  "conversation": [
+    {
+      "actor": "client",
+      "actor_label": {
+        "pt-BR": "Cliente",
+        "en": "Customer"
+      },
+      "text": {
+        "pt-BR": "Quero uma camiseta vermelha, tamanho M.",
+        "en": "I want a red T-shirt, size M."
+      }
+    },
+    {
+      "actor": "buyer_agent",
+      "actor_label": {
+        "pt-BR": "Agente cliente",
+        "en": "Buyer agent"
+      },
+      "text": {
+        "pt-BR": "Vou me conectar à Loja Vermelho e verificar o que ela oferece.",
+        "en": "I will connect to Loja Vermelho and check what it offers."
+      }
+    }
+  ],
+  "protocol": {
+    "badges": [
+      "BCP discovery",
+      "A2A 1.0 AgentCard",
+      "BCP negotiation"
+    ],
+    "request": [
+      {
+        "method": "GET",
+        "url": "https://loja.exemplo/.well-known/bcp"
+      },
+      {
+        "method": "GET",
+        "url": "https://loja.exemplo/.well-known/agent-card.json"
+      },
+      {
+        "headers": {
+          "BCP-Agent": "profile=\"https://agente.exemplo/.well-known/bcp\"",
+          "A2A-Extensions": "https://bcp.dev.br/2026-04-08/specification/reference",
+          "A2A-Version": "1.0"
+        }
+      }
+    ],
+    "response": {
+      "business_profile": {
+        "ucp": {
+          "version": "2026-04-08",
+          "services": {
+            "br.dev.bcp.shopping": [
+              {
+                "version": "2026-04-08",
+                "spec": "https://bcp.dev.br/2026-04-08/specification/overview",
+                "transport": "a2a",
+                "endpoint": "https://loja.exemplo/.well-known/agent-card.json"
+              }
+            ]
+          },
+          "capabilities": {
+            "br.dev.bcp.shopping.checkout": [
+              {
+                "version": "2026-04-08",
+                "spec": "https://bcp.dev.br/2026-04-08/specification/checkout",
+                "schema": "https://bcp.dev.br/schemas/shopping/checkout.json"
+              }
+            ],
+            "br.dev.bcp.shopping.fiscal_identity": [
+              {
+                "version": "2026-07-03",
+                "extends": "br.dev.bcp.shopping.checkout",
+                "spec": "https://bcp.dev.br/2026-04-08/specification/fiscal-identity",
+                "schema": "https://bcp.dev.br/schemas/shopping/fiscal_identity.json"
+              }
+            ],
+            "br.dev.bcp.shopping.tax": [
+              {
+                "version": "2026-07-14",
+                "extends": "br.dev.bcp.shopping.checkout",
+                "spec": "https://bcp.dev.br/2026-04-08/specification/tax",
+                "schema": "https://bcp.dev.br/schemas/shopping/tax.json"
+              }
+            ],
+            "br.dev.bcp.shopping.fulfillment": [
+              {
+                "version": "2026-04-08",
+                "extends": "br.dev.bcp.shopping.checkout",
+                "spec": "https://bcp.dev.br/2026-04-08/specification/fulfillment",
+                "schema": "https://bcp.dev.br/schemas/shopping/fulfillment.json"
+              }
+            ],
+            "br.dev.bcp.shopping.buyer_consent": [
+              {
+                "version": "2026-04-08",
+                "extends": "br.dev.bcp.shopping.checkout",
+                "spec": "https://bcp.dev.br/2026-04-08/specification/buyer-consent",
+                "schema": "https://bcp.dev.br/schemas/shopping/buyer_consent.json"
+              }
+            ],
+            "br.dev.bcp.shopping.catalog.search": [
+              {
+                "version": "2026-04-08",
+                "spec": "https://bcp.dev.br/2026-04-08/specification/catalog/search",
+                "schema": "https://bcp.dev.br/schemas/shopping/catalog_search.json"
+              }
+            ],
+            "br.dev.bcp.shopping.order": [
+              {
+                "version": "2026-04-08",
+                "spec": "https://bcp.dev.br/2026-04-08/specification/order",
+                "schema": "https://bcp.dev.br/schemas/shopping/order.json"
+              }
+            ],
+            "br.dev.bcp.shopping.nfe": [
+              {
+                "version": "2026-04-08",
+                "extends": "br.dev.bcp.shopping.order",
+                "spec": "https://bcp.dev.br/2026-04-08/specification/nfe",
+                "schema": "https://bcp.dev.br/schemas/shopping/nfe.json"
+              }
+            ]
+          },
+          "payment_handlers": {
+            "br.dev.bcp.pix": [
+              {
+                "id": "pix_playground_001",
+                "version": "2026-07-08",
+                "available_instruments": [
+                  {
+                    "type": "pix"
+                  }
+                ],
+                "config": {
+                  "environment": "sandbox"
+                },
+                "spec": "https://bcp.dev.br/2026-07-08/specification/pix-payment-handler",
+                "schema": "https://bcp.dev.br/schemas/handlers/pix/pix.json"
+              }
+            ]
+          }
+        },
+        "keys": [
+          {
+            "kid": "merchant-demo-es256-2026",
+            "kty": "EC",
+            "crv": "P-256",
+            "x": "mnl4eyp6yIXCTI0YVP_ltncQrjKbHcA56cge-M6ASbM",
+            "y": "Kj9eXxMdGeUTtAXneR68vk6P7gLelLdJ3fFwtnAHu4g",
+            "use": "sig",
+            "alg": "ES256"
+          }
+        ]
+      },
+      "agent_card": {
+        "name": "Loja Vermelho",
+        "description": "Agente vendedor determinístico do playground BCP",
+        "supportedInterfaces": [
+          {
+            "url": "https://loja.exemplo/bcp/a2a",
+            "protocolBinding": "JSONRPC",
+            "protocolVersion": "1.0"
+          }
+        ],
+        "provider": {
+          "organization": "Loja Vermelho Comércio de Vestuário Ltda",
+          "url": "https://loja.exemplo"
+        },
+        "version": "1.0.0",
+        "capabilities": {
+          "streaming": false,
+          "pushNotifications": false,
+          "extensions": [
+            {
+              "uri": "https://bcp.dev.br/2026-04-08/specification/reference",
+              "description": "BCP checkout binding",
+              "required": true,
+              "params": {
+                "capabilities": {
+                  "br.dev.bcp.shopping.checkout": [
+                    {
+                      "version": "2026-04-08"
+                    }
+                  ],
+                  "br.dev.bcp.shopping.fiscal_identity": [
+                    {
+                      "version": "2026-07-03",
+                      "extends": "br.dev.bcp.shopping.checkout"
+                    }
+                  ],
+                  "br.dev.bcp.shopping.tax": [
+                    {
+                      "version": "2026-07-14",
+                      "extends": "br.dev.bcp.shopping.checkout"
+                    }
+                  ],
+                  "br.dev.bcp.shopping.fulfillment": [
+                    {
+                      "version": "2026-04-08",
+                      "extends": "br.dev.bcp.shopping.checkout"
+                    }
+                  ],
+                  "br.dev.bcp.shopping.buyer_consent": [
+                    {
+                      "version": "2026-04-08",
+                      "extends": "br.dev.bcp.shopping.checkout"
+                    }
+                  ],
+                  "br.dev.bcp.shopping.catalog.search": [
+                    {
+                      "version": "2026-04-08"
+                    }
+                  ],
+                  "br.dev.bcp.shopping.order": [
+                    {
+                      "version": "2026-04-08"
+                    }
+                  ],
+                  "br.dev.bcp.shopping.nfe": [
+                    {
+                      "version": "2026-04-08",
+                      "extends": "br.dev.bcp.shopping.order"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "defaultInputModes": [
+          "text/plain",
+          "application/json"
+        ],
+        "defaultOutputModes": [
+          "text/plain",
+          "application/json"
+        ],
+        "skills": [
+          {
+            "id": "bcp-checkout",
+            "name": "BCP checkout",
+            "description": "Busca em prosa e checkout BCP determinístico",
+            "tags": [
+              "commerce",
+              "checkout",
+              "pix"
+            ],
+            "inputModes": [
+              "text/plain",
+              "application/json"
+            ],
+            "outputModes": [
+              "text/plain",
+              "application/json"
+            ]
+          }
+        ]
+      },
+      "negotiated": {
+        "ucp": {
+          "version": "2026-04-08",
+          "capabilities": {
+            "br.dev.bcp.shopping.checkout": [
+              {
+                "version": "2026-04-08"
+              }
+            ],
+            "br.dev.bcp.shopping.fiscal_identity": [
+              {
+                "version": "2026-07-03",
+                "extends": "br.dev.bcp.shopping.checkout"
+              }
+            ],
+            "br.dev.bcp.shopping.tax": [
+              {
+                "version": "2026-07-14",
+                "extends": "br.dev.bcp.shopping.checkout"
+              }
+            ],
+            "br.dev.bcp.shopping.fulfillment": [
+              {
+                "version": "2026-04-08",
+                "extends": "br.dev.bcp.shopping.checkout"
+              }
+            ],
+            "br.dev.bcp.shopping.buyer_consent": [
+              {
+                "version": "2026-04-08",
+                "extends": "br.dev.bcp.shopping.checkout"
+              }
+            ]
+          },
+          "payment_handlers": {
+            "br.dev.bcp.pix": [
+              {
+                "id": "pix_playground_001",
+                "version": "2026-07-08",
+                "available_instruments": [
+                  {
+                    "type": "pix"
+                  }
+                ],
+                "config": {
+                  "environment": "sandbox",
+                  "payee_name": "Loja Vermelho"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "events": [
+      {
+        "title": {
+          "pt-BR": "Pedido da cliente",
+          "en": "Customer request"
+        },
+        "description": {
+          "pt-BR": "A cliente explica o que procura e dá ao agente cliente um motivo para descobrir o vendedor.",
+          "en": "The customer explains what she wants, giving the buyer agent a reason to discover the seller."
+        },
+        "documents": [],
+        "conversation": [
+          {
+            "actor": "client",
+            "text": {
+              "pt-BR": "Quero uma camiseta vermelha, tamanho M.",
+              "en": "I want a red T-shirt in size M."
+            }
+          },
+          {
+            "actor": "buyer_agent",
+            "text": {
+              "pt-BR": "Vou verificar se a Loja Vermelho oferece os recursos BCP necessários para atender ao seu pedido.",
+              "en": "I will check whether Red Store offers the BCP capabilities needed to fulfill your request."
+            }
+          }
+        ]
+      },
+      {
+        "title": {
+          "pt-BR": "Perfil BCP",
+          "en": "BCP profile"
+        },
+        "description": {
+          "pt-BR": "O agente cliente descobre os serviços e recursos comerciais do vendedor.",
+          "en": "The buyer agent discovers the seller's commercial services and capabilities."
+        },
+        "documents": [
+          {
+            "kind": "request",
+            "name": "/.well-known/bcp",
+            "payload": {
+              "method": "GET",
+              "url": "https://loja.exemplo/.well-known/bcp"
+            }
+          },
+          {
+            "kind": "response",
+            "name": "BCP profile",
+            "payload": {
+              "ucp": {
+                "version": "2026-04-08",
+                "services": {
+                  "br.dev.bcp.shopping": [
+                    {
+                      "version": "2026-04-08",
+                      "spec": "https://bcp.dev.br/2026-04-08/specification/overview",
+                      "transport": "a2a",
+                      "endpoint": "https://loja.exemplo/.well-known/agent-card.json"
+                    }
+                  ]
+                },
+                "capabilities": {
+                  "br.dev.bcp.shopping.checkout": [
+                    {
+                      "version": "2026-04-08",
+                      "spec": "https://bcp.dev.br/2026-04-08/specification/checkout",
+                      "schema": "https://bcp.dev.br/schemas/shopping/checkout.json"
+                    }
+                  ],
+                  "br.dev.bcp.shopping.fiscal_identity": [
+                    {
+                      "version": "2026-07-03",
+                      "extends": "br.dev.bcp.shopping.checkout",
+                      "spec": "https://bcp.dev.br/2026-04-08/specification/fiscal-identity",
+                      "schema": "https://bcp.dev.br/schemas/shopping/fiscal_identity.json"
+                    }
+                  ],
+                  "br.dev.bcp.shopping.tax": [
+                    {
+                      "version": "2026-07-14",
+                      "extends": "br.dev.bcp.shopping.checkout",
+                      "spec": "https://bcp.dev.br/2026-04-08/specification/tax",
+                      "schema": "https://bcp.dev.br/schemas/shopping/tax.json"
+                    }
+                  ],
+                  "br.dev.bcp.shopping.fulfillment": [
+                    {
+                      "version": "2026-04-08",
+                      "extends": "br.dev.bcp.shopping.checkout",
+                      "spec": "https://bcp.dev.br/2026-04-08/specification/fulfillment",
+                      "schema": "https://bcp.dev.br/schemas/shopping/fulfillment.json"
+                    }
+                  ],
+                  "br.dev.bcp.shopping.buyer_consent": [
+                    {
+                      "version": "2026-04-08",
+                      "extends": "br.dev.bcp.shopping.checkout",
+                      "spec": "https://bcp.dev.br/2026-04-08/specification/buyer-consent",
+                      "schema": "https://bcp.dev.br/schemas/shopping/buyer_consent.json"
+                    }
+                  ],
+                  "br.dev.bcp.shopping.catalog.search": [
+                    {
+                      "version": "2026-04-08",
+                      "spec": "https://bcp.dev.br/2026-04-08/specification/catalog/search",
+                      "schema": "https://bcp.dev.br/schemas/shopping/catalog_search.json"
+                    }
+                  ],
+                  "br.dev.bcp.shopping.order": [
+                    {
+                      "version": "2026-04-08",
+                      "spec": "https://bcp.dev.br/2026-04-08/specification/order",
+                      "schema": "https://bcp.dev.br/schemas/shopping/order.json"
+                    }
+                  ],
+                  "br.dev.bcp.shopping.nfe": [
+                    {
+                      "version": "2026-04-08",
+                      "extends": "br.dev.bcp.shopping.order",
+                      "spec": "https://bcp.dev.br/2026-04-08/specification/nfe",
+                      "schema": "https://bcp.dev.br/schemas/shopping/nfe.json"
+                    }
+                  ]
+                },
+                "payment_handlers": {
+                  "br.dev.bcp.pix": [
+                    {
+                      "id": "pix_playground_001",
+                      "version": "2026-07-08",
+                      "available_instruments": [
+                        {
+                          "type": "pix"
+                        }
+                      ],
+                      "config": {
+                        "environment": "sandbox"
+                      },
+                      "spec": "https://bcp.dev.br/2026-07-08/specification/pix-payment-handler",
+                      "schema": "https://bcp.dev.br/schemas/handlers/pix/pix.json"
+                    }
+                  ]
+                }
+              },
+              "keys": [
+                {
+                  "kid": "merchant-demo-es256-2026",
+                  "kty": "EC",
+                  "crv": "P-256",
+                  "x": "mnl4eyp6yIXCTI0YVP_ltncQrjKbHcA56cge-M6ASbM",
+                  "y": "Kj9eXxMdGeUTtAXneR68vk6P7gLelLdJ3fFwtnAHu4g",
+                  "use": "sig",
+                  "alg": "ES256"
+                }
+              ]
+            }
+          }
+        ],
+        "conversation": [
+          {
+            "actor": "buyer_agent",
+            "text": {
+              "pt-BR": "Vou descobrir quais recursos BCP este vendedor oferece.",
+              "en": "I will discover which BCP capabilities this seller offers."
+            }
+          }
+        ]
+      },
+      {
+        "title": {
+          "pt-BR": "Agent Card A2A",
+          "en": "A2A Agent Card"
+        },
+        "description": {
+          "pt-BR": "O agente cliente obtém o Agent Card e confirma como falar com o vendedor.",
+          "en": "The buyer agent obtains the Agent Card and confirms how to reach the seller."
+        },
+        "documents": [
+          {
+            "kind": "request",
+            "name": "/.well-known/agent-card.json",
+            "payload": {
+              "method": "GET",
+              "url": "https://loja.exemplo/.well-known/agent-card.json"
+            }
+          },
+          {
+            "kind": "response",
+            "name": "Agent Card",
+            "payload": {
+              "name": "Loja Vermelho",
+              "description": "Agente vendedor determinístico do playground BCP",
+              "supportedInterfaces": [
+                {
+                  "url": "https://loja.exemplo/bcp/a2a",
+                  "protocolBinding": "JSONRPC",
+                  "protocolVersion": "1.0"
+                }
+              ],
+              "provider": {
+                "organization": "Loja Vermelho Comércio de Vestuário Ltda",
+                "url": "https://loja.exemplo"
+              },
+              "version": "1.0.0",
+              "capabilities": {
+                "streaming": false,
+                "pushNotifications": false,
+                "extensions": [
+                  {
+                    "uri": "https://bcp.dev.br/2026-04-08/specification/reference",
+                    "description": "BCP checkout binding",
+                    "required": true,
+                    "params": {
+                      "capabilities": {
+                        "br.dev.bcp.shopping.checkout": [
+                          {
+                            "version": "2026-04-08"
+                          }
+                        ],
+                        "br.dev.bcp.shopping.fiscal_identity": [
+                          {
+                            "version": "2026-07-03",
+                            "extends": "br.dev.bcp.shopping.checkout"
+                          }
+                        ],
+                        "br.dev.bcp.shopping.tax": [
+                          {
+                            "version": "2026-07-14",
+                            "extends": "br.dev.bcp.shopping.checkout"
+                          }
+                        ],
+                        "br.dev.bcp.shopping.fulfillment": [
+                          {
+                            "version": "2026-04-08",
+                            "extends": "br.dev.bcp.shopping.checkout"
+                          }
+                        ],
+                        "br.dev.bcp.shopping.buyer_consent": [
+                          {
+                            "version": "2026-04-08",
+                            "extends": "br.dev.bcp.shopping.checkout"
+                          }
+                        ],
+                        "br.dev.bcp.shopping.catalog.search": [
+                          {
+                            "version": "2026-04-08"
+                          }
+                        ],
+                        "br.dev.bcp.shopping.order": [
+                          {
+                            "version": "2026-04-08"
+                          }
+                        ],
+                        "br.dev.bcp.shopping.nfe": [
+                          {
+                            "version": "2026-04-08",
+                            "extends": "br.dev.bcp.shopping.order"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              },
+              "defaultInputModes": [
+                "text/plain",
+                "application/json"
+              ],
+              "defaultOutputModes": [
+                "text/plain",
+                "application/json"
+              ],
+              "skills": [
+                {
+                  "id": "bcp-checkout",
+                  "name": "BCP checkout",
+                  "description": "Busca em prosa e checkout BCP determinístico",
+                  "tags": [
+                    "commerce",
+                    "checkout",
+                    "pix"
+                  ],
+                  "inputModes": [
+                    "text/plain",
+                    "application/json"
+                  ],
+                  "outputModes": [
+                    "text/plain",
+                    "application/json"
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "conversation": [
+          {
+            "actor": "buyer_agent",
+            "text": {
+              "pt-BR": "Encontrei seu Agent Card A2A e o endpoint compatível.",
+              "en": "I found your A2A Agent Card and compatible endpoint."
+            }
+          },
+          {
+            "actor": "seller_agent",
+            "text": {
+              "pt-BR": "Estou disponível por A2A 1.0 com a extensão BCP obrigatória.",
+              "en": "I am available over A2A 1.0 with the required BCP extension."
+            }
+          }
+        ]
+      },
+      {
+        "title": {
+          "pt-BR": "Negociação BCP",
+          "en": "BCP negotiation"
+        },
+        "description": {
+          "pt-BR": "Os agentes registram as versões e capacidades aceitas para a sessão.",
+          "en": "The agents establish the versions and capabilities accepted for the session."
+        },
+        "documents": [
+          {
+            "kind": "request",
+            "name": "BCP negotiation",
+            "payload": {
+              "headers": {
+                "BCP-Agent": "profile=\"https://agente.exemplo/.well-known/bcp\"",
+                "A2A-Extensions": "https://bcp.dev.br/2026-04-08/specification/reference",
+                "A2A-Version": "1.0"
+              }
+            }
+          },
+          {
+            "kind": "response",
+            "name": "BCP negotiation",
+            "payload": {
+              "ucp": {
+                "version": "2026-04-08",
+                "capabilities": {
+                  "br.dev.bcp.shopping.checkout": [
+                    {
+                      "version": "2026-04-08"
+                    }
+                  ],
+                  "br.dev.bcp.shopping.fiscal_identity": [
+                    {
+                      "version": "2026-07-03",
+                      "extends": "br.dev.bcp.shopping.checkout"
+                    }
+                  ],
+                  "br.dev.bcp.shopping.tax": [
+                    {
+                      "version": "2026-07-14",
+                      "extends": "br.dev.bcp.shopping.checkout"
+                    }
+                  ],
+                  "br.dev.bcp.shopping.fulfillment": [
+                    {
+                      "version": "2026-04-08",
+                      "extends": "br.dev.bcp.shopping.checkout"
+                    }
+                  ],
+                  "br.dev.bcp.shopping.buyer_consent": [
+                    {
+                      "version": "2026-04-08",
+                      "extends": "br.dev.bcp.shopping.checkout"
+                    }
+                  ]
+                },
+                "payment_handlers": {
+                  "br.dev.bcp.pix": [
+                    {
+                      "id": "pix_playground_001",
+                      "version": "2026-07-08",
+                      "available_instruments": [
+                        {
+                          "type": "pix"
+                        }
+                      ],
+                      "config": {
+                        "environment": "sandbox",
+                        "payee_name": "Loja Vermelho"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "conversation": [
+          {
+            "actor": "buyer_agent",
+            "text": {
+              "pt-BR": "Proponho esta versão do BCP e estas capacidades comerciais.",
+              "en": "I propose this BCP version and these commercial capabilities."
+            }
+          },
+          {
+            "actor": "seller_agent",
+            "text": {
+              "pt-BR": "Versão e capacidades aceitas para esta sessão.",
+              "en": "Version and capabilities accepted for this session."
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

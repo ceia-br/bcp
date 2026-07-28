@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-label="BCP">
+  <rect width="96" height="96" rx="22" fill="#002776" />
+  <path d="M0 74h96v22H0z" fill="#009739" />
+  <path d="M0 66h96v8H0z" fill="#ffdf00" />
+  <path d="M23 22h26c9 0 15 5 15 13 0 5-3 9-7 11 7 2 11 7 11 15 0 10-8 16-19 16H23V22Zm15 21h8c4 0 7-2 7-6s-3-6-7-6h-8v12Zm0 24h10c5 0 8-3 8-7s-3-7-8-7H38v14Z" fill="#fff" />
+  <path d="M71 22h5v43h-5z" fill="#ffdf00" />
+</svg>

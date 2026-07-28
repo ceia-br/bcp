@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/product_option.json",
+  "title": "Product Option",
+  "description": "A product option such as size, color, or material.",
+  "description_pt": "Uma opção de produto, como tamanho, cor ou material.",
+  "type": "object",
+  "required": [
+    "name",
+    "values"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Option name (e.g., 'Size', 'Color').",
+      "description_pt": "Nome da opção (por exemplo, 'Tamanho', 'Cor')."
+    },
+    "values": {
+      "type": "array",
+      "items": {
+        "$ref": "option_value.json"
+      },
+      "minItems": 1,
+      "description": "Available values for this option.",
+      "description_pt": "Valores disponíveis para esta opção."
+    }
+  }
+}

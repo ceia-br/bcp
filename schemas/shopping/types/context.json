@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/context.json",
+  "title": "Context",
+  "description": "Provisional buyer signals for relevance and localization—not authoritative data. Businesses SHOULD use these values when verified inputs (e.g., shipping address) are absent, and MAY ignore or down-rank them if inconsistent with higher-confidence signals (authenticated account, risk detection) or regulatory constraints (export controls). Eligibility and policy enforcement MUST occur at checkout time using binding transaction data. Context SHOULD be non-identifying and can be disclosed progressively—coarse signals early, finer resolution as the session progresses. Higher-resolution data (shipping address, billing address) supersedes context.",
+  "description_pt": "Sinais provisórios do buyer para relevância e localização—não são dados autoritativos. Empresas DEVERIAM usar estes valores quando entradas verificadas (ex.: endereço de shipping) estiverem ausentes, e PODEM ignorá-los ou reduzir sua prioridade se inconsistentes com sinais de maior confiança (conta autenticada, detecção de risco) ou restrições regulatórias (controles de exportação). A elegibilidade e a aplicação de políticas DEVEM ocorrer no momento do checkout usando dados vinculantes da transação. O Context DEVERIA ser não identificável e pode ser divulgado progressivamente—sinais grosseiros no início, resolução mais fina à medida que a sessão avança. Dados de maior resolução (endereço de shipping, endereço de cobrança) têm precedência sobre o context.",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "address_country": {
+      "type": "string",
+      "description": "The country. Recommended to be in 2-letter ISO 3166-1 alpha-2 format, for example \"US\". For backward compatibility, a 3-letter ISO 3166-1 alpha-3 country code such as \"SGP\" or a full country name such as \"Singapore\" can also be used. Optional hint for market context (currency, availability, pricing)—higher-resolution data (e.g., shipping address) supersedes this value.",
+      "description_pt": "O país. Recomendado no formato ISO 3166-1 alpha-2 de 2 letras, por exemplo \"BR\". Para compatibilidade retroativa, um código de país ISO 3166-1 alpha-3 de 3 letras como \"BRA\" ou um nome completo de país como \"Brasil\" também pode ser usado. Dica opcional para contexto de mercado (moeda, disponibilidade, precificação)—dados de maior resolução (ex.: endereço de shipping) têm precedência sobre este valor."
+    },
+    "address_region": {
+      "type": "string",
+      "description": "The region in which the locality is, and which is in the country. For example, California or another appropriate first-level Administrative division. Optional hint for progressive localization—higher-resolution data (e.g., shipping address) supersedes this value.",
+      "description_pt": "A região na qual a localidade está, e que fica no país. Por exemplo, São Paulo ou outra divisão administrativa de primeiro nível apropriada. Dica opcional para localização progressiva—dados de maior resolução (ex.: endereço de shipping) têm precedência sobre este valor."
+    },
+    "postal_code": {
+      "type": "string",
+      "description": "The postal code. For example, 94043. Optional hint for regional refinement—higher-resolution data (e.g., shipping address) supersedes this value.",
+      "description_pt": "O código postal. Por exemplo, 01310-100. Dica opcional para refinamento regional—dados de maior resolução (ex.: endereço de shipping) têm precedência sobre este valor."
+    },
+    "intent": {
+      "type": "string",
+      "description": "Background context describing buyer's intent (e.g., 'looking for a gift under $50', 'need something durable for outdoor use'). Informs relevance, recommendations, and personalization.",
+      "description_pt": "Contexto de fundo descrevendo a intenção do buyer (ex.: 'procurando um presente abaixo de R$ 50', 'preciso de algo durável para uso externo'). Informa relevância, recomendações e personalização."
+    },
+    "language": {
+      "type": "string",
+      "description": "Preferred language for content. Use IETF BCP 47 language tags (e.g., 'en', 'fr-CA', 'zh-Hans'). For REST, equivalent to Accept-Language header—platforms SHOULD fall back to Accept-Language when this field is absent; when provided, overrides Accept-Language. Businesses MAY return content in a different language if unavailable.",
+      "description_pt": "Idioma preferido para o conteúdo. Use tags de idioma IETF BCP 47 (ex.: 'pt-BR', 'en', 'zh-Hans'). Para REST, equivalente ao cabeçalho Accept-Language—as plataformas DEVERIAM recorrer ao Accept-Language quando este campo estiver ausente; quando fornecido, sobrepõe o Accept-Language. Empresas PODEM retornar conteúdo em outro idioma se este estiver indisponível."
+    },
+    "currency": {
+      "type": "string",
+      "description": "Preferred currency (ISO 4217, e.g., 'EUR', 'USD'). Businesses determine presentment currency from context and authoritative signals; this hint MAY inform selection in multi-currency markets. Also serves as the denomination for price filter values — platforms SHOULD include this field when sending price filters. Response prices include explicit currency confirming the resolution.",
+      "description_pt": "Moeda preferida (ISO 4217, ex.: 'BRL', 'USD'). Empresas determinam a moeda de apresentação a partir do context e de sinais autoritativos; esta dica PODE informar a seleção em mercados multimoeda. Também serve como denominação para os valores de filtro de preço — as plataformas DEVERIAM incluir este campo ao enviar filtros de preço. Os preços na resposta incluem a moeda explícita confirmando a resolução."
+    },
+    "eligibility": {
+      "type": "array",
+      "description": "Buyer claims about eligible benefits such as loyalty membership, payment instrument perks, and similar. Recognized claims MAY inform the Business response (e.g., member-only product availability, adjusted pricing in catalog, provisional discounts at cart or checkout). Businesses MUST ignore unrecognized values without error. Values MUST use reverse-domain naming (e.g., 'com.example.loyalty_gold', 'org.school.student') and MUST be non-identifying.",
+      "description_pt": "Reivindicações do buyer sobre benefícios elegíveis, como participação em programa de fidelidade, vantagens de payment instrument e similares. Reivindicações reconhecidas PODEM informar a resposta da Empresa (ex.: disponibilidade de produto exclusiva para membros, precificação ajustada no catálogo, descontos provisórios no cart ou checkout). Empresas DEVEM ignorar valores não reconhecidos sem erro. Os valores DEVEM usar nomenclatura de domínio reverso (ex.: 'com.example.loyalty_gold', 'org.school.student') e DEVEM ser não identificáveis.",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "reverse_domain_name.json"
+      }
+    }
+  }
+}

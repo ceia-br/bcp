@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/returns_config.json",
+  "title": "Business Returns Config",
+  "description": "Business-level return policy, declared in the profile. The consumer-facing withdrawal notice shown before completion is derived from these values.",
+  "description_pt": "Política de devolução no nível da empresa, declarada no perfil. O aviso de desistência voltado ao consumidor, exibido antes da conclusão, é derivado destes valores.",
+  "type": "object",
+  "properties": {
+    "withdrawal_period_days": {
+      "type": "integer",
+      "description": "Withdrawal period in calendar days from confirmed delivery (the `delivered` fulfillment event). Sellers MAY offer more than the minimum.",
+      "description_pt": "Prazo de desistência em dias corridos a partir da entrega confirmada (o evento de fulfillment `delivered`). Os vendedores PODEM oferecer mais que o mínimo.",
+      "minimum": 7,
+      "default": 7
+    },
+    "request_channel": {
+      "type": "string",
+      "description": "Channel where the consumer exercises the return; MUST include the same channel used for the purchase. Free-form: URL, e-mail, or channel identifier.",
+      "description_pt": "Canal onde o consumidor exerce a devolução; DEVE incluir o mesmo canal usado para a compra. Formato livre: URL, e-mail ou identificador de canal."
+    }
+  }
+}

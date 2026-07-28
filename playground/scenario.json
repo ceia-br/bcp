@@ -1,0 +1,316 @@
+{
+  "id": "known-seller-pix-purchase",
+  "versions": {
+    "bcp": "2026-04-08",
+    "a2a": "1.0"
+  },
+  "fixed": {
+    "context_id": "ctx_playground_001",
+    "checkout_id": "chk_playground_001",
+    "order_id": "BCP-2026-000142",
+    "line_item_id": "li_playground_001",
+    "shipping_method_id": "ship_playground_001",
+    "shipping_group_id": "group_playground_001",
+    "shipping_option_id": "pac_playground_001",
+    "destination_id": "destination_playground_001",
+    "payment_handler_id": "pix_playground_001",
+    "payment_instrument_id": "instrument_playground_001",
+    "provider_payment_id": "pix_charge_playground_001",
+    "checkout_expires_at": "2026-07-17T22:00:00Z",
+    "pix_expires_at": "2026-07-17T16:30:00Z"
+  },
+  "participants": {
+    "client": {
+      "label": {"pt-BR": "Cliente", "en": "Customer"}
+    },
+    "buyer_agent": {
+      "label": {"pt-BR": "Agente cliente", "en": "Buyer agent"},
+      "profile_url": "https://agente.exemplo/.well-known/bcp",
+      "key_id": "buyer-demo-es256-2026"
+    },
+    "seller_agent": {
+      "label": {"pt-BR": "Agente vendedor", "en": "Seller agent"},
+      "profile_url": "https://loja.exemplo/.well-known/bcp",
+      "agent_card_url": "https://loja.exemplo/.well-known/agent-card.json",
+      "a2a_url": "https://loja.exemplo/bcp/a2a",
+      "key_id": "merchant-demo-es256-2026"
+    }
+  },
+  "buyer": {
+    "first_name": "Ana",
+    "last_name": "Silva",
+    "email": "ana@example.com.br",
+    "phone_number": "+5562999990000",
+    "taxpayer_id": {"kind": "cpf", "value": "39053344705"},
+    "consent": {
+      "analytics": false,
+      "preferences": false,
+      "marketing": false,
+      "sale_of_data": false
+    },
+    "address": {
+      "street_address": "Rua das Flores, 100",
+      "extended_address": "Apto 12",
+      "address_locality": "Goiânia",
+      "address_region": "GO",
+      "address_country": "BR",
+      "postal_code": "74000000",
+      "first_name": "Ana",
+      "last_name": "Silva",
+      "phone_number": "+5562999990000"
+    },
+    "context": {
+      "address_country": "BR",
+      "address_region": "GO",
+      "language": "pt-BR",
+      "currency": "BRL",
+      "intent": "camiseta vermelha tamanho M"
+    },
+    "signals": {
+      "br.dev.bcp.buyer_ip": "192.0.2.10",
+      "br.dev.bcp.user_agent": "BCP-Playground/1.0"
+    }
+  },
+  "seller": {
+    "cnpj": "19131243000197",
+    "legal_name": "Loja Vermelho Comércio de Vestuário Ltda",
+    "display_name": "Loja Vermelho",
+    "privacy_url": "https://loja.exemplo/privacidade",
+    "terms_url": "https://loja.exemplo/termos",
+    "order_url": "https://loja.exemplo/pedidos/BCP-2026-000142"
+  },
+  "product": {
+    "id": "camiseta-vermelha-m",
+    "title": "Camiseta Vermelha M",
+    "price": 5990,
+    "ncm": "61091000",
+    "taxes": [
+      {
+        "type": "icms",
+        "rate": 0.10217,
+        "base": 5990,
+        "amount": 612,
+        "authority": "state",
+        "behavior": "inclusive"
+      },
+      {
+        "type": "pis_cofins",
+        "rate": 0.03706,
+        "base": 5990,
+        "amount": 222,
+        "authority": "federal",
+        "behavior": "inclusive"
+      }
+    ]
+  },
+  "catalog_products": [
+    {
+      "id": "camiseta-vermelha-m",
+      "title": "Camiseta Vermelha M",
+      "description": "Camiseta vermelha, tamanho M, em algodão.",
+      "price": 5990,
+      "color": "#e0362f",
+      "meta": {"pt-BR": "Vermelha, tamanho M, algodão", "en": "Red, size M, cotton"},
+      "badge": {"pt-BR": "match exato", "en": "exact match"},
+      "best": true
+    },
+    {
+      "id": "camiseta-vermelha-g",
+      "title": "Camiseta Vermelha G",
+      "description": "Camiseta vermelha, tamanho G, em algodão.",
+      "price": 5990,
+      "color": "#e0362f",
+      "meta": {"pt-BR": "Vermelha, tamanho G, algodão", "en": "Red, size L, cotton"},
+      "badge": {"pt-BR": "mesma cor", "en": "same color"},
+      "best": false
+    },
+    {
+      "id": "camiseta-azul-m",
+      "title": "Camiseta Azul M",
+      "description": "Camiseta azul, tamanho M, em algodão.",
+      "price": 5990,
+      "color": "#2f6fe0",
+      "meta": {"pt-BR": "Azul, tamanho M, algodão", "en": "Blue, size M, cotton"},
+      "badge": {"pt-BR": "mesmo tamanho", "en": "same size"},
+      "best": false
+    }
+  ],
+  "shipping": {
+    "options": [
+      {
+        "id": "pac_playground_001",
+        "title": "PAC",
+        "description": "Entrega em 4 dias úteis",
+        "carrier": "Correios",
+        "price": 1990,
+        "earliest_fulfillment_time": "2026-07-22T12:00:00Z",
+        "latest_fulfillment_time": "2026-07-22T21:00:00Z"
+      },
+      {
+        "id": "sedex_playground_001",
+        "title": "SEDEX",
+        "description": "Entrega em 2 dias úteis",
+        "carrier": "Correios",
+        "price": 3490,
+        "earliest_fulfillment_time": "2026-07-20T12:00:00Z",
+        "latest_fulfillment_time": "2026-07-20T21:00:00Z"
+      }
+    ]
+  },
+  "pix": {
+    "copia_e_cola": "00020126580014br.gov.bcb.pix0136playground-bcp-0015204000053039865802BR5912LojaExemplo6007Goiania62070503***6304ABCD",
+    "payment_url": "https://pagamentos.exemplo/pix/pix_charge_playground_001"
+  },
+  "order": {
+    "nfe_number": "000000142",
+    "nfe_access_key": "52260719131243000197550010000001421000001420",
+    "nfe_issued_at": "2026-07-18T12:02:00Z",
+    "carrier": "Correios",
+    "service": "PAC",
+    "tracking": "BR123456789BR",
+    "tracking_url": "https://rastreamento.correios.com.br/app/index.php?objetos=BR123456789BR",
+    "eta": {"pt-BR": "4 dias úteis", "en": "4 business days"}
+  },
+  "steps": [
+    {
+      "id": "01-connect-seller",
+      "act": {"pt-BR": "Descoberta", "en": "Discovery"},
+      "title": {"pt-BR": "Conectar ao vendedor", "en": "Connect to the seller"},
+      "narrative": {
+        "pt-BR": "O domínio já é conhecido. O agente consulta o perfil BCP, segue até o Agent Card A2A 1.0 e negocia a extensão antes da primeira mensagem.",
+        "en": "The domain is already known. The agent fetches the BCP profile, follows it to the A2A 1.0 Agent Card, and negotiates the extension before the first message."
+      },
+      "messages": [
+        {
+          "actor": "client",
+          "text": {"pt-BR": "Quero uma camiseta vermelha, tamanho M.", "en": "I want a red T-shirt, size M."}
+        },
+        {
+          "actor": "buyer_agent",
+          "text": {"pt-BR": "Vou me conectar à Loja Vermelho e verificar o que ela oferece.", "en": "I will connect to Loja Vermelho and check what it offers."}
+        }
+      ]
+    },
+    {
+      "id": "02-search-and-choose",
+      "act": {"pt-BR": "Busca", "en": "Search"},
+      "title": {"pt-BR": "Buscar e escolher o produto", "en": "Search and choose the product"},
+      "narrative": {
+        "pt-BR": "A busca e a resposta usam texto porque o BCP não define binding A2A de catálogo. A escolha humana ainda não altera o checkout.",
+        "en": "Search and response use text because BCP does not define an A2A catalog binding. The human choice does not modify the checkout yet."
+      },
+      "messages": [
+        {
+          "actor": "buyer_agent",
+          "text": {"pt-BR": "Encontrei a Camiseta Vermelha M por R$ 59,90.", "en": "I found the Red T-shirt M for BRL 59.90."}
+        },
+        {
+          "actor": "client",
+          "text": {"pt-BR": "Quero a vermelha M.", "en": "I want the red one in size M."}
+        }
+      ]
+    },
+    {
+      "id": "03-create-checkout",
+      "act": {"pt-BR": "Checkout", "en": "Checkout"},
+      "title": {"pt-BR": "Criar o checkout", "en": "Create the checkout"},
+      "narrative": {
+        "pt-BR": "O agente envia a intenção documentada e o vendedor cria o primeiro checkout completo, ainda incomplete e com os dados ausentes explícitos.",
+        "en": "The agent sends the documented intent and the seller creates the first full checkout, still incomplete and with missing data made explicit."
+      },
+      "messages": [
+        {
+          "actor": "buyer_agent",
+          "text": {"pt-BR": "A loja criou o checkout. Preciso confirmar seus dados e o endereço de entrega.", "en": "The store created the checkout. I need to confirm your details and delivery address."}
+        }
+      ]
+    },
+    {
+      "id": "04-delivery-data",
+      "act": {"pt-BR": "Checkout", "en": "Checkout"},
+      "title": {"pt-BR": "Informar dados de entrega", "en": "Provide delivery data"},
+      "narrative": {
+        "pt-BR": "A pessoa confirma identidade, endereço e consentimentos. O vendedor mantém o checkout incomplete e devolve as opções de frete disponíveis.",
+        "en": "The person confirms identity, address, and consent choices. The seller keeps the checkout incomplete and returns the available shipping options."
+      },
+      "messages": [
+        {
+          "actor": "client",
+          "text": {"pt-BR": "Os dados apresentados estão corretos. Não aceito consentimentos opcionais.", "en": "The presented details are correct. I do not accept optional consent."}
+        },
+        {
+          "actor": "buyer_agent",
+          "text": {"pt-BR": "Dados aceitos. Há PAC por R$ 19,90 e SEDEX por R$ 34,90.", "en": "Details accepted. PAC costs BRL 19.90 and SEDEX costs BRL 34.90."}
+        }
+      ]
+    },
+    {
+      "id": "05-select-shipping",
+      "act": {"pt-BR": "Checkout", "en": "Checkout"},
+      "title": {"pt-BR": "Escolher o frete e revisar", "en": "Choose shipping and review"},
+      "narrative": {
+        "pt-BR": "A escolha explícita do frete permite ao vendedor recalcular o total e mudar o mesmo documento para ready_for_complete.",
+        "en": "The explicit shipping choice lets the seller recalculate the total and move the same document to ready_for_complete."
+      },
+      "messages": [
+        {
+          "actor": "client",
+          "text": {"pt-BR": "Escolho PAC.", "en": "I choose PAC."}
+        },
+        {
+          "actor": "buyer_agent",
+          "text": {"pt-BR": "O total com PAC é R$ 79,80. O checkout está pronto para pagamento.", "en": "The total with PAC is BRL 79.80. The checkout is ready for payment."}
+        }
+      ]
+    },
+    {
+      "id": "06-present-pix",
+      "act": {"pt-BR": "Pagamento", "en": "Payment"},
+      "title": {"pt-BR": "Apresentar a cobrança Pix", "en": "Present the Pix charge"},
+      "narrative": {
+        "pt-BR": "A credencial Pix nasce no PSP do vendedor e volta dentro do checkout para pagamento direto.",
+        "en": "The Pix credential originates at the seller's PSP and returns inside the checkout for direct payment."
+      },
+      "messages": [
+        {
+          "actor": "buyer_agent",
+          "text": {"pt-BR": "A cobrança Pix de R$ 79,80 está pronta para pagamento.", "en": "The BRL 79.80 Pix charge is ready for payment."}
+        }
+      ]
+    },
+    {
+      "id": "07-pay-pix",
+      "act": {"pt-BR": "Pagamento", "en": "Payment"},
+      "title": {"pt-BR": "Pagar via Pix", "en": "Pay with Pix"},
+      "narrative": {
+        "pt-BR": "A pessoa paga diretamente pelo QR code ou pelo código Pix. O playground simula a liquidação antes de avançar.",
+        "en": "The customer pays directly through the QR code or Pix string. The playground simulates settlement before advancing."
+      },
+      "messages": [
+        {
+          "actor": "client",
+          "text": {"pt-BR": "Vou pagar o Pix de R$ 79,80.", "en": "I will pay the BRL 79.80 Pix charge."}
+        },
+        {
+          "actor": "buyer_agent",
+          "text": {"pt-BR": "Pagamento identificado. Vou buscar a confirmação do pedido.", "en": "Payment identified. I will retrieve the order confirmation."}
+        }
+      ]
+    },
+    {
+      "id": "08-order-confirmation",
+      "act": {"pt-BR": "Confirmação", "en": "Confirmation"},
+      "title": {"pt-BR": "Confirmar o pedido", "en": "Confirm the order"},
+      "narrative": {
+        "pt-BR": "O checkout devolve OrderConfirmation. Em seguida, o agente consulta o recurso Order para obter NF-e e rastreio.",
+        "en": "The checkout returns OrderConfirmation. The agent then retrieves the Order resource for invoice and tracking details."
+      },
+      "messages": [
+        {
+          "actor": "buyer_agent",
+          "text": {"pt-BR": "Pedido confirmado. A NF-e foi autorizada e o rastreio está disponível.", "en": "Order confirmed. The invoice was authorized and tracking is available."}
+        }
+      ]
+    }
+  ]
+}

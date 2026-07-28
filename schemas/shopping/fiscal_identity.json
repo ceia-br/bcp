@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/fiscal_identity.json",
+  "name": "br.dev.bcp.shopping.fiscal_identity",
+  "title": "Fiscal Identity Extension",
+  "description": "Extends Checkout and Order with the fiscal identity of both parties: the buyer's taxpayer id (CPF, CNPJ or idEstrangeiro, for invoice issuance) and the seller's identity (CNPJ, legal name, address), which must be visible in the offer, the pre-completion summary, and the receipt.",
+  "description_pt": "Estende Checkout e Order com a identidade fiscal de ambas as partes: o identificador de contribuinte do comprador (CPF, CNPJ ou idEstrangeiro, para emissão de nota) e a identidade do vendedor (CNPJ, razão social, endereço), que deve estar visível na oferta, no resumo pré-conclusão e no comprovante.",
+  "$defs": {
+    "taxpayer_id": {
+      "type": "object",
+      "description": "Brazilian taxpayer identifier of the buyer (the NF-e recipient). Required for invoice (NF-e) issuance.",
+      "description_pt": "Identificador de contribuinte brasileiro do comprador (o destinatário da NF-e). Obrigatório para a emissão da nota (NF-e).",
+      "required": ["kind", "value"],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": ["cpf", "cnpj", "id_estrangeiro"],
+          "description": "Taxpayer identifier kind. Closed set mirroring the NF-e recipient identification: `cpf` (natural person), `cnpj` (legal entity), `id_estrangeiro` (foreign buyer without CPF/CNPJ; maps to the NF-e `idEstrangeiro` field).",
+          "description_pt": "Tipo de identificador de contribuinte. Conjunto fechado espelhando a identificação do destinatário na NF-e: `cpf` (pessoa física), `cnpj` (pessoa jurídica), `id_estrangeiro` (comprador estrangeiro sem CPF/CNPJ; mapeia para o campo `idEstrangeiro` da NF-e)."
+        },
+        "value": {
+          "type": "string",
+          "description": "Identifier value, punctuation-free. Format depends on `kind`: CPF 11 digits, CNPJ 14 (alphanumeric from 2026), id_estrangeiro free-form.",
+          "description_pt": "Valor do identificador, sem pontuação. O formato depende de `kind`: CPF 11 dígitos, CNPJ 14 (alfanumérico a partir de 2026), id_estrangeiro em formato livre."
+        }
+      }
+    },
+    "seller_identity": {
+      "type": "object",
+      "description": "Identity of the selling business. MUST be present in every checkout and order response so the consumer can identify and reach the seller.",
+      "description_pt": "Identidade da empresa vendedor. DEVE estar presente em toda resposta de checkout e de order para que o consumidor possa identificar e contatar o vendedor.",
+      "required": ["cnpj", "legal_name"],
+      "properties": {
+        "cnpj": {
+          "type": "string",
+          "description": "Seller CNPJ, 14 characters, punctuation-free (alphanumeric from 2026). Invoice issuer.",
+          "description_pt": "CNPJ do vendedor, 14 caracteres, sem pontuação (alfanumérico a partir de 2026). Emissor da nota."
+        },
+        "legal_name": {
+          "type": "string",
+          "description": "Registered legal name (razao social) of the business.",
+          "description_pt": "Razão social registrada da empresa."
+        },
+        "address": {
+          "$ref": "types/postal_address.json",
+          "description": "Physical address of the business.",
+          "description_pt": "Endereço físico da empresa."
+        }
+      }
+    },
+    "buyer": {
+      "title": "Buyer with Taxpayer ID",
+      "description": "Buyer object extended with the Brazilian taxpayer identifier.",
+      "description_pt": "Objeto buyer estendido com o identificador de contribuinte brasileiro.",
+      "allOf": [
+        { "$ref": "types/buyer.json" },
+        {
+          "type": "object",
+          "properties": {
+            "taxpayer_id": {
+              "$ref": "#/$defs/taxpayer_id",
+              "description": "Buyer taxpayer identifier. Provided at completion when an NF-e will be issued for the sale.",
+              "description_pt": "Identificador de contribuinte do comprador. Fornecido na conclusão quando uma NF-e for emitida para a venda."
+            }
+          }
+        }
+      ]
+    },
+    "br.dev.bcp.shopping.checkout": {
+      "title": "Checkout with Fiscal Identity",
+      "description": "Checkout extended with buyer taxpayer id and mandatory seller identity.",
+      "description_pt": "Checkout estendido com o identificador de contribuinte do comprador e a identidade obrigatória do vendedor.",
+      "allOf": [
+        { "$ref": "checkout.json" },
+        {
+          "type": "object",
+          "required": ["seller_identity"],
+          "properties": {
+            "buyer": {
+              "$ref": "#/$defs/buyer",
+              "description": "Buyer with taxpayer identifier.",
+              "description_pt": "Comprador com identificador de contribuinte.",
+              "ucp_request": {
+                "create": "optional",
+                "update": "optional",
+                "complete": "optional"
+              }
+            },
+            "seller_identity": {
+              "$ref": "#/$defs/seller_identity",
+              "ucp_request": "omit"
+            }
+          }
+        }
+      ]
+    },
+    "br.dev.bcp.shopping.order": {
+      "title": "Order with Fiscal Identity",
+      "description": "Order extended with mandatory seller identity, freezing the supplier identity in the durable transaction record.",
+      "description_pt": "Order estendido com a identidade obrigatória do vendedor, congelando a identidade do fornecedor no registro durável da transação.",
+      "allOf": [
+        { "$ref": "order.json" },
+        {
+          "type": "object",
+          "required": ["seller_identity"],
+          "properties": {
+            "seller_identity": {
+              "$ref": "#/$defs/seller_identity",
+              "ucp_request": "omit"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

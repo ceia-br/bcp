@@ -1,0 +1,322 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/ucp.json",
+  "title": "BCP Metadata",
+  "description": "Protocol metadata for discovery profiles and responses. Uses slim schema pattern with context-specific required fields.",
+  "description_pt": "Metadados de protocolo para perfis de discovery e respostas. Usa o padrão de schema enxuto com campos obrigatórios específicos do contexto.",
+
+  "$defs": {
+    "version": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "description": "BCP version in YYYY-MM-DD format.",
+      "description_pt": "Versão BCP no formato YYYY-MM-DD."
+    },
+
+    "version_constraint": {
+      "type": "object",
+      "description": "Version range requirement with minimum and optional maximum.",
+      "description_pt": "Requisito de faixa de versão com mínimo e máximo opcional.",
+      "properties": {
+        "min": {
+          "$ref": "#/$defs/version",
+          "description": "Minimum required version (inclusive).",
+          "description_pt": "Versão mínima exigida (inclusiva)."
+        },
+        "max": {
+          "$ref": "#/$defs/version",
+          "description": "Maximum compatible version (inclusive). When absent, no upper bound.",
+          "description_pt": "Versão máxima compatível (inclusiva). Quando ausente, sem limite superior."
+        }
+      },
+      "required": ["min"],
+      "additionalProperties": true
+    },
+
+    "requires": {
+      "type": "object",
+      "description": "Version requirements for extension schemas. Declares minimum (and optionally maximum) protocol and capability versions needed for correct operation.",
+      "description_pt": "Requisitos de versão para schemas de extensão. Declara as versões mínima (e opcionalmente máxima) de protocolo e de capability necessárias para o funcionamento correto.",
+      "properties": {
+        "protocol": {
+          "$ref": "#/$defs/version_constraint",
+          "description": "Required protocol version.",
+          "description_pt": "Versão de protocolo exigida."
+        },
+        "capabilities": {
+          "type": "object",
+          "description": "Required capability versions, keyed by capability name. Keys must be a subset of the extension's $defs keys.",
+          "description_pt": "Versões de capability exigidas, indexadas pelo nome da capability. As chaves devem ser um subconjunto das chaves de $defs da extensão.",
+          "propertyNames": { "$ref": "shopping/types/reverse_domain_name.json" },
+          "additionalProperties": { "$ref": "#/$defs/version_constraint" }
+        }
+      },
+      "additionalProperties": true
+    },
+
+    "entity": {
+      "type": "object",
+      "description": "Shared foundation for all BCP entities.",
+      "description_pt": "Fundação compartilhada para todas as entidades BCP.",
+      "required": ["version"],
+      "properties": {
+        "version": {
+          "$ref": "#/$defs/version",
+          "description": "Entity version in YYYY-MM-DD format.",
+          "description_pt": "Versão da entidade no formato YYYY-MM-DD."
+        },
+        "spec": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL to human-readable specification document.",
+          "description_pt": "URL para o documento de especificação legível por humanos."
+        },
+        "schema": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL to JSON Schema defining this entity's structure and payloads.",
+          "description_pt": "URL para o JSON Schema que define a estrutura e os payloads desta entidade."
+        },
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for this entity instance. Used to disambiguate when multiple instances exist.",
+          "description_pt": "Identificador único para esta instância de entidade. Usado para desambiguar quando existem múltiplas instâncias."
+        },
+        "config": {
+          "type": "object",
+          "description": "Entity-specific configuration. Structure defined by each entity's schema.",
+          "description_pt": "Configuração específica da entidade. Estrutura definida pelo schema de cada entidade.",
+          "additionalProperties": true
+        }
+      }
+    },
+
+    "base": {
+      "description": "Base BCP metadata with shared properties for all schema types.",
+      "description_pt": "Metadados base BCP com propriedades compartilhadas para todos os tipos de schema.",
+      "type": "object",
+      "required": ["version"],
+      "properties": {
+        "version": { "$ref": "#/$defs/version" },
+        "status": {
+          "type": "string",
+          "enum": ["success", "error"],
+          "default": "success",
+          "description": "Application-level status of the BCP operation.",
+          "description_pt": "Status em nível de aplicação da operação BCP."
+        },
+        "services": {
+          "type": "object",
+          "description": "Service registry keyed by reverse-domain name.",
+          "description_pt": "Registro de serviços indexado por reverse-domain name.",
+          "propertyNames": { "$ref": "shopping/types/reverse_domain_name.json" },
+          "additionalProperties": {
+            "type": "array",
+            "items": { "$ref": "service.json#/$defs/base" }
+          }
+        },
+        "capabilities": {
+          "type": "object",
+          "description": "Capability registry keyed by reverse-domain name.",
+          "description_pt": "Registro de capabilities indexado por reverse-domain name.",
+          "propertyNames": { "$ref": "shopping/types/reverse_domain_name.json" },
+          "additionalProperties": {
+            "type": "array",
+            "items": { "$ref": "capability.json#/$defs/base" }
+          }
+        },
+        "payment_handlers": {
+          "type": "object",
+          "description": "Payment handler registry keyed by reverse-domain name.",
+          "description_pt": "Registro de payment handlers indexado por reverse-domain name.",
+          "propertyNames": { "$ref": "shopping/types/reverse_domain_name.json" },
+          "additionalProperties": {
+            "type": "array",
+            "items": { "$ref": "payment_handler.json#/$defs/base" }
+          }
+        }
+      }
+    },
+
+    "success": {
+      "description": "BCP metadata with status 'success'. Use for response branches that carry the expected payload.",
+      "description_pt": "Metadados BCP com status 'success'. Use para os ramos de resposta que carregam o payload esperado.",
+      "allOf": [
+        { "$ref": "#/$defs/base" },
+        {
+          "properties": { "status": { "const": "success" } },
+          "required": ["status"]
+        }
+      ]
+    },
+
+    "error": {
+      "description": "BCP metadata with status 'error'. Use for response branches that carry error information.",
+      "description_pt": "Metadados BCP com status 'error'. Use para os ramos de resposta que carregam informação de erro.",
+      "allOf": [
+        { "$ref": "#/$defs/base" },
+        {
+          "properties": { "status": { "const": "error" } },
+          "required": ["status"]
+        }
+      ]
+    },
+
+    "platform_schema": {
+      "title": "BCP Platform Schema",
+      "description": "Full BCP metadata for platform-level configuration. Hosted at a URI advertised by the platform in request headers.",
+      "description_pt": "Metadados BCP completos para configuração em nível de plataforma. Hospedados em uma URI anunciada pela plataforma nos cabeçalhos da requisição.",
+      "allOf": [
+        { "$ref": "#/$defs/base" },
+        {
+          "required": ["services", "payment_handlers"],
+          "properties": {
+            "services": {
+              "additionalProperties": {
+                "items": { "$ref": "service.json#/$defs/platform_schema" }
+              }
+            },
+            "capabilities": {
+              "additionalProperties": {
+                "items": { "$ref": "capability.json#/$defs/platform_schema" }
+              }
+            },
+            "payment_handlers": {
+              "additionalProperties": {
+                "items": {
+                  "$ref": "payment_handler.json#/$defs/platform_schema"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+
+    "business_schema": {
+      "title": "BCP Business Schema",
+      "description": "BCP metadata for business/merchant-level configuration. Subset of platform schema with business-specific settings.",
+      "description_pt": "Metadados BCP para configuração em nível de empresa/lojista. Subconjunto do schema de plataforma com configurações específicas da empresa.",
+      "allOf": [
+        { "$ref": "#/$defs/base" },
+        {
+          "required": ["services", "payment_handlers"],
+          "properties": {
+            "supported_versions": {
+              "type": "object",
+              "description": "Previous protocol versions this business supports, mapped to profile URIs. Businesses that support older protocol versions SHOULD advertise each version and link to its profile. Each URI points to a complete, self-contained profile for that version. When omitted, only `version` is supported.",
+              "description_pt": "Versões anteriores de protocolo que esta empresa suporta, mapeadas para URIs de perfil. Empresas que suportam versões de protocolo mais antigas DEVERIAM anunciar cada versão e vincular ao seu perfil. Cada URI aponta para um perfil completo e autocontido daquela versão. Quando omitido, apenas `version` é suportada.",
+              "propertyNames": { "$ref": "#/$defs/version" },
+              "additionalProperties": {
+                "type": "string",
+                "format": "uri"
+              }
+            },
+            "services": {
+              "additionalProperties": {
+                "items": { "$ref": "service.json#/$defs/business_schema" }
+              }
+            },
+            "capabilities": {
+              "additionalProperties": {
+                "items": { "$ref": "capability.json#/$defs/business_schema" }
+              }
+            },
+            "payment_handlers": {
+              "additionalProperties": {
+                "items": {
+                  "$ref": "payment_handler.json#/$defs/business_schema"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+
+    "response_checkout_schema": {
+      "title": "BCP Checkout Response Schema",
+      "description": "BCP metadata for checkout responses.",
+      "description_pt": "Metadados BCP para respostas de checkout.",
+      "allOf": [
+        { "$ref": "#/$defs/base" },
+        {
+          "required": ["payment_handlers"],
+          "properties": {
+            "services": {
+              "additionalProperties": {
+                "items": { "$ref": "service.json#/$defs/response_schema" }
+              }
+            },
+            "capabilities": {
+              "additionalProperties": {
+                "items": { "$ref": "capability.json#/$defs/response_schema" }
+              }
+            },
+            "payment_handlers": {
+              "additionalProperties": {
+                "items": {
+                  "$ref": "payment_handler.json#/$defs/response_schema"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+
+    "response_order_schema": {
+      "title": "BCP Order Response Schema",
+      "description": "BCP metadata for order responses. No payment handlers needed post-purchase.",
+      "description_pt": "Metadados BCP para respostas de order. Não são necessários payment handlers após a compra.",
+      "allOf": [
+        { "$ref": "#/$defs/base" },
+        {
+          "properties": {
+            "capabilities": {
+              "additionalProperties": {
+                "items": { "$ref": "capability.json#/$defs/response_schema" }
+              }
+            }
+          }
+        }
+      ]
+    },
+
+    "response_cart_schema": {
+      "title": "BCP Cart Response Schema",
+      "description": "BCP metadata for cart responses. No payment handlers needed pre-checkout.",
+      "description_pt": "Metadados BCP para respostas de cart. Não são necessários payment handlers antes do checkout.",
+      "allOf": [
+        { "$ref": "#/$defs/base" },
+        {
+          "properties": {
+            "capabilities": {
+              "additionalProperties": {
+                "items": { "$ref": "capability.json#/$defs/response_schema" }
+              }
+            }
+          }
+        }
+      ]
+    },
+
+    "response_catalog_schema": {
+      "title": "BCP Catalog Response Schema",
+      "description": "BCP metadata for catalog responses.",
+      "description_pt": "Metadados BCP para respostas de catálogo.",
+      "allOf": [
+        { "$ref": "#/$defs/base" },
+        {
+          "properties": {
+            "capabilities": {
+              "additionalProperties": {
+                "items": { "$ref": "capability.json#/$defs/response_schema" }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

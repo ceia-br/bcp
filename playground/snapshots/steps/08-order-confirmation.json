@@ -1,0 +1,1362 @@
+{
+  "id": "08-order-confirmation",
+  "act": {
+    "pt-BR": "Confirmação",
+    "en": "Confirmation"
+  },
+  "title": {
+    "pt-BR": "Confirmar o pedido",
+    "en": "Confirm the order"
+  },
+  "narrative": {
+    "pt-BR": "O checkout devolve OrderConfirmation. Em seguida, o agente consulta o recurso Order para obter NF-e e rastreio.",
+    "en": "The checkout returns OrderConfirmation. The agent then retrieves the Order resource for invoice and tracking details."
+  },
+  "conversation": [
+    {
+      "actor": "client",
+      "actor_label": {
+        "pt-BR": "Cliente",
+        "en": "Customer"
+      },
+      "text": {
+        "pt-BR": "Quero uma camiseta vermelha, tamanho M.",
+        "en": "I want a red T-shirt, size M."
+      }
+    },
+    {
+      "actor": "buyer_agent",
+      "actor_label": {
+        "pt-BR": "Agente cliente",
+        "en": "Buyer agent"
+      },
+      "text": {
+        "pt-BR": "Vou me conectar à Loja Vermelho e verificar o que ela oferece.",
+        "en": "I will connect to Loja Vermelho and check what it offers."
+      }
+    },
+    {
+      "actor": "buyer_agent",
+      "actor_label": {
+        "pt-BR": "Agente cliente",
+        "en": "Buyer agent"
+      },
+      "text": {
+        "pt-BR": "Encontrei a Camiseta Vermelha M por R$ 59,90.",
+        "en": "I found the Red T-shirt M for BRL 59.90."
+      }
+    },
+    {
+      "actor": "client",
+      "actor_label": {
+        "pt-BR": "Cliente",
+        "en": "Customer"
+      },
+      "text": {
+        "pt-BR": "Quero a vermelha M.",
+        "en": "I want the red one in size M."
+      }
+    },
+    {
+      "actor": "buyer_agent",
+      "actor_label": {
+        "pt-BR": "Agente cliente",
+        "en": "Buyer agent"
+      },
+      "text": {
+        "pt-BR": "A loja criou o checkout. Preciso confirmar seus dados e o endereço de entrega.",
+        "en": "The store created the checkout. I need to confirm your details and delivery address."
+      }
+    },
+    {
+      "actor": "client",
+      "actor_label": {
+        "pt-BR": "Cliente",
+        "en": "Customer"
+      },
+      "text": {
+        "pt-BR": "Os dados apresentados estão corretos. Não aceito consentimentos opcionais.",
+        "en": "The presented details are correct. I do not accept optional consent."
+      }
+    },
+    {
+      "actor": "buyer_agent",
+      "actor_label": {
+        "pt-BR": "Agente cliente",
+        "en": "Buyer agent"
+      },
+      "text": {
+        "pt-BR": "Dados aceitos. Há PAC por R$ 19,90 e SEDEX por R$ 34,90.",
+        "en": "Details accepted. PAC costs BRL 19.90 and SEDEX costs BRL 34.90."
+      }
+    },
+    {
+      "actor": "client",
+      "actor_label": {
+        "pt-BR": "Cliente",
+        "en": "Customer"
+      },
+      "text": {
+        "pt-BR": "Escolho PAC.",
+        "en": "I choose PAC."
+      }
+    },
+    {
+      "actor": "buyer_agent",
+      "actor_label": {
+        "pt-BR": "Agente cliente",
+        "en": "Buyer agent"
+      },
+      "text": {
+        "pt-BR": "O total com PAC é R$ 79,80. O checkout está pronto para pagamento.",
+        "en": "The total with PAC is BRL 79.80. The checkout is ready for payment."
+      }
+    },
+    {
+      "actor": "buyer_agent",
+      "actor_label": {
+        "pt-BR": "Agente cliente",
+        "en": "Buyer agent"
+      },
+      "text": {
+        "pt-BR": "A cobrança Pix de R$ 79,80 está pronta para pagamento.",
+        "en": "The BRL 79.80 Pix charge is ready for payment."
+      }
+    },
+    {
+      "actor": "client",
+      "actor_label": {
+        "pt-BR": "Cliente",
+        "en": "Customer"
+      },
+      "text": {
+        "pt-BR": "Vou pagar o Pix de R$ 79,80.",
+        "en": "I will pay the BRL 79.80 Pix charge."
+      }
+    },
+    {
+      "actor": "buyer_agent",
+      "actor_label": {
+        "pt-BR": "Agente cliente",
+        "en": "Buyer agent"
+      },
+      "text": {
+        "pt-BR": "Pagamento identificado. Vou buscar a confirmação do pedido.",
+        "en": "Payment identified. I will retrieve the order confirmation."
+      }
+    },
+    {
+      "actor": "buyer_agent",
+      "actor_label": {
+        "pt-BR": "Agente cliente",
+        "en": "Buyer agent"
+      },
+      "text": {
+        "pt-BR": "Pedido confirmado. A NF-e foi autorizada e o rastreio está disponível.",
+        "en": "Order confirmed. The invoice was authorized and tracking is available."
+      }
+    }
+  ],
+  "protocol": {
+    "badges": [
+      "BCP completed",
+      "OrderConfirmation",
+      "BCP order",
+      "NF-e"
+    ],
+    "request": {
+      "headers": {
+        "BCP-Agent": "profile=\"https://agente.exemplo/.well-known/bcp\"",
+        "A2A-Extensions": "https://bcp.dev.br/2026-04-08/specification/reference",
+        "A2A-Version": "1.0"
+      },
+      "body": {
+        "jsonrpc": "2.0",
+        "id": "rpc-07",
+        "method": "SendMessage",
+        "params": {
+          "message": {
+            "messageId": "msg-07-request",
+            "role": "ROLE_USER",
+            "parts": [
+              {
+                "data": {
+                  "action": "complete_checkout",
+                  "a2a.bcp.checkout.payment": {
+                    "instruments": [
+                      {
+                        "id": "instrument_playground_001",
+                        "handler_id": "pix_playground_001",
+                        "type": "pix",
+                        "selected": true,
+                        "credential": {
+                          "type": "pix_charge",
+                          "provider_payment_id": "pix_charge_playground_001",
+                          "copia_e_cola": "00020126580014br.gov.bcb.pix0136playground-bcp-0015204000053039865802BR5912LojaExemplo6007Goiania62070503***6304ABCD",
+                          "payment_url": "https://pagamentos.exemplo/pix/pix_charge_playground_001",
+                          "expires_at": "2026-07-17T16:30:00Z",
+                          "binding": {
+                            "checkout_id": "chk_playground_001"
+                          }
+                        },
+                        "display": {
+                          "payee_name": "Loja Vermelho",
+                          "description": "Pague R$ 79.80 via Pix. Cobrança demonstrativa."
+                        }
+                      }
+                    ]
+                  },
+                  "a2a.bcp.checkout.signals": {
+                    "br.dev.bcp.buyer_ip": "192.0.2.10",
+                    "br.dev.bcp.user_agent": "BCP-Playground/1.0"
+                  }
+                },
+                "mediaType": "application/json"
+              }
+            ],
+            "extensions": [
+              "https://bcp.dev.br/2026-04-08/specification/reference"
+            ],
+            "contextId": "ctx_playground_001"
+          }
+        }
+      }
+    },
+    "response": {
+      "jsonrpc": "2.0",
+      "id": "rpc-07",
+      "result": {
+        "message": {
+          "messageId": "msg-08-response",
+          "role": "ROLE_AGENT",
+          "parts": [
+            {
+              "data": {
+                "a2a.bcp.checkout": {
+                  "ucp": {
+                    "version": "2026-04-08",
+                    "capabilities": {
+                      "br.dev.bcp.shopping.checkout": [
+                        {
+                          "version": "2026-04-08"
+                        }
+                      ],
+                      "br.dev.bcp.shopping.fiscal_identity": [
+                        {
+                          "version": "2026-07-03",
+                          "extends": "br.dev.bcp.shopping.checkout"
+                        }
+                      ],
+                      "br.dev.bcp.shopping.tax": [
+                        {
+                          "version": "2026-07-14",
+                          "extends": "br.dev.bcp.shopping.checkout"
+                        }
+                      ],
+                      "br.dev.bcp.shopping.fulfillment": [
+                        {
+                          "version": "2026-04-08",
+                          "extends": "br.dev.bcp.shopping.checkout"
+                        }
+                      ],
+                      "br.dev.bcp.shopping.buyer_consent": [
+                        {
+                          "version": "2026-04-08",
+                          "extends": "br.dev.bcp.shopping.checkout"
+                        }
+                      ]
+                    },
+                    "payment_handlers": {
+                      "br.dev.bcp.pix": [
+                        {
+                          "id": "pix_playground_001",
+                          "version": "2026-07-08",
+                          "available_instruments": [
+                            {
+                              "type": "pix"
+                            }
+                          ],
+                          "config": {
+                            "environment": "sandbox",
+                            "payee_name": "Loja Vermelho"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "id": "chk_playground_001",
+                  "status": "completed",
+                  "currency": "BRL",
+                  "seller_identity": {
+                    "cnpj": "19131243000197",
+                    "legal_name": "Loja Vermelho Comércio de Vestuário Ltda"
+                  },
+                  "line_items": [
+                    {
+                      "id": "li_playground_001",
+                      "item": {
+                        "id": "camiseta-vermelha-m",
+                        "title": "Camiseta Vermelha M",
+                        "price": 5990
+                      },
+                      "quantity": 1,
+                      "ncm": "61091000",
+                      "taxes": [
+                        {
+                          "type": "icms",
+                          "rate": 0.10217,
+                          "base": 5990,
+                          "amount": 612,
+                          "authority": "state",
+                          "behavior": "inclusive"
+                        },
+                        {
+                          "type": "pis_cofins",
+                          "rate": 0.03706,
+                          "base": 5990,
+                          "amount": 222,
+                          "authority": "federal",
+                          "behavior": "inclusive"
+                        }
+                      ],
+                      "totals": [
+                        {
+                          "type": "subtotal",
+                          "amount": 5990
+                        }
+                      ]
+                    }
+                  ],
+                  "totals": [
+                    {
+                      "type": "subtotal",
+                      "amount": 5990
+                    },
+                    {
+                      "type": "tax",
+                      "display_text": "Tributos aproximados incluídos no preço",
+                      "amount": 834
+                    },
+                    {
+                      "type": "shipping",
+                      "display_text": "PAC",
+                      "amount": 1990
+                    },
+                    {
+                      "type": "total",
+                      "amount": 7980
+                    }
+                  ],
+                  "links": [
+                    {
+                      "type": "privacy_policy",
+                      "url": "https://loja.exemplo/privacidade"
+                    },
+                    {
+                      "type": "terms_of_service",
+                      "url": "https://loja.exemplo/termos"
+                    }
+                  ],
+                  "expires_at": "2026-07-17T22:00:00Z",
+                  "buyer": {
+                    "first_name": "Ana",
+                    "last_name": "Silva",
+                    "email": "ana@example.com.br",
+                    "phone_number": "+5562999990000",
+                    "taxpayer_id": {
+                      "kind": "cpf",
+                      "value": "39053344705"
+                    },
+                    "consent": {
+                      "analytics": false,
+                      "preferences": false,
+                      "marketing": false,
+                      "sale_of_data": false
+                    }
+                  },
+                  "context": {
+                    "address_country": "BR",
+                    "address_region": "GO",
+                    "language": "pt-BR",
+                    "currency": "BRL",
+                    "intent": "camiseta vermelha tamanho M"
+                  },
+                  "fulfillment": {
+                    "methods": [
+                      {
+                        "id": "ship_playground_001",
+                        "type": "shipping",
+                        "line_item_ids": [
+                          "li_playground_001"
+                        ],
+                        "destinations": [
+                          {
+                            "id": "destination_playground_001",
+                            "street_address": "Rua das Flores, 100",
+                            "extended_address": "Apto 12",
+                            "address_locality": "Goiânia",
+                            "address_region": "GO",
+                            "address_country": "BR",
+                            "postal_code": "74000000",
+                            "first_name": "Ana",
+                            "last_name": "Silva",
+                            "phone_number": "+5562999990000"
+                          }
+                        ],
+                        "selected_destination_id": "destination_playground_001",
+                        "groups": [
+                          {
+                            "id": "group_playground_001",
+                            "line_item_ids": [
+                              "li_playground_001"
+                            ],
+                            "options": [
+                              {
+                                "id": "pac_playground_001",
+                                "title": "PAC",
+                                "description": "Entrega em 4 dias úteis",
+                                "carrier": "Correios",
+                                "earliest_fulfillment_time": "2026-07-22T12:00:00Z",
+                                "latest_fulfillment_time": "2026-07-22T21:00:00Z",
+                                "totals": [
+                                  {
+                                    "type": "shipping",
+                                    "display_text": "PAC",
+                                    "amount": 1990
+                                  }
+                                ]
+                              },
+                              {
+                                "id": "sedex_playground_001",
+                                "title": "SEDEX",
+                                "description": "Entrega em 2 dias úteis",
+                                "carrier": "Correios",
+                                "earliest_fulfillment_time": "2026-07-20T12:00:00Z",
+                                "latest_fulfillment_time": "2026-07-20T21:00:00Z",
+                                "totals": [
+                                  {
+                                    "type": "shipping",
+                                    "display_text": "SEDEX",
+                                    "amount": 3490
+                                  }
+                                ]
+                              }
+                            ],
+                            "selected_option_id": "pac_playground_001"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "payment": {
+                    "instruments": [
+                      {
+                        "id": "instrument_playground_001",
+                        "handler_id": "pix_playground_001",
+                        "type": "pix",
+                        "selected": true,
+                        "credential": {
+                          "type": "pix_charge",
+                          "provider_payment_id": "pix_charge_playground_001",
+                          "copia_e_cola": "00020126580014br.gov.bcb.pix0136playground-bcp-0015204000053039865802BR5912LojaExemplo6007Goiania62070503***6304ABCD",
+                          "payment_url": "https://pagamentos.exemplo/pix/pix_charge_playground_001",
+                          "expires_at": "2026-07-17T16:30:00Z",
+                          "binding": {
+                            "checkout_id": "chk_playground_001"
+                          }
+                        },
+                        "display": {
+                          "payee_name": "Loja Vermelho",
+                          "description": "Pague R$ 79.80 via Pix. Cobrança demonstrativa."
+                        }
+                      }
+                    ]
+                  },
+                  "order": {
+                    "id": "BCP-2026-000142",
+                    "label": "Pedido Loja Vermelho",
+                    "permalink_url": "https://loja.exemplo/pedidos/BCP-2026-000142"
+                  }
+                }
+              },
+              "mediaType": "application/json"
+            }
+          ],
+          "extensions": [
+            "https://bcp.dev.br/2026-04-08/specification/reference"
+          ],
+          "contextId": "ctx_playground_001"
+        }
+      }
+    },
+    "checkout": {
+      "ucp": {
+        "version": "2026-04-08",
+        "capabilities": {
+          "br.dev.bcp.shopping.checkout": [
+            {
+              "version": "2026-04-08"
+            }
+          ],
+          "br.dev.bcp.shopping.fiscal_identity": [
+            {
+              "version": "2026-07-03",
+              "extends": "br.dev.bcp.shopping.checkout"
+            }
+          ],
+          "br.dev.bcp.shopping.tax": [
+            {
+              "version": "2026-07-14",
+              "extends": "br.dev.bcp.shopping.checkout"
+            }
+          ],
+          "br.dev.bcp.shopping.fulfillment": [
+            {
+              "version": "2026-04-08",
+              "extends": "br.dev.bcp.shopping.checkout"
+            }
+          ],
+          "br.dev.bcp.shopping.buyer_consent": [
+            {
+              "version": "2026-04-08",
+              "extends": "br.dev.bcp.shopping.checkout"
+            }
+          ]
+        },
+        "payment_handlers": {
+          "br.dev.bcp.pix": [
+            {
+              "id": "pix_playground_001",
+              "version": "2026-07-08",
+              "available_instruments": [
+                {
+                  "type": "pix"
+                }
+              ],
+              "config": {
+                "environment": "sandbox",
+                "payee_name": "Loja Vermelho"
+              }
+            }
+          ]
+        }
+      },
+      "id": "chk_playground_001",
+      "status": "completed",
+      "currency": "BRL",
+      "seller_identity": {
+        "cnpj": "19131243000197",
+        "legal_name": "Loja Vermelho Comércio de Vestuário Ltda"
+      },
+      "line_items": [
+        {
+          "id": "li_playground_001",
+          "item": {
+            "id": "camiseta-vermelha-m",
+            "title": "Camiseta Vermelha M",
+            "price": 5990
+          },
+          "quantity": 1,
+          "ncm": "61091000",
+          "taxes": [
+            {
+              "type": "icms",
+              "rate": 0.10217,
+              "base": 5990,
+              "amount": 612,
+              "authority": "state",
+              "behavior": "inclusive"
+            },
+            {
+              "type": "pis_cofins",
+              "rate": 0.03706,
+              "base": 5990,
+              "amount": 222,
+              "authority": "federal",
+              "behavior": "inclusive"
+            }
+          ],
+          "totals": [
+            {
+              "type": "subtotal",
+              "amount": 5990
+            }
+          ]
+        }
+      ],
+      "totals": [
+        {
+          "type": "subtotal",
+          "amount": 5990
+        },
+        {
+          "type": "tax",
+          "display_text": "Tributos aproximados incluídos no preço",
+          "amount": 834
+        },
+        {
+          "type": "shipping",
+          "display_text": "PAC",
+          "amount": 1990
+        },
+        {
+          "type": "total",
+          "amount": 7980
+        }
+      ],
+      "links": [
+        {
+          "type": "privacy_policy",
+          "url": "https://loja.exemplo/privacidade"
+        },
+        {
+          "type": "terms_of_service",
+          "url": "https://loja.exemplo/termos"
+        }
+      ],
+      "expires_at": "2026-07-17T22:00:00Z",
+      "buyer": {
+        "first_name": "Ana",
+        "last_name": "Silva",
+        "email": "ana@example.com.br",
+        "phone_number": "+5562999990000",
+        "taxpayer_id": {
+          "kind": "cpf",
+          "value": "39053344705"
+        },
+        "consent": {
+          "analytics": false,
+          "preferences": false,
+          "marketing": false,
+          "sale_of_data": false
+        }
+      },
+      "context": {
+        "address_country": "BR",
+        "address_region": "GO",
+        "language": "pt-BR",
+        "currency": "BRL",
+        "intent": "camiseta vermelha tamanho M"
+      },
+      "fulfillment": {
+        "methods": [
+          {
+            "id": "ship_playground_001",
+            "type": "shipping",
+            "line_item_ids": [
+              "li_playground_001"
+            ],
+            "destinations": [
+              {
+                "id": "destination_playground_001",
+                "street_address": "Rua das Flores, 100",
+                "extended_address": "Apto 12",
+                "address_locality": "Goiânia",
+                "address_region": "GO",
+                "address_country": "BR",
+                "postal_code": "74000000",
+                "first_name": "Ana",
+                "last_name": "Silva",
+                "phone_number": "+5562999990000"
+              }
+            ],
+            "selected_destination_id": "destination_playground_001",
+            "groups": [
+              {
+                "id": "group_playground_001",
+                "line_item_ids": [
+                  "li_playground_001"
+                ],
+                "options": [
+                  {
+                    "id": "pac_playground_001",
+                    "title": "PAC",
+                    "description": "Entrega em 4 dias úteis",
+                    "carrier": "Correios",
+                    "earliest_fulfillment_time": "2026-07-22T12:00:00Z",
+                    "latest_fulfillment_time": "2026-07-22T21:00:00Z",
+                    "totals": [
+                      {
+                        "type": "shipping",
+                        "display_text": "PAC",
+                        "amount": 1990
+                      }
+                    ]
+                  },
+                  {
+                    "id": "sedex_playground_001",
+                    "title": "SEDEX",
+                    "description": "Entrega em 2 dias úteis",
+                    "carrier": "Correios",
+                    "earliest_fulfillment_time": "2026-07-20T12:00:00Z",
+                    "latest_fulfillment_time": "2026-07-20T21:00:00Z",
+                    "totals": [
+                      {
+                        "type": "shipping",
+                        "display_text": "SEDEX",
+                        "amount": 3490
+                      }
+                    ]
+                  }
+                ],
+                "selected_option_id": "pac_playground_001"
+              }
+            ]
+          }
+        ]
+      },
+      "payment": {
+        "instruments": [
+          {
+            "id": "instrument_playground_001",
+            "handler_id": "pix_playground_001",
+            "type": "pix",
+            "selected": true,
+            "credential": {
+              "type": "pix_charge",
+              "provider_payment_id": "pix_charge_playground_001",
+              "copia_e_cola": "00020126580014br.gov.bcb.pix0136playground-bcp-0015204000053039865802BR5912LojaExemplo6007Goiania62070503***6304ABCD",
+              "payment_url": "https://pagamentos.exemplo/pix/pix_charge_playground_001",
+              "expires_at": "2026-07-17T16:30:00Z",
+              "binding": {
+                "checkout_id": "chk_playground_001"
+              }
+            },
+            "display": {
+              "payee_name": "Loja Vermelho",
+              "description": "Pague R$ 79.80 via Pix. Cobrança demonstrativa."
+            }
+          }
+        ]
+      },
+      "order": {
+        "id": "BCP-2026-000142",
+        "label": "Pedido Loja Vermelho",
+        "permalink_url": "https://loja.exemplo/pedidos/BCP-2026-000142"
+      }
+    },
+    "order": {
+      "ucp": {
+        "version": "2026-04-08",
+        "capabilities": {
+          "br.dev.bcp.shopping.order": [
+            {
+              "version": "2026-04-08"
+            }
+          ],
+          "br.dev.bcp.shopping.nfe": [
+            {
+              "version": "2026-04-08",
+              "extends": "br.dev.bcp.shopping.order"
+            }
+          ]
+        }
+      },
+      "id": "BCP-2026-000142",
+      "label": "Pedido Loja Vermelho",
+      "checkout_id": "chk_playground_001",
+      "permalink_url": "https://loja.exemplo/pedidos/BCP-2026-000142",
+      "currency": "BRL",
+      "line_items": [
+        {
+          "id": "li_playground_001",
+          "item": {
+            "id": "camiseta-vermelha-m",
+            "title": "Camiseta Vermelha M",
+            "price": 5990
+          },
+          "quantity": {
+            "original": 1,
+            "total": 1,
+            "fulfilled": 0
+          },
+          "totals": [
+            {
+              "type": "subtotal",
+              "amount": 5990
+            },
+            {
+              "type": "total",
+              "amount": 5990
+            }
+          ],
+          "status": "processing"
+        }
+      ],
+      "fulfillment": {
+        "expectations": [
+          {
+            "id": "expectation_playground_001",
+            "line_items": [
+              {
+                "id": "li_playground_001",
+                "quantity": 1
+              }
+            ],
+            "method_type": "shipping",
+            "destination": {
+              "street_address": "Rua das Flores, 100",
+              "extended_address": "Apto 12",
+              "address_locality": "Goiânia",
+              "address_region": "GO",
+              "address_country": "BR",
+              "postal_code": "74000000",
+              "first_name": "Ana",
+              "last_name": "Silva",
+              "phone_number": "+5562999990000"
+            },
+            "description": "Entrega em 4 dias úteis",
+            "fulfillable_on": "now"
+          }
+        ],
+        "events": [
+          {
+            "id": "fulfillment_event_playground_001",
+            "occurred_at": "2026-07-18T12:02:00Z",
+            "type": "processing",
+            "line_items": [
+              {
+                "id": "li_playground_001",
+                "quantity": 1
+              }
+            ],
+            "tracking_number": "BR123456789BR",
+            "tracking_url": "https://rastreamento.correios.com.br/app/index.php?objetos=BR123456789BR",
+            "carrier": "Correios",
+            "description": "Envio PAC em preparação."
+          }
+        ]
+      },
+      "totals": [
+        {
+          "type": "subtotal",
+          "amount": 5990
+        },
+        {
+          "type": "tax",
+          "display_text": "Tributos incluídos no preço",
+          "amount": 834
+        },
+        {
+          "type": "fulfillment",
+          "display_text": "PAC",
+          "amount": 1990
+        },
+        {
+          "type": "total",
+          "amount": 7980
+        }
+      ],
+      "nfe": {
+        "access_key": "52260719131243000197550010000001421000001420",
+        "issued_at": "2026-07-18T12:02:00Z"
+      }
+    },
+    "events": [
+      {
+        "title": {
+          "pt-BR": "Pedido confirmado",
+          "en": "Order confirmed"
+        },
+        "description": {
+          "pt-BR": "Após a liquidação, o checkout é concluído e o agente consulta o pedido completo.",
+          "en": "After settlement, the checkout completes and the agent retrieves the full order."
+        },
+        "documents": [
+          {
+            "kind": "request",
+            "name": "complete_checkout",
+            "payload": {
+              "headers": {
+                "BCP-Agent": "profile=\"https://agente.exemplo/.well-known/bcp\"",
+                "A2A-Extensions": "https://bcp.dev.br/2026-04-08/specification/reference",
+                "A2A-Version": "1.0"
+              },
+              "body": {
+                "jsonrpc": "2.0",
+                "id": "rpc-07",
+                "method": "SendMessage",
+                "params": {
+                  "message": {
+                    "messageId": "msg-07-request",
+                    "role": "ROLE_USER",
+                    "parts": [
+                      {
+                        "data": {
+                          "action": "complete_checkout",
+                          "a2a.bcp.checkout.payment": {
+                            "instruments": [
+                              {
+                                "id": "instrument_playground_001",
+                                "handler_id": "pix_playground_001",
+                                "type": "pix",
+                                "selected": true,
+                                "credential": {
+                                  "type": "pix_charge",
+                                  "provider_payment_id": "pix_charge_playground_001",
+                                  "copia_e_cola": "00020126580014br.gov.bcb.pix0136playground-bcp-0015204000053039865802BR5912LojaExemplo6007Goiania62070503***6304ABCD",
+                                  "payment_url": "https://pagamentos.exemplo/pix/pix_charge_playground_001",
+                                  "expires_at": "2026-07-17T16:30:00Z",
+                                  "binding": {
+                                    "checkout_id": "chk_playground_001"
+                                  }
+                                },
+                                "display": {
+                                  "payee_name": "Loja Vermelho",
+                                  "description": "Pague R$ 79.80 via Pix. Cobrança demonstrativa."
+                                }
+                              }
+                            ]
+                          },
+                          "a2a.bcp.checkout.signals": {
+                            "br.dev.bcp.buyer_ip": "192.0.2.10",
+                            "br.dev.bcp.user_agent": "BCP-Playground/1.0"
+                          }
+                        },
+                        "mediaType": "application/json"
+                      }
+                    ],
+                    "extensions": [
+                      "https://bcp.dev.br/2026-04-08/specification/reference"
+                    ],
+                    "contextId": "ctx_playground_001"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "kind": "response",
+            "name": "checkout",
+            "payload": {
+              "jsonrpc": "2.0",
+              "id": "rpc-07",
+              "result": {
+                "message": {
+                  "messageId": "msg-08-response",
+                  "role": "ROLE_AGENT",
+                  "parts": [
+                    {
+                      "data": {
+                        "a2a.bcp.checkout": {
+                          "ucp": {
+                            "version": "2026-04-08",
+                            "capabilities": {
+                              "br.dev.bcp.shopping.checkout": [
+                                {
+                                  "version": "2026-04-08"
+                                }
+                              ],
+                              "br.dev.bcp.shopping.fiscal_identity": [
+                                {
+                                  "version": "2026-07-03",
+                                  "extends": "br.dev.bcp.shopping.checkout"
+                                }
+                              ],
+                              "br.dev.bcp.shopping.tax": [
+                                {
+                                  "version": "2026-07-14",
+                                  "extends": "br.dev.bcp.shopping.checkout"
+                                }
+                              ],
+                              "br.dev.bcp.shopping.fulfillment": [
+                                {
+                                  "version": "2026-04-08",
+                                  "extends": "br.dev.bcp.shopping.checkout"
+                                }
+                              ],
+                              "br.dev.bcp.shopping.buyer_consent": [
+                                {
+                                  "version": "2026-04-08",
+                                  "extends": "br.dev.bcp.shopping.checkout"
+                                }
+                              ]
+                            },
+                            "payment_handlers": {
+                              "br.dev.bcp.pix": [
+                                {
+                                  "id": "pix_playground_001",
+                                  "version": "2026-07-08",
+                                  "available_instruments": [
+                                    {
+                                      "type": "pix"
+                                    }
+                                  ],
+                                  "config": {
+                                    "environment": "sandbox",
+                                    "payee_name": "Loja Vermelho"
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "id": "chk_playground_001",
+                          "status": "completed",
+                          "currency": "BRL",
+                          "seller_identity": {
+                            "cnpj": "19131243000197",
+                            "legal_name": "Loja Vermelho Comércio de Vestuário Ltda"
+                          },
+                          "line_items": [
+                            {
+                              "id": "li_playground_001",
+                              "item": {
+                                "id": "camiseta-vermelha-m",
+                                "title": "Camiseta Vermelha M",
+                                "price": 5990
+                              },
+                              "quantity": 1,
+                              "ncm": "61091000",
+                              "taxes": [
+                                {
+                                  "type": "icms",
+                                  "rate": 0.10217,
+                                  "base": 5990,
+                                  "amount": 612,
+                                  "authority": "state",
+                                  "behavior": "inclusive"
+                                },
+                                {
+                                  "type": "pis_cofins",
+                                  "rate": 0.03706,
+                                  "base": 5990,
+                                  "amount": 222,
+                                  "authority": "federal",
+                                  "behavior": "inclusive"
+                                }
+                              ],
+                              "totals": [
+                                {
+                                  "type": "subtotal",
+                                  "amount": 5990
+                                }
+                              ]
+                            }
+                          ],
+                          "totals": [
+                            {
+                              "type": "subtotal",
+                              "amount": 5990
+                            },
+                            {
+                              "type": "tax",
+                              "display_text": "Tributos aproximados incluídos no preço",
+                              "amount": 834
+                            },
+                            {
+                              "type": "shipping",
+                              "display_text": "PAC",
+                              "amount": 1990
+                            },
+                            {
+                              "type": "total",
+                              "amount": 7980
+                            }
+                          ],
+                          "links": [
+                            {
+                              "type": "privacy_policy",
+                              "url": "https://loja.exemplo/privacidade"
+                            },
+                            {
+                              "type": "terms_of_service",
+                              "url": "https://loja.exemplo/termos"
+                            }
+                          ],
+                          "expires_at": "2026-07-17T22:00:00Z",
+                          "buyer": {
+                            "first_name": "Ana",
+                            "last_name": "Silva",
+                            "email": "ana@example.com.br",
+                            "phone_number": "+5562999990000",
+                            "taxpayer_id": {
+                              "kind": "cpf",
+                              "value": "39053344705"
+                            },
+                            "consent": {
+                              "analytics": false,
+                              "preferences": false,
+                              "marketing": false,
+                              "sale_of_data": false
+                            }
+                          },
+                          "context": {
+                            "address_country": "BR",
+                            "address_region": "GO",
+                            "language": "pt-BR",
+                            "currency": "BRL",
+                            "intent": "camiseta vermelha tamanho M"
+                          },
+                          "fulfillment": {
+                            "methods": [
+                              {
+                                "id": "ship_playground_001",
+                                "type": "shipping",
+                                "line_item_ids": [
+                                  "li_playground_001"
+                                ],
+                                "destinations": [
+                                  {
+                                    "id": "destination_playground_001",
+                                    "street_address": "Rua das Flores, 100",
+                                    "extended_address": "Apto 12",
+                                    "address_locality": "Goiânia",
+                                    "address_region": "GO",
+                                    "address_country": "BR",
+                                    "postal_code": "74000000",
+                                    "first_name": "Ana",
+                                    "last_name": "Silva",
+                                    "phone_number": "+5562999990000"
+                                  }
+                                ],
+                                "selected_destination_id": "destination_playground_001",
+                                "groups": [
+                                  {
+                                    "id": "group_playground_001",
+                                    "line_item_ids": [
+                                      "li_playground_001"
+                                    ],
+                                    "options": [
+                                      {
+                                        "id": "pac_playground_001",
+                                        "title": "PAC",
+                                        "description": "Entrega em 4 dias úteis",
+                                        "carrier": "Correios",
+                                        "earliest_fulfillment_time": "2026-07-22T12:00:00Z",
+                                        "latest_fulfillment_time": "2026-07-22T21:00:00Z",
+                                        "totals": [
+                                          {
+                                            "type": "shipping",
+                                            "display_text": "PAC",
+                                            "amount": 1990
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "sedex_playground_001",
+                                        "title": "SEDEX",
+                                        "description": "Entrega em 2 dias úteis",
+                                        "carrier": "Correios",
+                                        "earliest_fulfillment_time": "2026-07-20T12:00:00Z",
+                                        "latest_fulfillment_time": "2026-07-20T21:00:00Z",
+                                        "totals": [
+                                          {
+                                            "type": "shipping",
+                                            "display_text": "SEDEX",
+                                            "amount": 3490
+                                          }
+                                        ]
+                                      }
+                                    ],
+                                    "selected_option_id": "pac_playground_001"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          "payment": {
+                            "instruments": [
+                              {
+                                "id": "instrument_playground_001",
+                                "handler_id": "pix_playground_001",
+                                "type": "pix",
+                                "selected": true,
+                                "credential": {
+                                  "type": "pix_charge",
+                                  "provider_payment_id": "pix_charge_playground_001",
+                                  "copia_e_cola": "00020126580014br.gov.bcb.pix0136playground-bcp-0015204000053039865802BR5912LojaExemplo6007Goiania62070503***6304ABCD",
+                                  "payment_url": "https://pagamentos.exemplo/pix/pix_charge_playground_001",
+                                  "expires_at": "2026-07-17T16:30:00Z",
+                                  "binding": {
+                                    "checkout_id": "chk_playground_001"
+                                  }
+                                },
+                                "display": {
+                                  "payee_name": "Loja Vermelho",
+                                  "description": "Pague R$ 79.80 via Pix. Cobrança demonstrativa."
+                                }
+                              }
+                            ]
+                          },
+                          "order": {
+                            "id": "BCP-2026-000142",
+                            "label": "Pedido Loja Vermelho",
+                            "permalink_url": "https://loja.exemplo/pedidos/BCP-2026-000142"
+                          }
+                        }
+                      },
+                      "mediaType": "application/json"
+                    }
+                  ],
+                  "extensions": [
+                    "https://bcp.dev.br/2026-04-08/specification/reference"
+                  ],
+                  "contextId": "ctx_playground_001"
+                }
+              }
+            }
+          },
+          {
+            "kind": "request",
+            "name": "GET /orders/{id}",
+            "payload": {
+              "method": "GET",
+              "url": "https://loja.exemplo/orders/BCP-2026-000142",
+              "headers": {
+                "BCP-Agent": "profile=\"https://agente.exemplo/.well-known/bcp\""
+              }
+            }
+          },
+          {
+            "kind": "response",
+            "name": "order",
+            "payload": {
+              "ucp": {
+                "version": "2026-04-08",
+                "capabilities": {
+                  "br.dev.bcp.shopping.order": [
+                    {
+                      "version": "2026-04-08"
+                    }
+                  ],
+                  "br.dev.bcp.shopping.nfe": [
+                    {
+                      "version": "2026-04-08",
+                      "extends": "br.dev.bcp.shopping.order"
+                    }
+                  ]
+                }
+              },
+              "id": "BCP-2026-000142",
+              "label": "Pedido Loja Vermelho",
+              "checkout_id": "chk_playground_001",
+              "permalink_url": "https://loja.exemplo/pedidos/BCP-2026-000142",
+              "currency": "BRL",
+              "line_items": [
+                {
+                  "id": "li_playground_001",
+                  "item": {
+                    "id": "camiseta-vermelha-m",
+                    "title": "Camiseta Vermelha M",
+                    "price": 5990
+                  },
+                  "quantity": {
+                    "original": 1,
+                    "total": 1,
+                    "fulfilled": 0
+                  },
+                  "totals": [
+                    {
+                      "type": "subtotal",
+                      "amount": 5990
+                    },
+                    {
+                      "type": "total",
+                      "amount": 5990
+                    }
+                  ],
+                  "status": "processing"
+                }
+              ],
+              "fulfillment": {
+                "expectations": [
+                  {
+                    "id": "expectation_playground_001",
+                    "line_items": [
+                      {
+                        "id": "li_playground_001",
+                        "quantity": 1
+                      }
+                    ],
+                    "method_type": "shipping",
+                    "destination": {
+                      "street_address": "Rua das Flores, 100",
+                      "extended_address": "Apto 12",
+                      "address_locality": "Goiânia",
+                      "address_region": "GO",
+                      "address_country": "BR",
+                      "postal_code": "74000000",
+                      "first_name": "Ana",
+                      "last_name": "Silva",
+                      "phone_number": "+5562999990000"
+                    },
+                    "description": "Entrega em 4 dias úteis",
+                    "fulfillable_on": "now"
+                  }
+                ],
+                "events": [
+                  {
+                    "id": "fulfillment_event_playground_001",
+                    "occurred_at": "2026-07-18T12:02:00Z",
+                    "type": "processing",
+                    "line_items": [
+                      {
+                        "id": "li_playground_001",
+                        "quantity": 1
+                      }
+                    ],
+                    "tracking_number": "BR123456789BR",
+                    "tracking_url": "https://rastreamento.correios.com.br/app/index.php?objetos=BR123456789BR",
+                    "carrier": "Correios",
+                    "description": "Envio PAC em preparação."
+                  }
+                ]
+              },
+              "totals": [
+                {
+                  "type": "subtotal",
+                  "amount": 5990
+                },
+                {
+                  "type": "tax",
+                  "display_text": "Tributos incluídos no preço",
+                  "amount": 834
+                },
+                {
+                  "type": "fulfillment",
+                  "display_text": "PAC",
+                  "amount": 1990
+                },
+                {
+                  "type": "total",
+                  "amount": 7980
+                }
+              ],
+              "nfe": {
+                "access_key": "52260719131243000197550010000001421000001420",
+                "issued_at": "2026-07-18T12:02:00Z"
+              }
+            }
+          }
+        ],
+        "conversation": [
+          {
+            "actor": "buyer_agent",
+            "text": {
+              "pt-BR": "Pagamento confirmado. Seu pedido foi criado, a NF-e foi autorizada e o rastreio já está disponível.",
+              "en": "Payment confirmed. Your order was created, the invoice was authorized, and tracking is available."
+            }
+          },
+          {
+            "actor": "client",
+            "text": {
+              "pt-BR": "Perfeito, obrigada.",
+              "en": "Perfect, thank you."
+            }
+          }
+        ],
+        "widget": {
+          "type": "order",
+          "id": "BCP-2026-000142",
+          "nfe": "000000142",
+          "carrier": "Correios · PAC",
+          "tracking": "BR123456789BR",
+          "eta": {
+            "pt-BR": "4 dias úteis",
+            "en": "4 business days"
+          }
+        }
+      }
+    ]
+  }
+}

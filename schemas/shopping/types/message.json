@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/message.json",
+  "title": "Message",
+  "type": "object",
+  "description": "Container for error, warning, or info messages.",
+  "description_pt": "Contêiner para mensagens de erro, aviso ou informação.",
+  "oneOf": [
+    {
+      "$ref": "message_error.json"
+    },
+    {
+      "$ref": "message_warning.json"
+    },
+    {
+      "$ref": "message_info.json"
+    }
+  ]
+}

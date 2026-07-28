@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/ncm.json",
+  "title": "NCM",
+  "description": "Mercosur Common Nomenclature (NCM) fiscal classification of a product, 8 digits. Drives tax calculation, Imposto Seletivo category marking, and NF-e issuance (e.g., '33049910').",
+  "description_pt": "Classificação fiscal Nomenclatura Comum do Mercosul (NCM) de um produto, 8 dígitos. Orienta o cálculo de tributos, a marcação de categoria do Imposto Seletivo e a emissão de NF-e (ex.: '33049910').",
+  "type": "string",
+  "pattern": "^[0-9]{8}$"
+}

@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/fulfillment_option.json",
+  "title": "Fulfillment Option",
+  "description": "A fulfillment option within a group (e.g., Standard Shipping $5, Express $15).",
+  "description_pt": "Uma opção de fulfillment dentro de um grupo (ex.: Frete Padrão R$ 5, Expresso R$ 15).",
+  "type": "object",
+  "ucp_shared_request": true,
+  "required": ["id", "title", "totals"],
+  "additionalProperties": true,
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique fulfillment option identifier.",
+      "description_pt": "Identificador único da opção de fulfillment.",
+      "ucp_request": "omit"
+    },
+    "title": {
+      "type": "string",
+      "description": "Short label (e.g., 'Express Shipping', 'Curbside Pickup').",
+      "description_pt": "Rótulo curto (ex.: 'Frete Expresso', 'Retirada no Balcão').",
+      "ucp_request": "omit"
+    },
+    "description": {
+      "type": "string",
+      "description": "Complete context for buyer decision (e.g., 'Arrives Dec 12-15 via FedEx').",
+      "description_pt": "Contexto completo para a decisão do comprador (ex.: 'Chega entre 12 e 15 de dez via FedEx').",
+      "ucp_request": "omit"
+    },
+    "carrier": {
+      "type": "string",
+      "description": "Carrier name (for shipping).",
+      "description_pt": "Nome da transportadora (para shipping).",
+      "ucp_request": "omit"
+    },
+    "earliest_fulfillment_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Earliest fulfillment date.",
+      "description_pt": "Data mais próxima de fulfillment.",
+      "ucp_request": "omit"
+    },
+    "latest_fulfillment_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Latest fulfillment date.",
+      "description_pt": "Data mais distante de fulfillment.",
+      "ucp_request": "omit"
+    },
+    "totals": {
+      "type": "array",
+      "items": {
+        "$ref": "total.json"
+      },
+      "description": "Fulfillment option totals breakdown.",
+      "description_pt": "Detalhamento dos totais da opção de fulfillment.",
+      "ucp_request": "omit"
+    }
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/expectation.json",
+  "title": "Expectation",
+  "description": "Buyer-facing fulfillment expectation representing logical groupings of items (e.g., 'package'). Can be split, merged, or adjusted post-order to set buyer expectations for when/how items arrive.",
+  "description_pt": "Expectativa de fulfillment voltada ao buyer, representando agrupamentos lógicos de itens (ex.: 'pacote'). Pode ser dividida, mesclada ou ajustada após o pedido para definir as expectativas do buyer sobre quando/como os itens chegam.",
+  "type": "object",
+  "required": [
+    "id",
+    "line_items",
+    "method_type",
+    "destination"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Expectation identifier.",
+      "description_pt": "Identificador da expectativa."
+    },
+    "line_items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "quantity"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Line item ID reference.",
+            "description_pt": "Referência ao ID do item de linha."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Quantity of this item in this expectation.",
+            "description_pt": "Quantidade deste item nesta expectativa."
+          }
+        }
+      },
+      "description": "Which line items and quantities are in this expectation.",
+      "description_pt": "Quais itens de linha e quantidades estão nesta expectativa."
+    },
+    "method_type": {
+      "type": "string",
+      "enum": ["shipping", "pickup", "digital"],
+      "description": "Delivery method type (shipping, pickup, digital).",
+      "description_pt": "Tipo de método de entrega (shipping, pickup, digital)."
+    },
+    "destination": {
+      "$ref": "postal_address.json",
+      "description": "Delivery destination address.",
+      "description_pt": "Endereço de destino da entrega."
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable delivery description (e.g., 'Arrives in 5-8 business days').",
+      "description_pt": "Descrição de entrega legível por humanos (ex.: 'Chega em 5-8 dias úteis')."
+    },
+    "fulfillable_on": {
+      "type": "string",
+      "description": "When this expectation can be fulfilled: 'now' or ISO 8601 timestamp for future date (backorder, pre-order).",
+      "description_pt": "Quando esta expectativa pode ser cumprida: 'now' ou timestamp ISO 8601 para data futura (backorder, pré-venda)."
+    }
+  }
+}

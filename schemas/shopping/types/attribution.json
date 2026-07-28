@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/attribution.json",
+  "title": "Attribution",
+  "description": "Platform-emitted referral and conversion-event context — campaign identifiers, click IDs, source/medium markers, etc. The same parameters platforms communicate via URL query parameters in browser-based flows.",
+  "description_pt": "Contexto de indicação e evento de conversão emitido pela plataforma — identificadores de campanha, IDs de clique, marcadores de source/medium, etc. Os mesmos parâmetros que as plataformas comunicam via parâmetros de consulta de URL em fluxos baseados em navegador.",
+  "type": "object",
+  "additionalProperties": {
+    "type": "string",
+    "description": "URL-style parameter value, encoded as a string. Numeric or boolean values MUST be string-encoded as they would be in a URL query string.",
+    "description_pt": "Valor de parâmetro no estilo URL, codificado como string. Valores numéricos ou booleanos DEVEM ser codificados como string, assim como seriam em uma query string de URL."
+  }
+}

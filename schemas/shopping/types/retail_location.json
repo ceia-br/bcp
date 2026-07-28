@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/retail_location.json",
+  "title": "Retail Location",
+  "description": "A pickup location (retail store, locker, etc.).",
+  "description_pt": "Um local de retirada (loja física, locker, etc.).",
+  "type": "object",
+  "ucp_shared_request": true,
+  "required": ["id", "name"],
+  "additionalProperties": true,
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique location identifier.",
+      "description_pt": "Identificador único do local.",
+      "ucp_request": "omit"
+    },
+    "name": {
+      "type": "string",
+      "description": "Location name (e.g., store name).",
+      "description_pt": "Nome do local (por exemplo, nome da loja)."
+    },
+    "address": {
+      "$ref": "postal_address.json",
+      "description": "Physical address of the location.",
+      "description_pt": "Endereço físico do local."
+    }
+  }
+}

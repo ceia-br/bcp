@@ -1,0 +1,942 @@
+{
+  "id": "04-delivery-data",
+  "act": {
+    "pt-BR": "Checkout",
+    "en": "Checkout"
+  },
+  "title": {
+    "pt-BR": "Informar dados de entrega",
+    "en": "Provide delivery data"
+  },
+  "narrative": {
+    "pt-BR": "A pessoa confirma identidade, endereço e consentimentos. O vendedor mantém o checkout incomplete e devolve as opções de frete disponíveis.",
+    "en": "The person confirms identity, address, and consent choices. The seller keeps the checkout incomplete and returns the available shipping options."
+  },
+  "conversation": [
+    {
+      "actor": "client",
+      "actor_label": {
+        "pt-BR": "Cliente",
+        "en": "Customer"
+      },
+      "text": {
+        "pt-BR": "Quero uma camiseta vermelha, tamanho M.",
+        "en": "I want a red T-shirt, size M."
+      }
+    },
+    {
+      "actor": "buyer_agent",
+      "actor_label": {
+        "pt-BR": "Agente cliente",
+        "en": "Buyer agent"
+      },
+      "text": {
+        "pt-BR": "Vou me conectar à Loja Vermelho e verificar o que ela oferece.",
+        "en": "I will connect to Loja Vermelho and check what it offers."
+      }
+    },
+    {
+      "actor": "buyer_agent",
+      "actor_label": {
+        "pt-BR": "Agente cliente",
+        "en": "Buyer agent"
+      },
+      "text": {
+        "pt-BR": "Encontrei a Camiseta Vermelha M por R$ 59,90.",
+        "en": "I found the Red T-shirt M for BRL 59.90."
+      }
+    },
+    {
+      "actor": "client",
+      "actor_label": {
+        "pt-BR": "Cliente",
+        "en": "Customer"
+      },
+      "text": {
+        "pt-BR": "Quero a vermelha M.",
+        "en": "I want the red one in size M."
+      }
+    },
+    {
+      "actor": "buyer_agent",
+      "actor_label": {
+        "pt-BR": "Agente cliente",
+        "en": "Buyer agent"
+      },
+      "text": {
+        "pt-BR": "A loja criou o checkout. Preciso confirmar seus dados e o endereço de entrega.",
+        "en": "The store created the checkout. I need to confirm your details and delivery address."
+      }
+    },
+    {
+      "actor": "client",
+      "actor_label": {
+        "pt-BR": "Cliente",
+        "en": "Customer"
+      },
+      "text": {
+        "pt-BR": "Os dados apresentados estão corretos. Não aceito consentimentos opcionais.",
+        "en": "The presented details are correct. I do not accept optional consent."
+      }
+    },
+    {
+      "actor": "buyer_agent",
+      "actor_label": {
+        "pt-BR": "Agente cliente",
+        "en": "Buyer agent"
+      },
+      "text": {
+        "pt-BR": "Dados aceitos. Há PAC por R$ 19,90 e SEDEX por R$ 34,90.",
+        "en": "Details accepted. PAC costs BRL 19.90 and SEDEX costs BRL 34.90."
+      }
+    }
+  ],
+  "protocol": {
+    "badges": [
+      "A2A TextPart",
+      "sem action normativa de update"
+    ],
+    "request": {
+      "headers": {
+        "BCP-Agent": "profile=\"https://agente.exemplo/.well-known/bcp\"",
+        "A2A-Extensions": "https://bcp.dev.br/2026-04-08/specification/reference",
+        "A2A-Version": "1.0"
+      },
+      "body": {
+        "jsonrpc": "2.0",
+        "id": "rpc-04",
+        "method": "SendMessage",
+        "params": {
+          "message": {
+            "messageId": "msg-04-request",
+            "role": "ROLE_USER",
+            "parts": [
+              {
+                "text": "Compradora Ana Silva, CPF 39053344705, ana@example.com.br, +5562999990000. Entrega na Rua das Flores, 100, Apto 12, Goiânia, GO, 74000000, BR. Mantenha os consentimentos opcionais recusados."
+              }
+            ],
+            "extensions": [
+              "https://bcp.dev.br/2026-04-08/specification/reference"
+            ],
+            "contextId": "ctx_playground_001"
+          }
+        }
+      }
+    },
+    "response": {
+      "jsonrpc": "2.0",
+      "id": "rpc-04",
+      "result": {
+        "message": {
+          "messageId": "msg-04-response",
+          "role": "ROLE_AGENT",
+          "parts": [
+            {
+              "text": "Dados aceitos. Escolha uma opção de frete."
+            },
+            {
+              "data": {
+                "a2a.bcp.checkout": {
+                  "ucp": {
+                    "version": "2026-04-08",
+                    "capabilities": {
+                      "br.dev.bcp.shopping.checkout": [
+                        {
+                          "version": "2026-04-08"
+                        }
+                      ],
+                      "br.dev.bcp.shopping.fiscal_identity": [
+                        {
+                          "version": "2026-07-03",
+                          "extends": "br.dev.bcp.shopping.checkout"
+                        }
+                      ],
+                      "br.dev.bcp.shopping.tax": [
+                        {
+                          "version": "2026-07-14",
+                          "extends": "br.dev.bcp.shopping.checkout"
+                        }
+                      ],
+                      "br.dev.bcp.shopping.fulfillment": [
+                        {
+                          "version": "2026-04-08",
+                          "extends": "br.dev.bcp.shopping.checkout"
+                        }
+                      ],
+                      "br.dev.bcp.shopping.buyer_consent": [
+                        {
+                          "version": "2026-04-08",
+                          "extends": "br.dev.bcp.shopping.checkout"
+                        }
+                      ]
+                    },
+                    "payment_handlers": {
+                      "br.dev.bcp.pix": [
+                        {
+                          "id": "pix_playground_001",
+                          "version": "2026-07-08",
+                          "available_instruments": [
+                            {
+                              "type": "pix"
+                            }
+                          ],
+                          "config": {
+                            "environment": "sandbox",
+                            "payee_name": "Loja Vermelho"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "id": "chk_playground_001",
+                  "status": "incomplete",
+                  "currency": "BRL",
+                  "seller_identity": {
+                    "cnpj": "19131243000197",
+                    "legal_name": "Loja Vermelho Comércio de Vestuário Ltda"
+                  },
+                  "line_items": [
+                    {
+                      "id": "li_playground_001",
+                      "item": {
+                        "id": "camiseta-vermelha-m",
+                        "title": "Camiseta Vermelha M",
+                        "price": 5990
+                      },
+                      "quantity": 1,
+                      "ncm": "61091000",
+                      "taxes": [
+                        {
+                          "type": "icms",
+                          "rate": 0.10217,
+                          "base": 5990,
+                          "amount": 612,
+                          "authority": "state",
+                          "behavior": "inclusive"
+                        },
+                        {
+                          "type": "pis_cofins",
+                          "rate": 0.03706,
+                          "base": 5990,
+                          "amount": 222,
+                          "authority": "federal",
+                          "behavior": "inclusive"
+                        }
+                      ],
+                      "totals": [
+                        {
+                          "type": "subtotal",
+                          "amount": 5990
+                        }
+                      ]
+                    }
+                  ],
+                  "totals": [
+                    {
+                      "type": "subtotal",
+                      "amount": 5990
+                    },
+                    {
+                      "type": "tax",
+                      "display_text": "Tributos aproximados incluídos no preço",
+                      "amount": 834
+                    },
+                    {
+                      "type": "total",
+                      "amount": 5990
+                    }
+                  ],
+                  "messages": [
+                    {
+                      "type": "info",
+                      "path": "$.fulfillment.methods[0].groups[0].selected_option_id",
+                      "content": "Escolha uma opção de frete."
+                    }
+                  ],
+                  "links": [
+                    {
+                      "type": "privacy_policy",
+                      "url": "https://loja.exemplo/privacidade"
+                    },
+                    {
+                      "type": "terms_of_service",
+                      "url": "https://loja.exemplo/termos"
+                    }
+                  ],
+                  "expires_at": "2026-07-17T22:00:00Z",
+                  "buyer": {
+                    "first_name": "Ana",
+                    "last_name": "Silva",
+                    "email": "ana@example.com.br",
+                    "phone_number": "+5562999990000",
+                    "taxpayer_id": {
+                      "kind": "cpf",
+                      "value": "39053344705"
+                    },
+                    "consent": {
+                      "analytics": false,
+                      "preferences": false,
+                      "marketing": false,
+                      "sale_of_data": false
+                    }
+                  },
+                  "context": {
+                    "address_country": "BR",
+                    "address_region": "GO",
+                    "language": "pt-BR",
+                    "currency": "BRL",
+                    "intent": "camiseta vermelha tamanho M"
+                  },
+                  "fulfillment": {
+                    "methods": [
+                      {
+                        "id": "ship_playground_001",
+                        "type": "shipping",
+                        "line_item_ids": [
+                          "li_playground_001"
+                        ],
+                        "destinations": [
+                          {
+                            "id": "destination_playground_001",
+                            "street_address": "Rua das Flores, 100",
+                            "extended_address": "Apto 12",
+                            "address_locality": "Goiânia",
+                            "address_region": "GO",
+                            "address_country": "BR",
+                            "postal_code": "74000000",
+                            "first_name": "Ana",
+                            "last_name": "Silva",
+                            "phone_number": "+5562999990000"
+                          }
+                        ],
+                        "selected_destination_id": "destination_playground_001",
+                        "groups": [
+                          {
+                            "id": "group_playground_001",
+                            "line_item_ids": [
+                              "li_playground_001"
+                            ],
+                            "options": [
+                              {
+                                "id": "pac_playground_001",
+                                "title": "PAC",
+                                "description": "Entrega em 4 dias úteis",
+                                "carrier": "Correios",
+                                "earliest_fulfillment_time": "2026-07-22T12:00:00Z",
+                                "latest_fulfillment_time": "2026-07-22T21:00:00Z",
+                                "totals": [
+                                  {
+                                    "type": "shipping",
+                                    "display_text": "PAC",
+                                    "amount": 1990
+                                  }
+                                ]
+                              },
+                              {
+                                "id": "sedex_playground_001",
+                                "title": "SEDEX",
+                                "description": "Entrega em 2 dias úteis",
+                                "carrier": "Correios",
+                                "earliest_fulfillment_time": "2026-07-20T12:00:00Z",
+                                "latest_fulfillment_time": "2026-07-20T21:00:00Z",
+                                "totals": [
+                                  {
+                                    "type": "shipping",
+                                    "display_text": "SEDEX",
+                                    "amount": 3490
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              "mediaType": "application/json"
+            }
+          ],
+          "extensions": [
+            "https://bcp.dev.br/2026-04-08/specification/reference"
+          ],
+          "contextId": "ctx_playground_001"
+        }
+      }
+    },
+    "checkout": {
+      "ucp": {
+        "version": "2026-04-08",
+        "capabilities": {
+          "br.dev.bcp.shopping.checkout": [
+            {
+              "version": "2026-04-08"
+            }
+          ],
+          "br.dev.bcp.shopping.fiscal_identity": [
+            {
+              "version": "2026-07-03",
+              "extends": "br.dev.bcp.shopping.checkout"
+            }
+          ],
+          "br.dev.bcp.shopping.tax": [
+            {
+              "version": "2026-07-14",
+              "extends": "br.dev.bcp.shopping.checkout"
+            }
+          ],
+          "br.dev.bcp.shopping.fulfillment": [
+            {
+              "version": "2026-04-08",
+              "extends": "br.dev.bcp.shopping.checkout"
+            }
+          ],
+          "br.dev.bcp.shopping.buyer_consent": [
+            {
+              "version": "2026-04-08",
+              "extends": "br.dev.bcp.shopping.checkout"
+            }
+          ]
+        },
+        "payment_handlers": {
+          "br.dev.bcp.pix": [
+            {
+              "id": "pix_playground_001",
+              "version": "2026-07-08",
+              "available_instruments": [
+                {
+                  "type": "pix"
+                }
+              ],
+              "config": {
+                "environment": "sandbox",
+                "payee_name": "Loja Vermelho"
+              }
+            }
+          ]
+        }
+      },
+      "id": "chk_playground_001",
+      "status": "incomplete",
+      "currency": "BRL",
+      "seller_identity": {
+        "cnpj": "19131243000197",
+        "legal_name": "Loja Vermelho Comércio de Vestuário Ltda"
+      },
+      "line_items": [
+        {
+          "id": "li_playground_001",
+          "item": {
+            "id": "camiseta-vermelha-m",
+            "title": "Camiseta Vermelha M",
+            "price": 5990
+          },
+          "quantity": 1,
+          "ncm": "61091000",
+          "taxes": [
+            {
+              "type": "icms",
+              "rate": 0.10217,
+              "base": 5990,
+              "amount": 612,
+              "authority": "state",
+              "behavior": "inclusive"
+            },
+            {
+              "type": "pis_cofins",
+              "rate": 0.03706,
+              "base": 5990,
+              "amount": 222,
+              "authority": "federal",
+              "behavior": "inclusive"
+            }
+          ],
+          "totals": [
+            {
+              "type": "subtotal",
+              "amount": 5990
+            }
+          ]
+        }
+      ],
+      "totals": [
+        {
+          "type": "subtotal",
+          "amount": 5990
+        },
+        {
+          "type": "tax",
+          "display_text": "Tributos aproximados incluídos no preço",
+          "amount": 834
+        },
+        {
+          "type": "total",
+          "amount": 5990
+        }
+      ],
+      "messages": [
+        {
+          "type": "info",
+          "path": "$.fulfillment.methods[0].groups[0].selected_option_id",
+          "content": "Escolha uma opção de frete."
+        }
+      ],
+      "links": [
+        {
+          "type": "privacy_policy",
+          "url": "https://loja.exemplo/privacidade"
+        },
+        {
+          "type": "terms_of_service",
+          "url": "https://loja.exemplo/termos"
+        }
+      ],
+      "expires_at": "2026-07-17T22:00:00Z",
+      "buyer": {
+        "first_name": "Ana",
+        "last_name": "Silva",
+        "email": "ana@example.com.br",
+        "phone_number": "+5562999990000",
+        "taxpayer_id": {
+          "kind": "cpf",
+          "value": "39053344705"
+        },
+        "consent": {
+          "analytics": false,
+          "preferences": false,
+          "marketing": false,
+          "sale_of_data": false
+        }
+      },
+      "context": {
+        "address_country": "BR",
+        "address_region": "GO",
+        "language": "pt-BR",
+        "currency": "BRL",
+        "intent": "camiseta vermelha tamanho M"
+      },
+      "fulfillment": {
+        "methods": [
+          {
+            "id": "ship_playground_001",
+            "type": "shipping",
+            "line_item_ids": [
+              "li_playground_001"
+            ],
+            "destinations": [
+              {
+                "id": "destination_playground_001",
+                "street_address": "Rua das Flores, 100",
+                "extended_address": "Apto 12",
+                "address_locality": "Goiânia",
+                "address_region": "GO",
+                "address_country": "BR",
+                "postal_code": "74000000",
+                "first_name": "Ana",
+                "last_name": "Silva",
+                "phone_number": "+5562999990000"
+              }
+            ],
+            "selected_destination_id": "destination_playground_001",
+            "groups": [
+              {
+                "id": "group_playground_001",
+                "line_item_ids": [
+                  "li_playground_001"
+                ],
+                "options": [
+                  {
+                    "id": "pac_playground_001",
+                    "title": "PAC",
+                    "description": "Entrega em 4 dias úteis",
+                    "carrier": "Correios",
+                    "earliest_fulfillment_time": "2026-07-22T12:00:00Z",
+                    "latest_fulfillment_time": "2026-07-22T21:00:00Z",
+                    "totals": [
+                      {
+                        "type": "shipping",
+                        "display_text": "PAC",
+                        "amount": 1990
+                      }
+                    ]
+                  },
+                  {
+                    "id": "sedex_playground_001",
+                    "title": "SEDEX",
+                    "description": "Entrega em 2 dias úteis",
+                    "carrier": "Correios",
+                    "earliest_fulfillment_time": "2026-07-20T12:00:00Z",
+                    "latest_fulfillment_time": "2026-07-20T21:00:00Z",
+                    "totals": [
+                      {
+                        "type": "shipping",
+                        "display_text": "SEDEX",
+                        "amount": 3490
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "events": [
+      {
+        "title": {
+          "pt-BR": "Dados de entrega",
+          "en": "Delivery details"
+        },
+        "description": {
+          "pt-BR": "A cliente confere os dados exatos antes de autorizar o compartilhamento.",
+          "en": "The customer reviews the exact details before authorizing their disclosure."
+        },
+        "documents": [],
+        "conversation": [
+          {
+            "actor": "buyer_agent",
+            "text": {
+              "pt-BR": "Tenho Ana Silva, CPF 390.533.447-05, ana@example.com.br, +55 62 99999-0000 e Rua das Flores, 100, Apto 12, Goiânia, GO, CEP 74000-000. Posso usar esses dados e manter os consentimentos opcionais recusados?",
+              "en": "I have Ana Silva, tax ID 390.533.447-05, ana@example.com.br, +55 62 99999-0000, and Rua das Flores, 100, Apt 12, Goiânia, GO, 74000-000. May I use these details and keep optional consents declined?"
+            }
+          },
+          {
+            "actor": "client",
+            "text": {
+              "pt-BR": "Sim, os dados estão corretos.",
+              "en": "Yes, the details are correct."
+            }
+          }
+        ]
+      },
+      {
+        "title": {
+          "pt-BR": "Opções de frete",
+          "en": "Shipping options"
+        },
+        "description": {
+          "pt-BR": "O vendedor recebe os dados autorizados e devolve todas as opções disponíveis.",
+          "en": "The seller receives the authorized details and returns every available option."
+        },
+        "documents": [
+          {
+            "kind": "request",
+            "name": "A2A SendMessage",
+            "payload": {
+              "headers": {
+                "BCP-Agent": "profile=\"https://agente.exemplo/.well-known/bcp\"",
+                "A2A-Extensions": "https://bcp.dev.br/2026-04-08/specification/reference",
+                "A2A-Version": "1.0"
+              },
+              "body": {
+                "jsonrpc": "2.0",
+                "id": "rpc-04",
+                "method": "SendMessage",
+                "params": {
+                  "message": {
+                    "messageId": "msg-04-request",
+                    "role": "ROLE_USER",
+                    "parts": [
+                      {
+                        "text": "Compradora Ana Silva, CPF 39053344705, ana@example.com.br, +5562999990000. Entrega na Rua das Flores, 100, Apto 12, Goiânia, GO, 74000000, BR. Mantenha os consentimentos opcionais recusados."
+                      }
+                    ],
+                    "extensions": [
+                      "https://bcp.dev.br/2026-04-08/specification/reference"
+                    ],
+                    "contextId": "ctx_playground_001"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "kind": "response",
+            "name": "checkout",
+            "payload": {
+              "jsonrpc": "2.0",
+              "id": "rpc-04",
+              "result": {
+                "message": {
+                  "messageId": "msg-04-response",
+                  "role": "ROLE_AGENT",
+                  "parts": [
+                    {
+                      "text": "Dados aceitos. Escolha uma opção de frete."
+                    },
+                    {
+                      "data": {
+                        "a2a.bcp.checkout": {
+                          "ucp": {
+                            "version": "2026-04-08",
+                            "capabilities": {
+                              "br.dev.bcp.shopping.checkout": [
+                                {
+                                  "version": "2026-04-08"
+                                }
+                              ],
+                              "br.dev.bcp.shopping.fiscal_identity": [
+                                {
+                                  "version": "2026-07-03",
+                                  "extends": "br.dev.bcp.shopping.checkout"
+                                }
+                              ],
+                              "br.dev.bcp.shopping.tax": [
+                                {
+                                  "version": "2026-07-14",
+                                  "extends": "br.dev.bcp.shopping.checkout"
+                                }
+                              ],
+                              "br.dev.bcp.shopping.fulfillment": [
+                                {
+                                  "version": "2026-04-08",
+                                  "extends": "br.dev.bcp.shopping.checkout"
+                                }
+                              ],
+                              "br.dev.bcp.shopping.buyer_consent": [
+                                {
+                                  "version": "2026-04-08",
+                                  "extends": "br.dev.bcp.shopping.checkout"
+                                }
+                              ]
+                            },
+                            "payment_handlers": {
+                              "br.dev.bcp.pix": [
+                                {
+                                  "id": "pix_playground_001",
+                                  "version": "2026-07-08",
+                                  "available_instruments": [
+                                    {
+                                      "type": "pix"
+                                    }
+                                  ],
+                                  "config": {
+                                    "environment": "sandbox",
+                                    "payee_name": "Loja Vermelho"
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "id": "chk_playground_001",
+                          "status": "incomplete",
+                          "currency": "BRL",
+                          "seller_identity": {
+                            "cnpj": "19131243000197",
+                            "legal_name": "Loja Vermelho Comércio de Vestuário Ltda"
+                          },
+                          "line_items": [
+                            {
+                              "id": "li_playground_001",
+                              "item": {
+                                "id": "camiseta-vermelha-m",
+                                "title": "Camiseta Vermelha M",
+                                "price": 5990
+                              },
+                              "quantity": 1,
+                              "ncm": "61091000",
+                              "taxes": [
+                                {
+                                  "type": "icms",
+                                  "rate": 0.10217,
+                                  "base": 5990,
+                                  "amount": 612,
+                                  "authority": "state",
+                                  "behavior": "inclusive"
+                                },
+                                {
+                                  "type": "pis_cofins",
+                                  "rate": 0.03706,
+                                  "base": 5990,
+                                  "amount": 222,
+                                  "authority": "federal",
+                                  "behavior": "inclusive"
+                                }
+                              ],
+                              "totals": [
+                                {
+                                  "type": "subtotal",
+                                  "amount": 5990
+                                }
+                              ]
+                            }
+                          ],
+                          "totals": [
+                            {
+                              "type": "subtotal",
+                              "amount": 5990
+                            },
+                            {
+                              "type": "tax",
+                              "display_text": "Tributos aproximados incluídos no preço",
+                              "amount": 834
+                            },
+                            {
+                              "type": "total",
+                              "amount": 5990
+                            }
+                          ],
+                          "messages": [
+                            {
+                              "type": "info",
+                              "path": "$.fulfillment.methods[0].groups[0].selected_option_id",
+                              "content": "Escolha uma opção de frete."
+                            }
+                          ],
+                          "links": [
+                            {
+                              "type": "privacy_policy",
+                              "url": "https://loja.exemplo/privacidade"
+                            },
+                            {
+                              "type": "terms_of_service",
+                              "url": "https://loja.exemplo/termos"
+                            }
+                          ],
+                          "expires_at": "2026-07-17T22:00:00Z",
+                          "buyer": {
+                            "first_name": "Ana",
+                            "last_name": "Silva",
+                            "email": "ana@example.com.br",
+                            "phone_number": "+5562999990000",
+                            "taxpayer_id": {
+                              "kind": "cpf",
+                              "value": "39053344705"
+                            },
+                            "consent": {
+                              "analytics": false,
+                              "preferences": false,
+                              "marketing": false,
+                              "sale_of_data": false
+                            }
+                          },
+                          "context": {
+                            "address_country": "BR",
+                            "address_region": "GO",
+                            "language": "pt-BR",
+                            "currency": "BRL",
+                            "intent": "camiseta vermelha tamanho M"
+                          },
+                          "fulfillment": {
+                            "methods": [
+                              {
+                                "id": "ship_playground_001",
+                                "type": "shipping",
+                                "line_item_ids": [
+                                  "li_playground_001"
+                                ],
+                                "destinations": [
+                                  {
+                                    "id": "destination_playground_001",
+                                    "street_address": "Rua das Flores, 100",
+                                    "extended_address": "Apto 12",
+                                    "address_locality": "Goiânia",
+                                    "address_region": "GO",
+                                    "address_country": "BR",
+                                    "postal_code": "74000000",
+                                    "first_name": "Ana",
+                                    "last_name": "Silva",
+                                    "phone_number": "+5562999990000"
+                                  }
+                                ],
+                                "selected_destination_id": "destination_playground_001",
+                                "groups": [
+                                  {
+                                    "id": "group_playground_001",
+                                    "line_item_ids": [
+                                      "li_playground_001"
+                                    ],
+                                    "options": [
+                                      {
+                                        "id": "pac_playground_001",
+                                        "title": "PAC",
+                                        "description": "Entrega em 4 dias úteis",
+                                        "carrier": "Correios",
+                                        "earliest_fulfillment_time": "2026-07-22T12:00:00Z",
+                                        "latest_fulfillment_time": "2026-07-22T21:00:00Z",
+                                        "totals": [
+                                          {
+                                            "type": "shipping",
+                                            "display_text": "PAC",
+                                            "amount": 1990
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "id": "sedex_playground_001",
+                                        "title": "SEDEX",
+                                        "description": "Entrega em 2 dias úteis",
+                                        "carrier": "Correios",
+                                        "earliest_fulfillment_time": "2026-07-20T12:00:00Z",
+                                        "latest_fulfillment_time": "2026-07-20T21:00:00Z",
+                                        "totals": [
+                                          {
+                                            "type": "shipping",
+                                            "display_text": "SEDEX",
+                                            "amount": 3490
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      "mediaType": "application/json"
+                    }
+                  ],
+                  "extensions": [
+                    "https://bcp.dev.br/2026-04-08/specification/reference"
+                  ],
+                  "contextId": "ctx_playground_001"
+                }
+              }
+            }
+          }
+        ],
+        "conversation": [
+          {
+            "actor": "buyer_agent",
+            "text": {
+              "pt-BR": "Envio os dados de entrega autorizados pela cliente.",
+              "en": "I am sending the delivery details authorized by the customer."
+            }
+          },
+          {
+            "actor": "seller_agent",
+            "text": {
+              "pt-BR": "Dados aceitos. Estas são as opções de frete disponíveis.",
+              "en": "Details accepted. These are the available shipping options."
+            }
+          }
+        ],
+        "widget": {
+          "type": "shipping",
+          "options": [
+            {
+              "id": "pac_playground_001",
+              "title": "PAC",
+              "description": "Entrega em 4 dias úteis",
+              "carrier": "Correios",
+              "price": 1990,
+              "selected": false
+            },
+            {
+              "id": "sedex_playground_001",
+              "title": "SEDEX",
+              "description": "Entrega em 2 dias úteis",
+              "carrier": "Correios",
+              "price": 3490,
+              "selected": false
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

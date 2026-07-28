@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/postal_address.json",
+  "title": "Postal Address",
+  "type": "object",
+  "properties": {
+    "extended_address": {
+      "type": "string",
+      "description": "An address extension such as an apartment number, C/O or alternative name.",
+      "description_pt": "Um complemento de endereço, como número de apartamento, A/C ou nome alternativo."
+    },
+    "street_address": {
+      "type": "string",
+      "description": "The street address.",
+      "description_pt": "O logradouro."
+    },
+    "address_locality": {
+      "type": "string",
+      "description": "The locality in which the street address is, and which is in the region. For example, Mountain View.",
+      "description_pt": "A localidade em que o logradouro está, e que está na região. Por exemplo, São Paulo."
+    },
+    "address_region": {
+      "type": "string",
+      "description": "The region in which the locality is, and which is in the country. Required for applicable countries (i.e. state in US, province in CA). For example, California or another appropriate first-level Administrative division.",
+      "description_pt": "A região em que a localidade está, e que está no país. Obrigatório para países aplicáveis (por exemplo, estado no BR, província no CA). Por exemplo, São Paulo ou outra divisão administrativa de primeiro nível apropriada."
+    },
+    "address_country": {
+      "type": "string",
+      "description": "The country. Recommended to be in 2-letter ISO 3166-1 alpha-2 format, for example \"US\". For backward compatibility, a 3-letter ISO 3166-1 alpha-3 country code such as \"SGP\" or a full country name such as \"Singapore\" can also be used.",
+      "description_pt": "O país. RECOMENDADO estar no formato ISO 3166-1 alpha-2 de 2 letras, por exemplo \"BR\". Para compatibilidade retroativa, também PODE ser usado um código de país ISO 3166-1 alpha-3 de 3 letras, como \"BRA\", ou o nome completo do país, como \"Brasil\"."
+    },
+    "postal_code": {
+      "type": "string",
+      "description": "The postal code. For example, 94043.",
+      "description_pt": "O código postal (CEP). Por exemplo, 01310-100."
+    },
+    "first_name": {
+      "type": "string",
+      "description": "Optional. First name of the contact associated with the address.",
+      "description_pt": "Opcional. Nome do contato associado ao endereço."
+    },
+    "last_name": {
+      "type": "string",
+      "description": "Optional. Last name of the contact associated with the address.",
+      "description_pt": "Opcional. Sobrenome do contato associado ao endereço."
+    },
+    "phone_number": {
+      "type": "string",
+      "description": "Optional. Phone number of the contact associated with the address.",
+      "description_pt": "Opcional. Número de telefone do contato associado ao endereço."
+    }
+  }
+}

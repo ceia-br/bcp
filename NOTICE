@@ -1,0 +1,26 @@
+Brazilian Commerce Protocol (BCP)
+=================================
+
+This package (bcp-protocol) is a derivative work of the Universal Commerce
+Protocol (UCP), licensed under the Apache License, Version 2.0.
+
+Copyright 2026 UCP Authors (original UCP JSON Schemas).
+Modifications Copyright 2026 BCP Authors.
+
+Provenance:
+- Files under `schemas/` are derived from the UCP specification, baseline
+  release 2026-04-08, with modifications: the namespace `dev.ucp.*` was renamed
+  to `br.dev.bcp.*` and the schema authority `ucp.dev` to `bcp.dev.br`. Further
+  schema-level changes are recorded in CHANGELOG-divergencia.md.
+- Files under `docs/specification/` and the MkDocs build tooling (`mkdocs.yml`,
+  `hooks.py`, `main.py`) include material derived from the UCP documentation and
+  build pipeline, adapted to the BCP namespace, authority, schemas, and Brazilian
+  extensions.
+- The pydantic models generated from these schemas live in the sibling package
+  `bcp-sdk` (see its NOTICE).
+- Any schema authored from scratch by BCP (no UCP lineage) is original work,
+  Copyright 2026 BCP Authors, and is listed as such in CHANGELOG-divergencia.md.
+
+The JSON Schemas carry no per-file copyright notice; attribution and the
+statement of modifications are provided here (Apache License 2.0, section 4).
+See LICENSE for the full license text.

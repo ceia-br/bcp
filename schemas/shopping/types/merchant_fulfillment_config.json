@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/merchant_fulfillment_config.json",
+  "title": "Merchant Fulfillment Config",
+  "description": "Merchant's fulfillment configuration.",
+  "description_pt": "Configuração de fulfillment do lojista.",
+  "type": "object",
+  "properties": {
+    "allows_multi_destination": {
+      "type": "object",
+      "description": "Permits multiple destinations per method type.",
+      "description_pt": "Permite múltiplos destinos por tipo de método.",
+      "properties": {
+        "shipping": {
+          "type": "boolean",
+          "description": "Multiple shipping destinations allowed.",
+          "description_pt": "Múltiplos destinos de shipping permitidos."
+        },
+        "pickup": {
+          "type": "boolean",
+          "description": "Multiple pickup locations allowed.",
+          "description_pt": "Múltiplos locais de pickup permitidos."
+        }
+      },
+      "additionalProperties": false
+    },
+    "allows_method_combinations": {
+      "type": "array",
+      "description": "Allowed method type combinations.",
+      "description_pt": "Combinações de tipos de método permitidas.",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": ["shipping", "pickup"]
+        }
+      }
+    }
+  }
+}

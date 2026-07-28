@@ -1,0 +1,200 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/handlers/pix/pix.json",
+  "name": "br.dev.bcp.pix",
+  "title": "Pix Payment Handler",
+  "description": "Handler for one-off Pix charges. The payee's PSP issues a dynamic charge; the payer pushes payment from any Pix-enabled institution.",
+  "description_pt": "Handler para cobranças Pix avulsas. O PSP do recebedor emite uma cobrança dinâmica; o pagador envia o pagamento a partir de qualquer instituição habilitada ao Pix.",
+
+  "$defs": {
+    "pix_charge_credential": {
+      "title": "Pix Charge Credential",
+      "description": "A dynamic Pix charge issued by the payee's PSP. The copia_e_cola is presented to the payer, who pushes payment from any Pix-enabled institution. Unlike card credentials this payload is meant to be displayed, not omitted.",
+      "description_pt": "Uma cobrança Pix dinâmica emitida pelo PSP do recebedor. O copia_e_cola é apresentado ao pagador, que envia o pagamento a partir de qualquer instituição habilitada ao Pix. Diferentemente de credenciais de cartão, este payload deve ser exibido, não omitido.",
+      "allOf": [
+        { "$ref": "../../shopping/types/payment_credential.json" },
+        {
+          "type": "object",
+          "required": ["type", "provider_payment_id", "copia_e_cola", "expires_at"],
+          "properties": {
+            "type": {
+              "const": "pix_charge",
+              "description": "The credential type identifier for Pix charges.",
+              "description_pt": "O identificador de tipo de credencial para cobranças Pix."
+            },
+            "provider_payment_id": {
+              "type": "string",
+              "description": "Identifier of the charge or payment in the PSP, used to reconcile settlement.",
+              "description_pt": "Identificador da cobrança ou do pagamento no PSP, usado para conciliar a liquidação."
+            },
+            "copia_e_cola": {
+              "type": "string",
+              "description": "BR Code (EMV) payload the payer copies or scans to pay. Encodes payee and amount.",
+              "description_pt": "Payload do BR Code (EMV) que o pagador copia ou escaneia para pagar. Codifica o recebedor e o valor."
+            },
+            "qr_code_base64": {
+              "type": "string",
+              "description": "Optional pre-rendered QR image as a base64-encoded PNG, ready to display (e.g., in a data URI). Derivable from copia_e_cola.",
+              "description_pt": "Imagem de QR opcional pré-renderizada como PNG codificado em base64, pronta para exibição (ex.: em uma data URI). Derivável do copia_e_cola."
+            },
+            "payment_url": {
+              "type": "string",
+              "format": "uri",
+              "description": "Optional hosted payment page provided by the PSP where the payer can complete the Pix.",
+              "description_pt": "Página de pagamento hospedada opcional fornecida pelo PSP onde o pagador pode concluir o Pix."
+            },
+            "expires_at": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Charge expiration (RFC 3339). Platforms MUST NOT present the charge after this time.",
+              "description_pt": "Expiração da cobrança (RFC 3339). As plataformas NÃO DEVEM apresentar a cobrança após esse momento."
+            },
+            "binding": {
+              "$ref": "../../shopping/types/binding.json",
+              "description": "Associates the charge with the checkout it was created for. The copia_e_cola is already locked to a fixed payee and amount, so unlike a bearer token this is a checkout linkage for reconciliation and audit, not an anti-replay guard.",
+              "description_pt": "Associa a cobrança ao checkout para o qual foi criada. O copia_e_cola já está travado a um recebedor e valor fixos, então, diferentemente de um bearer token, este é um vínculo de checkout para conciliação e auditoria, não uma proteção anti-replay."
+            }
+          }
+        }
+      ]
+    },
+
+    "pix_payment_instrument": {
+      "title": "Pix Payment Instrument",
+      "description": "Payment instrument for br.dev.bcp.pix. Carries the dynamic Pix charge produced by the payee's PSP.",
+      "description_pt": "Instrumento de pagamento para br.dev.bcp.pix. Carrega a cobrança Pix dinâmica produzida pelo PSP do recebedor.",
+      "allOf": [
+        { "$ref": "../../shopping/types/payment_instrument.json" },
+        {
+          "type": "object",
+          "required": ["type", "credential"],
+          "properties": {
+            "type": {
+              "const": "pix",
+              "description": "Indicates a Pix charge instrument.",
+              "description_pt": "Indica um instrumento de cobrança Pix."
+            },
+            "credential": { "$ref": "#/$defs/pix_charge_credential" },
+            "display": {
+              "type": "object",
+              "description": "Display information for the Pix charge.",
+              "description_pt": "Informações de exibição para a cobrança Pix.",
+              "properties": {
+                "payee_name": {
+                  "type": "string",
+                  "description": "Payee name to show the payer.",
+                  "description_pt": "Nome do recebedor a exibir ao pagador."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Rich text to display to the payer (e.g., amount and expiry).",
+                  "description_pt": "Texto formatado a exibir ao pagador (ex.: valor e expiração)."
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+
+    "platform_config": {
+      "title": "Pix Platform Config",
+      "type": "object",
+      "properties": {
+        "environment": {
+          "type": "string",
+          "enum": ["sandbox", "production"],
+          "default": "production",
+          "description": "Handler environment.",
+          "description_pt": "Ambiente do handler."
+        },
+        "platform_id": {
+          "type": "string",
+          "description": "Platform identifier for this handler.",
+          "description_pt": "Identificador de plataforma para este handler."
+        }
+      }
+    },
+
+    "business_config": {
+      "title": "Pix Business Config",
+      "description": "Payee configuration announced at discovery. Settlement destination is resolved by the PSP account credentials held by the business, so only the environment is declared on the wire.",
+      "description_pt": "Configuração do recebedor anunciada no discovery. O destino de liquidação é resolvido pelas credenciais da conta do PSP mantidas pela empresa, portanto apenas o ambiente é declarado na comunicação.",
+      "type": "object",
+      "properties": {
+        "environment": {
+          "type": "string",
+          "enum": ["sandbox", "production"],
+          "default": "production",
+          "description": "Handler environment.",
+          "description_pt": "Ambiente do handler."
+        }
+      }
+    },
+
+    "response_config": {
+      "title": "Pix Response Config",
+      "description": "Runtime handler configuration resolved for a checkout or order response.",
+      "description_pt": "Configuração do handler em runtime resolvida para uma resposta de checkout ou order.",
+      "type": "object",
+      "properties": {
+        "environment": {
+          "type": "string",
+          "enum": ["sandbox", "production"],
+          "description": "Handler environment.",
+          "description_pt": "Ambiente do handler."
+        },
+        "payee_name": {
+          "type": "string",
+          "description": "Payee display name resolved for this checkout.",
+          "description_pt": "Nome de exibição do recebedor resolvido para este checkout."
+        }
+      }
+    },
+
+    "platform_schema": {
+      "title": "Pix Handler (Platform Schema)",
+      "description": "Platform declaration for discovery profiles.",
+      "description_pt": "Declaração de plataforma para perfis de discovery.",
+      "allOf": [
+        { "$ref": "../../payment_handler.json#/$defs/platform_schema" },
+        {
+          "type": "object",
+          "properties": {
+            "config": { "$ref": "#/$defs/platform_config" }
+          }
+        }
+      ]
+    },
+
+    "business_schema": {
+      "title": "Pix Handler (Business Schema)",
+      "description": "Business declaration for discovery profiles.",
+      "description_pt": "Declaração de empresa para perfis de discovery.",
+      "allOf": [
+        { "$ref": "../../payment_handler.json#/$defs/business_schema" },
+        {
+          "type": "object",
+          "properties": {
+            "config": { "$ref": "#/$defs/business_config" }
+          }
+        }
+      ]
+    },
+
+    "response_schema": {
+      "title": "Pix Handler (Response Schema)",
+      "description": "Runtime handler reference in checkout and order responses. Authoritative for the checkout.",
+      "description_pt": "Referência de handler em runtime nas respostas de checkout e order. Autoritativa para o checkout.",
+      "allOf": [
+        { "$ref": "../../payment_handler.json#/$defs/response_schema" },
+        {
+          "type": "object",
+          "properties": {
+            "config": { "$ref": "#/$defs/response_config" }
+          }
+        }
+      ]
+    }
+  }
+}

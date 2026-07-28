@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/service.json",
+  "title": "BCP Service",
+  "description": "Service binding for a specific transport. Each transport binding is a separate entry in the service array.",
+  "description_pt": "Binding de serviço para um transporte específico. Cada binding de transporte é uma entrada separada no array service.",
+
+  "$defs": {
+    "base": {
+      "allOf": [
+        { "$ref": "ucp.json#/$defs/entity" },
+        {
+          "type": "object",
+          "required": ["transport"],
+          "properties": {
+            "transport": {
+              "type": "string",
+              "enum": ["rest", "mcp", "a2a", "embedded"],
+              "description": "Transport protocol for this service binding.",
+              "description_pt": "Protocolo de transporte para este binding de serviço."
+            },
+            "endpoint": {
+              "type": "string",
+              "format": "uri",
+              "description": "Endpoint URL for this transport binding.",
+              "description_pt": "URL do endpoint para este binding de transporte."
+            }
+          }
+        }
+      ]
+    },
+
+    "platform_schema": {
+      "title": "Service (Platform Schema)",
+      "description": "Full service declaration for platform-level discovery. All transports require `version`, `spec`, and `transport`. REST, MCP, and embedded additionally require `schema`.",
+      "description_pt": "Declaração completa de serviço para discovery em nível de plataforma. Todos os transportes exigem `version`, `spec` e `transport`. REST, MCP e embedded exigem adicionalmente `schema`.",
+      "allOf": [
+        { "$ref": "#/$defs/base" },
+        { "required": ["spec"] },
+        {
+          "anyOf": [
+            {
+              "properties": { "transport": { "const": "rest" } },
+              "required": ["schema"]
+            },
+            {
+              "properties": { "transport": { "const": "mcp" } },
+              "required": ["schema"]
+            },
+            {
+              "properties": { "transport": { "const": "a2a" } }
+            },
+            {
+              "properties": { "transport": { "const": "embedded" } },
+              "required": ["schema"]
+            }
+          ]
+        }
+      ]
+    },
+
+    "business_schema": {
+      "title": "Service (Business Schema)",
+      "description": "Service binding for business/merchant configuration. May override platform endpoints.",
+      "description_pt": "Binding de serviço para configuração de empresa/lojista. Pode sobrescrever os endpoints da plataforma.",
+      "allOf": [
+        { "$ref": "#/$defs/base" },
+        {
+          "anyOf": [
+            {
+              "properties": { "transport": { "const": "rest" } },
+              "required": ["endpoint"]
+            },
+            {
+              "properties": { "transport": { "const": "mcp" } },
+              "required": ["endpoint"]
+            },
+            {
+              "properties": { "transport": { "const": "a2a" } },
+              "required": ["endpoint"]
+            },
+            {
+              "properties": {
+                "transport": { "const": "embedded" },
+                "config": { "$ref": "transports/embedded_config.json" }
+              }
+            }
+          ]
+        }
+      ]
+    },
+
+    "response_schema": {
+      "title": "Service (Response Schema)",
+      "description": "Service binding in API responses. Includes per-resource transport configuration via typed config.",
+      "description_pt": "Binding de serviço em respostas da API. Inclui configuração de transporte por recurso via config tipado.",
+      "allOf": [
+        { "$ref": "#/$defs/base" },
+        {
+          "anyOf": [
+            {
+              "properties": { "transport": { "const": "rest" } }
+            },
+            {
+              "properties": { "transport": { "const": "mcp" } }
+            },
+            {
+              "properties": { "transport": { "const": "a2a" } }
+            },
+            {
+              "properties": {
+                "transport": { "const": "embedded" },
+                "config": { "$ref": "transports/embedded_config.json" }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

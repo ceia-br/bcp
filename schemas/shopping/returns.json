@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/returns.json",
+  "name": "br.dev.bcp.shopping.returns",
+  "title": "Returns Extension",
+  "description": "Extends Order with the Brazilian return flow: the right of withdrawal (7 calendar days from confirmed delivery, full refund including shipping) and reverse logistics tracking. The withdrawal period is counted from the `delivered` event already present in `fulfillment.events`. The return policy is declared once in the business profile via this capability's config.",
+  "description_pt": "Estende o Order com o fluxo brasileiro de devolução: o direito de arrependimento (7 dias corridos a partir da entrega confirmada, reembolso integral incluindo frete) e o rastreamento da logística reversa. O prazo de arrependimento é contado a partir do evento `delivered` já presente em `fulfillment.events`. A política de devolução é declarada uma vez no perfil da empresa por meio do config desta capability.",
+  "$defs": {
+    "return_adjustment": {
+      "title": "Return Adjustment",
+      "description": "A post-order `return` adjustment extended with the Brazilian legal timestamps and reverse logistics data.",
+      "description_pt": "Um ajuste pós-pedido do tipo `return` estendido com os timestamps legais brasileiros e os dados de logística reversa.",
+      "allOf": [
+        { "$ref": "types/adjustment.json" },
+        {
+          "type": "object",
+          "required": ["type"],
+          "properties": {
+            "type": {
+              "const": "return"
+            },
+            "reason": {
+              "type": "string",
+              "description": "Return reason. Well-known values: `withdrawal` (no justification needed), `defect` (product defect), `wrong_product`. Open vocabulary.",
+              "description_pt": "Motivo da devolução. Valores conhecidos: `withdrawal` (arrependimento, sem necessidade de justificativa), `defect` (defeito do produto), `wrong_product`. Vocabulário aberto.",
+              "examples": ["withdrawal", "defect", "wrong_product"]
+            },
+            "acknowledged_at": {
+              "type": "string",
+              "format": "date-time",
+              "description": "RFC 3339 timestamp when the seller confirmed receipt of the request.",
+              "description_pt": "Timestamp RFC 3339 de quando o vendedor confirmou o recebimento da solicitação."
+            },
+            "reverse_shipping_code": {
+              "type": "string",
+              "description": "Reverse logistics posting code (e.g., Correios reverse authorization) for the consumer to ship the product back.",
+              "description_pt": "Código de postagem da logística reversa (ex.: autorização de postagem reversa dos Correios) para o consumidor devolver o produto."
+            },
+            "carrier": {
+              "type": "string",
+              "description": "Carrier handling the reverse shipment.",
+              "description_pt": "Transportadora responsável pelo envio reverso."
+            },
+            "deadline": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Deadline for the consumer to hand the product to the carrier.",
+              "description_pt": "Prazo para o consumidor entregar o produto à transportadora."
+            }
+          }
+        }
+      ]
+    },
+    "refund_adjustment": {
+      "title": "Refund Adjustment",
+      "description": "A post-order `refund` adjustment. Its totals are always negative, representing money returned to the buyer.",
+      "description_pt": "Um ajuste pós-pedido do tipo `refund`. Seus totais são sempre negativos, representando dinheiro devolvido ao comprador.",
+      "allOf": [
+        { "$ref": "types/adjustment.json" },
+        {
+          "type": "object",
+          "required": ["type"],
+          "properties": {
+            "type": {
+              "const": "refund"
+            },
+            "totals": {
+              "items": {
+                "allOf": [
+                  { "$ref": "types/total.json" },
+                  { "properties": { "amount": { "exclusiveMaximum": 0 } } }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "order_adjustment": {
+      "title": "Order Adjustment with Return Support",
+      "description": "Post-order adjustment. Return adjustments carry the Brazilian legal and reverse-logistics fields; refund adjustments carry negative totals; any adjustment may reference causally related ones.",
+      "description_pt": "Ajuste pós-pedido. Ajustes de devolução carregam os campos legais e de logística reversa brasileiros; ajustes de reembolso carregam totais negativos; qualquer ajuste pode referenciar outros relacionados por causalidade.",
+      "allOf": [
+        { "$ref": "types/adjustment.json" },
+        {
+          "type": "object",
+          "properties": {
+            "related_adjustment_ids": {
+              "type": "array",
+              "items": { "type": "string" },
+              "uniqueItems": true,
+              "description": "Identifiers of causally related adjustments. A refund caused by a return references the return adjustment here.",
+              "description_pt": "Identificadores de ajustes relacionados por causalidade. Um reembolso causado por uma devolução referencia aqui o ajuste de devolução."
+            }
+          }
+        },
+        {
+          "if": {
+            "required": ["type"],
+            "properties": {
+              "type": { "const": "return" }
+            }
+          },
+          "then": { "$ref": "#/$defs/return_adjustment" }
+        },
+        {
+          "if": {
+            "required": ["type"],
+            "properties": {
+              "type": { "const": "refund" }
+            }
+          },
+          "then": { "$ref": "#/$defs/refund_adjustment" }
+        }
+      ]
+    },
+    "br.dev.bcp.shopping.order": {
+      "title": "Order with Returns",
+      "description": "Order whose post-order adjustments carry the Brazilian return fields.",
+      "description_pt": "Order cujos ajustes pós-pedido carregam os campos brasileiros de devolução.",
+      "allOf": [
+        { "$ref": "order.json" },
+        {
+          "type": "object",
+          "properties": {
+            "adjustments": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/order_adjustment" },
+              "description": "Post-order events. Return adjustments carry legal and reverse-logistics data; other adjustment types retain their base shape.",
+              "description_pt": "Eventos pós-pedido. Ajustes de devolução carregam os dados legais e de logística reversa; os demais tipos de ajuste mantêm sua forma base.",
+              "ucp_request": "omit"
+            }
+          }
+        }
+      ]
+    },
+    "br.dev.bcp.shopping.returns": {
+      "business_schema": {
+        "title": "Returns Capability (Business)",
+        "description": "Business-level returns capability configuration: the return policy the consumer must know before completion.",
+        "description_pt": "Configuração da capability de devoluções em nível de empresa: a política de devolução que o consumidor deve conhecer antes da conclusão.",
+        "allOf": [
+          { "$ref": "../capability.json#/$defs/business_schema" },
+          {
+            "properties": {
+              "config": {
+                "$ref": "types/returns_config.json",
+                "description": "Business return policy",
+                "description_pt": "Política de devolução da empresa"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

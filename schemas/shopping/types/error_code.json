@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/error_code.json",
+  "title": "Error Code",
+  "description": "Error code identifying the type of error. Standard errors are defined in specification (see examples), and have standardized semantics; freeform codes are permitted.",
+  "description_pt": "Código de erro que identifica o tipo de erro. Erros padrão são definidos na especificação (ver exemplos) e têm semântica padronizada; códigos de formato livre são permitidos.",
+  "type": "string",
+  "examples": [
+    "not_found",
+    "out_of_stock",
+    "item_unavailable",
+    "address_undeliverable",
+    "payment_failed",
+    "eligibility_invalid",
+    "identity_required",
+    "insufficient_scope"
+  ]
+}

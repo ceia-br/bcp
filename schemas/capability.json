@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/capability.json",
+  "title": "BCP Capability",
+  "description": "Schema for BCP capabilities and extensions. Extensions are capabilities with an 'extends' field. Uses reverse-domain naming for governance.",
+  "description_pt": "Schema para capabilities e extensões BCP. Extensões são capabilities com um campo 'extends'. Usa reverse-domain naming para governança.",
+
+  "$defs": {
+    "base": {
+      "allOf": [
+        { "$ref": "ucp.json#/$defs/entity" },
+        {
+          "type": "object",
+          "properties": {
+            "extends": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9]*(?:\\.[a-z][a-z0-9_]*)+$"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9]*(?:\\.[a-z][a-z0-9_]*)+$"
+                  },
+                  "minItems": 1
+                }
+              ],
+              "description": "Parent capability(s) this extends. Present for extensions, absent for root capabilities. Use array for multi-parent extensions.",
+              "description_pt": "Capability(s) pai que esta estende. Presente para extensões, ausente para capabilities raiz. Use um array para extensões com múltiplos pais."
+            }
+          }
+        }
+      ]
+    },
+
+    "platform_schema": {
+      "title": "Capability (Platform Schema)",
+      "description": "Full capability declaration for platform-level discovery. Includes spec/schema URLs for agent fetching.",
+      "description_pt": "Declaração completa de capability para discovery em nível de plataforma. Inclui URLs de spec/schema para busca pelo agente.",
+      "allOf": [{ "$ref": "#/$defs/base" }, { "required": ["spec", "schema"] }]
+    },
+
+    "business_schema": {
+      "title": "Capability (Business Schema)",
+      "description": "Capability configuration for business/merchant level. May include business-specific config overrides.",
+      "description_pt": "Configuração de capability em nível de empresa/lojista. Pode incluir sobrescritas de config específicas da empresa.",
+      "allOf": [{ "$ref": "#/$defs/base" }]
+    },
+
+    "response_schema": {
+      "title": "Capability (Response Schema)",
+      "description": "Capability reference in responses. Only name/version required to confirm active capabilities.",
+      "description_pt": "Referência de capability em respostas. Apenas name/version são necessários para confirmar as capabilities ativas.",
+      "allOf": [{ "$ref": "#/$defs/base" }]
+    }
+  }
+}

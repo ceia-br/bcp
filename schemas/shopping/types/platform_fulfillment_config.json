@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/platform_fulfillment_config.json",
+  "title": "Platform Fulfillment Config",
+  "description": "Platform's fulfillment configuration.",
+  "description_pt": "Configuração de fulfillment da plataforma.",
+  "type": "object",
+  "properties": {
+    "supports_multi_group": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enables multiple groups per method.",
+      "description_pt": "Habilita múltiplos grupos por método."
+    }
+  }
+}

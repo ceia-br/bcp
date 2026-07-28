@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/line_item.json",
+  "title": "Line Item",
+  "type": "object",
+  "description": "Line item object. Expected to use the currency of the parent object.",
+  "description_pt": "Objeto de item de linha. Espera-se que use a moeda do objeto pai.",
+  "required": [
+    "id",
+    "item",
+    "quantity",
+    "totals"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "ucp_request": {
+        "create": "omit",
+        "update": "optional"
+      }
+    },
+    "item": {
+      "$ref": "item.json"
+    },
+    "quantity": {
+      "type": "integer",
+      "description": "Quantity of the item being purchased.",
+      "description_pt": "Quantidade do item sendo comprado.",
+      "minimum": 1
+    },
+    "totals": {
+      "type": "array",
+      "items": {
+        "$ref": "total.json"
+      },
+      "description": "Line item totals breakdown.",
+      "description_pt": "Detalhamento dos totais do item de linha.",
+      "ucp_request": "omit"
+    },
+    "parent_id": {
+      "type": "string",
+      "description": "Parent line item identifier for any nested structures.",
+      "description_pt": "Identificador do item de linha pai para quaisquer estruturas aninhadas.",
+      "ucp_request": {
+        "create": "omit",
+        "update": "optional"
+      }
+    }
+  }
+}

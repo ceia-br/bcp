@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[codz]
+.venv/
+.env
+
+# Site gerado pelo mkdocs
+/site
+
+# Caches de ferramentas
+.cache/
+.ruff_cache/
+.pytest_cache/
+
+# macOS
+.DS_Store

@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/error_response.json",
+  "title": "Error Response",
+  "description": "Generic error response when business logic prevents resource creation or failed to retrieve resource. Used when no valid resource can be established.",
+  "description_pt": "Resposta de erro genérica quando a lógica de empresa impede a criação do recurso ou falha ao recuperá-lo. Usada quando nenhum recurso válido pode ser estabelecido.",
+  "type": "object",
+  "required": ["ucp", "messages"],
+  "additionalProperties": false,
+  "properties": {
+    "ucp": {
+      "$ref": "../../ucp.json#/$defs/error",
+      "description": "BCP protocol metadata. Status MUST be 'error' for error response.",
+      "description_pt": "Metadados do protocolo BCP. O status DEVE ser 'error' para uma resposta de erro."
+    },
+    "messages": {
+      "type": "array",
+      "items": {
+        "$ref": "message.json"
+      },
+      "minItems": 1,
+      "description": "Array of messages describing why the operation failed.",
+      "description_pt": "Array de mensagens descrevendo por que a operação falhou."
+    },
+    "continue_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL for buyer handoff or session recovery.",
+      "description_pt": "URL para handoff do buyer ou recuperação da sessão."
+    }
+  }
+}

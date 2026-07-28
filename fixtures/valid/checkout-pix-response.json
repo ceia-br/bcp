@@ -1,0 +1,78 @@
+{
+  "ucp": {
+    "version": "2026-04-08",
+    "capabilities": {
+      "br.dev.bcp.shopping.checkout": [
+        {
+          "version": "2026-04-08",
+          "schema": "https://bcp.dev.br/schemas/shopping/checkout.json"
+        }
+      ]
+    },
+    "payment_handlers": {
+      "br.dev.bcp.pix": [
+        {
+          "id": "pix_recebedor_001",
+          "version": "2026-07-08",
+          "available_instruments": [{ "type": "pix" }],
+          "config": {
+            "environment": "production",
+            "payee_name": "Loja Exemplo"
+          }
+        }
+      ]
+    }
+  },
+  "id": "chk_bcp_pix_001",
+  "status": "ready_for_complete",
+  "currency": "BRL",
+  "buyer": {
+    "first_name": "Ana",
+    "last_name": "Silva",
+    "email": "ana@example.com.br",
+    "tax_id": { "kind": "cpf", "value": "39053344705" }
+  },
+  "seller_identity": {
+    "cnpj": "19131243000197",
+    "legal_name": "Loja Exemplo Comercio de Artesanato Ltda"
+  },
+  "line_items": [
+    {
+      "id": "li_1",
+      "item": { "id": "prod_1", "title": "Vaso de ceramica", "price": 10000 },
+      "quantity": 1,
+      "totals": [{ "type": "subtotal", "amount": 10000 }]
+    }
+  ],
+  "totals": [
+    { "type": "subtotal", "amount": 10000 },
+    { "type": "total", "amount": 10000 }
+  ],
+  "payment": {
+    "instruments": [
+      {
+        "id": "inst_pix_001",
+        "handler_id": "pix_recebedor_001",
+        "type": "pix",
+        "selected": true,
+        "credential": {
+          "type": "pix_charge",
+          "provider_payment_id": "ORD01JQ8Z9F2C4B1E7A3D4C8F",
+          "copia_e_cola": "00020126580014br.gov.bcb.pix0136123e4567-e12b-12d1-a456-4266554400005204000053039865802BR5909Loja Exemplo6009Sao Paulo62070503***6304ABCD",
+          "qr_code_base64": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M8AAAMBAQDJ/pLvAAAAAElFTkSuQmCC",
+          "payment_url": "https://www.mercadopago.com.br/payments/123456789/ticket",
+          "expires_at": "2026-07-08T15:30:00Z",
+          "binding": { "checkout_id": "chk_bcp_pix_001" }
+        },
+        "display": {
+          "payee_name": "Loja Exemplo",
+          "description": "Pague R$ 100,00 via Pix. A cobranca expira em 30 minutos."
+        }
+      }
+    ]
+  },
+  "links": [
+    { "type": "privacy_policy", "url": "https://loja.example.com.br/privacidade" },
+    { "type": "terms_of_service", "url": "https://loja.example.com.br/termos" }
+  ]
+}

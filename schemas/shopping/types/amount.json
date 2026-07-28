@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/amount.json",
+  "title": "Amount",
+  "description": "Monetary amount in the currency's minor unit as defined by ISO 4217. Refer to the currency's exponent to determine minor-to-major ratio (e.g., 2 for USD, 0 for JPY, 3 for KWD).",
+  "description_pt": "Valor monetário na menor unidade da moeda, conforme definido pela ISO 4217. Consulte o expoente da moeda para determinar a razão entre a menor e a maior unidade (ex.: 2 para BRL, 0 para JPY, 3 para KWD).",
+  "type": "integer",
+  "minimum": 0
+}

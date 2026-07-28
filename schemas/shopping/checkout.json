@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/checkout.json",
+  "name": "br.dev.bcp.shopping.checkout",
+  "title": "Checkout",
+  "description": "Base checkout schema. Extensions compose onto this using allOf.",
+  "description_pt": "Schema base de checkout. As extensões se compõem sobre ele usando allOf.",
+  "type": "object",
+  "required": [
+    "ucp",
+    "id",
+    "line_items",
+    "status",
+    "currency",
+    "totals",
+    "links"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "ucp": {
+      "$ref": "../ucp.json#/$defs/response_checkout_schema",
+      "ucp_request": "omit"
+    },
+    "id": {
+      "type": "string",
+      "description": "Unique identifier of the checkout session.",
+      "description_pt": "Identificador único da sessão de checkout.",
+      "ucp_request": "omit"
+    },
+    "line_items": {
+      "type": "array",
+      "items": {
+        "$ref": "types/line_item.json"
+      },
+      "description": "List of line items being checked out.",
+      "description_pt": "Lista de itens de linha em checkout.",
+      "ucp_request": {
+        "create": "required",
+        "update": "required",
+        "complete": "omit"
+      }
+    },
+    "buyer": {
+      "$ref": "types/buyer.json",
+      "description": "Representation of the buyer.",
+      "description_pt": "Representação do comprador.",
+      "ucp_request": {
+        "create": "optional",
+        "update": "optional",
+        "complete": "omit"
+      }
+    },
+    "context": {
+      "$ref": "types/context.json",
+      "ucp_request": {
+        "create": "optional",
+        "update": "optional",
+        "complete": "omit"
+      }
+    },
+    "signals": {
+      "$ref": "types/signals.json",
+      "ucp_request": "optional"
+    },
+    "attribution": {
+      "$ref": "types/attribution.json",
+      "ucp_request": "optional"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "incomplete",
+        "requires_escalation",
+        "ready_for_complete",
+        "complete_in_progress",
+        "completed",
+        "canceled"
+      ],
+      "description": "Checkout state indicating the current phase and required action. See Checkout Status lifecycle documentation for state transition details.",
+      "description_pt": "Estado do checkout indicando a fase atual e a ação requerida. Consulte a documentação do ciclo de vida de Checkout Status para detalhes de transição de estado.",
+      "ucp_request": "omit"
+    },
+    "currency": {
+      "type": "string",
+      "description": "ISO 4217 currency code reflecting the merchant's market determination. Derived from address, context, and geo IP—buyers provide signals, merchants determine currency.",
+      "description_pt": "Código de moeda ISO 4217 refletindo a determinação de mercado do lojista. Derivado de address, context e geo-IP — os compradores fornecem sinais, os lojistas determinam a moeda.",
+      "ucp_request": "omit"
+    },
+    "totals": {
+      "$ref": "types/totals.json",
+      "description": "Different cart totals.",
+      "description_pt": "Diferentes totais do carrinho.",
+      "ucp_request": "omit"
+    },
+    "messages": {
+      "type": "array",
+      "items": {
+        "$ref": "types/message.json"
+      },
+      "description": "List of messages with error and info about the checkout session state.",
+      "description_pt": "Lista de mensagens com erro e informação sobre o estado da sessão de checkout.",
+      "ucp_request": "omit"
+    },
+    "links": {
+      "type": "array",
+      "items": {
+        "$ref": "types/link.json"
+      },
+      "description": "Links to be displayed by the platform (Privacy Policy, TOS). Mandatory for legal compliance.",
+      "description_pt": "Links a serem exibidos pela plataforma (Política de Privacidade, Termos de Uso). Obrigatórios para conformidade legal.",
+      "ucp_request": "omit"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "RFC 3339 expiry timestamp. Default TTL is 6 hours from creation if not sent.",
+      "description_pt": "Timestamp de expiração RFC 3339. O TTL padrão é de 6 horas a partir da criação, se não enviado.",
+      "ucp_request": "omit"
+    },
+    "continue_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL for checkout handoff and session recovery. MUST be provided when status is requires_escalation. See specification for format and availability requirements.",
+      "description_pt": "URL para handoff do checkout e recuperação de sessão. DEVE ser fornecida quando o status for requires_escalation. Consulte a especificação para os requisitos de formato e disponibilidade.",
+      "ucp_request": "omit"
+    },
+    "payment": {
+      "$ref": "payment.json",
+      "ucp_request": {
+        "create": "optional",
+        "update": "optional",
+        "complete": "required"
+      }
+    },
+    "order": {
+      "$ref": "types/order_confirmation.json",
+      "description": "Details about an order created for this checkout session.",
+      "description_pt": "Detalhes sobre um pedido criado para esta sessão de checkout.",
+      "ucp_request": "omit"
+    }
+  }
+}

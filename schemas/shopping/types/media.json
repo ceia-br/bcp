@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/media.json",
+  "title": "Media",
+  "description": "Product media item (image, video, etc.).",
+  "description_pt": "Item de mídia do produto (imagem, vídeo, etc.).",
+  "type": "object",
+  "required": [
+    "type",
+    "url"
+  ],
+  "properties": {
+    "type": {
+      "type": "string",
+      "description": "Media type. Well-known values: `image`, `video`, `model_3d`.",
+      "description_pt": "Tipo de mídia. Valores conhecidos: `image`, `video`, `model_3d`."
+    },
+    "url": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL to the media resource.",
+      "description_pt": "URL do recurso de mídia."
+    },
+    "alt_text": {
+      "type": "string",
+      "description": "Accessibility text describing the media.",
+      "description_pt": "Texto de acessibilidade que descreve a mídia."
+    },
+    "width": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Width in pixels (for images/video).",
+      "description_pt": "Largura em pixels (para imagens/vídeo)."
+    },
+    "height": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Height in pixels (for images/video).",
+      "description_pt": "Altura em pixels (para imagens/vídeo)."
+    }
+  }
+}

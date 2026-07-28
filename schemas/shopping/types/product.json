@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/product.json",
+  "title": "Product",
+  "description": "A product in the catalog with variants and options.",
+  "description_pt": "Um produto no catálogo com variantes e opções.",
+  "type": "object",
+  "required": [
+    "id",
+    "title",
+    "description",
+    "price_range",
+    "variants"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Global ID (GID) uniquely identifying this product.",
+      "description_pt": "ID Global (GID) que identifica exclusivamente este produto."
+    },
+    "handle": {
+      "type": "string",
+      "description": "URL-safe slug for SEO-friendly URLs (e.g., 'blue-runner-pro'). Use id for stable API references.",
+      "description_pt": "Slug seguro para URL, para URLs amigáveis a SEO (por exemplo, 'blue-runner-pro'). Use id para referências de API estáveis."
+    },
+    "title": {
+      "type": "string",
+      "description": "Product title.",
+      "description_pt": "Título do produto."
+    },
+    "description": {
+      "$ref": "description.json",
+      "description": "Product description in one or more formats.",
+      "description_pt": "Descrição do produto em um ou mais formatos."
+    },
+    "url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Canonical product page URL.",
+      "description_pt": "URL canônica da página do produto."
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "$ref": "category.json"
+      },
+      "description": "Product categories with optional taxonomy identifiers.",
+      "description_pt": "Categorias do produto com identificadores de taxonomia opcionais."
+    },
+    "price_range": {
+      "$ref": "price_range.json",
+      "description": "Price range across all variants.",
+      "description_pt": "Faixa de preço entre todas as variantes."
+    },
+    "list_price_range": {
+      "$ref": "price_range.json",
+      "description": "List price range before discounts (for strikethrough display).",
+      "description_pt": "Faixa de preço de tabela antes de descontos (para exibição riscada)."
+    },
+    "media": {
+      "type": "array",
+      "items": {
+        "$ref": "media.json"
+      },
+      "description": "Product media (images, videos, 3D models). First item is the featured media for listings.",
+      "description_pt": "Mídia do produto (imagens, vídeos, modelos 3D). O primeiro item é a mídia em destaque para as listagens."
+    },
+    "options": {
+      "type": "array",
+      "items": {
+        "$ref": "product_option.json"
+      },
+      "description": "Product options (Size, Color, etc.).",
+      "description_pt": "Opções do produto (Tamanho, Cor, etc.)."
+    },
+    "variants": {
+      "type": "array",
+      "items": {
+        "$ref": "variant.json"
+      },
+      "minItems": 1,
+      "description": "Purchasable variants of this product. First item is the featured variant for listings.",
+      "description_pt": "Variantes deste produto disponíveis para compra. O primeiro item é a variante em destaque para as listagens."
+    },
+    "rating": {
+      "$ref": "rating.json",
+      "description": "Aggregate product rating.",
+      "description_pt": "Avaliação agregada do produto."
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Product tags for categorization and search.",
+      "description_pt": "Tags do produto para categorização e busca."
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Business-defined custom data extending the standard product model.",
+      "description_pt": "Dados personalizados definidos pela empresa que estendem o modelo de produto padrão."
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/transports/embedded_config.json",
+  "title": "Embedded Transport Config",
+  "description": "Per-session configuration for embedded transport binding. Allows businesses to vary EP availability and delegations based on cart contents, agent authorization, or policy.",
+  "description_pt": "Configuração por sessão para o binding de transporte embedded. Permite que as empresas variem a disponibilidade de EP e as delegações com base no conteúdo do carrinho, na autorização do agente ou em política.",
+  "type": "object",
+  "properties": {
+    "delegate": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Delegations the business allows. At service-level, declares available delegations. In BCP responses, confirms accepted delegations for this session.",
+      "description_pt": "Delegações que a empresa permite. Em nível de serviço, declara as delegações disponíveis. Em respostas BCP, confirma as delegações aceitas para esta sessão."
+    },
+    "color_scheme": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["light", "dark"]
+      },
+      "description": "Color schemes the business supports. Hosts use ec_color_scheme query parameter to request a scheme from this list.",
+      "description_pt": "Esquemas de cores que a empresa suporta. Os hosts usam o parâmetro de query ec_color_scheme para solicitar um esquema desta lista."
+    }
+  }
+}

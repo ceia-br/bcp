@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/card_payment_instrument.json",
+  "title": "Card Payment Instrument",
+  "description": "A basic card payment instrument with visible card details. Can be inherited by a handler's instrument schema to define handler-specific display details or more complex credential structures.",
+  "description_pt": "Um payment instrument de cartão básico com detalhes visíveis do cartão. Pode ser herdado pelo schema de instrumento de um handler para definir detalhes de exibição específicos do handler ou estruturas de credencial mais complexas.",
+  "$defs": {
+    "available_card_payment_instrument": {
+      "title": "Available Card Payment Instrument",
+      "description": "Declares card instrument availability with card-specific constraints.",
+      "description_pt": "Declara a disponibilidade do instrumento de cartão com restrições específicas de cartão.",
+      "allOf": [
+        { "$ref": "available_payment_instrument.json" },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "card"
+            },
+            "constraints": {
+              "type": "object",
+              "properties": {
+                "brands": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "description": "Limit to specific card brands (e.g., ['visa', 'mastercard', 'amex']).",
+                  "description_pt": "Limita a bandeiras de cartão específicas (ex.: ['visa', 'mastercard', 'amex'])."
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "$ref": "payment_instrument.json"
+    },
+    {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "card",
+          "description": "Indicates this is a card payment instrument.",
+          "description_pt": "Indica que este é um payment instrument de cartão."
+        },
+        "display": {
+          "type": "object",
+          "description": "Display information for this card payment instrument.",
+          "description_pt": "Informações de exibição para este payment instrument de cartão.",
+          "properties": {
+            "brand": {
+              "type": "string",
+              "description": "The card brand/network (e.g., visa, mastercard, amex).",
+              "description_pt": "A bandeira/rede do cartão (ex.: visa, mastercard, amex)."
+            },
+            "last_digits": {
+              "type": "string",
+              "description": "Last 4 digits of the card number.",
+              "description_pt": "Últimos 4 dígitos do número do cartão."
+            },
+            "expiry_month": {
+              "type": "integer",
+              "description": "The month of the card's expiration date (1-12).",
+              "description_pt": "O mês da data de expiração do cartão (1-12)."
+            },
+            "expiry_year": {
+              "type": "integer",
+              "description": "The year of the card's expiration date.",
+              "description_pt": "O ano da data de expiração do cartão."
+            },
+            "description": {
+              "type": "string",
+              "description": "An optional rich text description of the card to display to the user (e.g., 'Visa ending in 1234, expires 12/2025').",
+              "description_pt": "Uma descrição opcional em rich text do cartão para exibir ao usuário (ex.: 'Visa terminando em 1234, expira em 12/2025')."
+            },
+            "card_art": {
+              "type": "string",
+              "format": "uri",
+              "description": "An optional URI to a rich image representing the card (e.g., card art provided by the issuer).",
+              "description_pt": "Um URI opcional para uma imagem rica que representa o cartão (ex.: card art fornecida pelo emissor)."
+            }
+          }
+        }
+      }
+    }
+  ]
+}

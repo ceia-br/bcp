@@ -1,0 +1,293 @@
+<!--
+   Copyright 2026 UCP Authors
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
+<!--
+   BCP adaptation: this documentation page is derived from UCP documentation,
+   renamed to the br.dev.bcp namespace and adjusted for the Brazilian Commerce
+   Protocol fork. See NOTICE and CHANGELOG-divergencia.md.
+-->
+# Tokenization Guide
+
+**OpenAPI:** not published in this BCP release.
+
+## Overview
+
+This guide is for **implementers building tokenization payment handlers**. It
+defines the shared API, security requirements, and conformance criteria that all
+tokenization handlers follow.
+
+**Note:** While the examples in this guide use card credentials, tokenization
+patterns apply to **any sensitive credential type**—bank accounts, digital
+wallets, loyalty accounts, etc. Compliance requirements (e.g., PCI DSS for
+cards) vary by credential type.
+
+**Pix does not follow this pattern.** BCP's default handler,
+[`br.dev.bcp.pix`](pix-payment-handler.md), does not involve platform-side
+tokenization — the business generates the charge directly with its PSP and
+returns it for display. This guide is relevant to card-based or other
+tokenizable-credential handlers, not to Pix.
+
+We offer a range of examples to utilize forms of tokenization in BCP:
+
+| Example | Use Case |
+| :------ | :------- |
+| Processor Tokenizer (not included in this BCP release) | Business or PSP runs tokenization and processing |
+| Platform Tokenizer (not included in this BCP release) | Platform tokenizes credentials for businesses/PSPs |
+| Encrypted Credential Handler (not included in this BCP release) | Platform encrypts credentials instead of tokenizing |
+
+---
+
+## Core Concepts
+
+### Credential Flow
+
+Tokenization handlers transform credentials between source and checkout forms:
+
+```text
++-------------------------------------------------------------------------+
+|                     Tokenization Payment Flow                           |
++-------------------------------------------------------------------------+
+|                                                                         |
+|   Platform has:            Tokenizer            Business receives:      |
+|   Source Credential    -->  /tokenize  -->         TokenCredential      |
+|                                                                         |
+|   +-----------------+                      +-------------------------+  |
+|   | source_         |                      | checkout_               |  |
+|   | credentials     |    What goes IN      | credentials             |  |
+|   |                 |<---------------      |                         |  |
+|   | * card/fpan     |                      | What comes OUT          |  |
+|   | * card/dpan     |                ----->| * token                 |  |
+|   |                 |                      |                         |  |
+|   +-----------------+                      +-------------------------+  |
+|                                                                         |
++-------------------------------------------------------------------------+
+```
+
+Tokenization handlers accept source credentials (e.g., card with FPAN) and
+produce checkout credentials (e.g., tokens).
+
+### Token Lifecycle
+
+Tokens move through distinct phases. Your handler specification must document
+which lifecycle policy you use:
+
+```text
++--------------+    +--------------+    +--------------+    +--------------+
+|  Generation  |--->|   Storage    |--->| Detokenize   |--->| Invalidation |
+|              |    |              |    |              |    |              |
+|Platform calls|    | Tokenizer    |    | Business/PSP |    | Token expires|
+| /tokenize    |    | holds token  |    | calls        |    | or is used   |
+|              |    | -> credential|    | /detokenize  |    |              |
++--------------+    +--------------+    +--------------+    +--------------+
+```
+
+| Policy             | Description                                 | Use Case                                        |
+| :----------------- | :------------------------------------------ | :---------------------------------------------- |
+| **Single-use**     | Invalidated after first detokenization      | Most secure; recommended default                |
+| **TTL-based**      | Expires after fixed duration (e.g., 15 min) | Allows retries on transient failures            |
+| **Session-scoped** | Valid for checkout session duration         | Complex flows with multiple processing attempts |
+
+### Binding
+
+All tokenization requests require a `binding` object that ties the token to a
+specific context:
+
+| Field         | Required    | Description                                                                                     |
+| :------------ | :---------- | :---------------------------------------------------------------------------------------------- |
+| `checkout_id` | Yes         | The checkout session this token is valid for                                                    |
+| `identity`    | Conditional | The participant identity to bind to; required when caller acts on behalf of another participant |
+
+The tokenizer **MUST** verify binding matches on `/detokenize`. See [Binding Schema](site:schemas/shopping/types/binding.json).
+
+---
+
+## OpenAPI
+
+Tokenization handlers implement two endpoints. Your handler **MAY** implement
+one or both depending on your architecture. Or none, like our encrypted
+payload example, which defines its own mechanism to encrypt.
+
+### POST /tokenize
+
+Converts a raw credential into a token bound to a checkout and identity.
+
+**When to implement:** Always, unless you are an agent generating tokens
+internally.
+
+<!-- ucp:example skip reason="tokenization API, not BCP payload" -->
+```json
+POST /tokenize
+Content-Type: application/json
+
+{
+  "credential": {
+    "type": "card",
+    "card_number_type": "fpan",
+    "number": "4111111111111111",
+    "expiry_month": 12,
+    "expiry_year": 2026,
+    "cvc": "123"
+  },
+  "binding": {
+    "checkout_id": "abc123",
+    "identity": {
+      "access_token": "merchant_001"
+    }
+  }
+}
+```
+
+**Response:**
+
+<!-- ucp:example skip reason="tokenization API, not BCP payload" -->
+```json
+{
+  "token": "tok_abc123xyz789"
+}
+```
+
+### POST /detokenize
+
+Returns the original credential for a valid token. Binding must match.
+
+**When to implement:** Always, unless you combine detokenization with
+processing (see PSP example).
+
+<!-- ucp:example skip reason="tokenization API, not BCP payload" -->
+```json
+POST /detokenize
+Content-Type: application/json
+Authorization: Bearer {caller_access_token}
+
+{
+  "token": "tok_abc123xyz789",
+  "binding": {
+    "checkout_id": "abc123"
+  }
+}
+```
+
+**Response:**
+
+<!-- ucp:example skip reason="tokenization API, not BCP payload" -->
+```json
+{
+  "type": "card",
+  "card_number_type": "fpan",
+  "number": "4111111111111111",
+  "expiry_month": 12,
+  "expiry_year": 2026,
+  "cvc": "123"
+}
+```
+
+**Note:** `binding.identity` is omitted when the authenticated caller is the
+binding target. Include it when acting on behalf of another participant (e.g.,
+PSP detokenizing for business).
+
+The OpenAPI specification for tokenization handlers is not published in this BCP
+release.
+
+---
+
+## Security Requirements
+
+| Requirement                  | Description                                                                                |
+| :--------------------------- | :----------------------------------------------------------------------------------------- |
+| **Binding required**         | Credentials **MUST** be bound to `checkout_id` and participant `identity` to prevent reuse |
+| **Binding verified**         | Tokenizer **MUST** verify binding matches before returning credentials                     |
+| **Cryptographically random** | Use secure random generators; tokens must be unguessable                                   |
+| **Sufficient length**        | Minimum 128 bits of entropy                                                                |
+| **Non-reversible**           | Cannot derive the credential from the token                                                |
+| **Scoped**                   | Token should only work with your tokenizer                                                 |
+| **Time-limited**             | Enforce TTL appropriate to use case (typically 5-30 minutes)                               |
+| **Single-use preferred**     | Invalidate after first detokenization when possible                                        |
+
+---
+
+## Handler Specification Requirements
+
+When publishing your handler, your specification document **MUST** include:
+
+| Requirement                     | Example                                                           |
+| :------------------------------ | :---------------------------------------------------------------- |
+| **Unique handler name**         | `com.example.tokenization_payment` (reverse-DNS format)           |
+| **Endpoint URLs**               | Production and sandbox base URLs                                  |
+| **Authentication requirements** | OAuth 2.0, API keys, etc.                                         |
+| **Onboarding process**          | How participants register and receive identities                  |
+| **Accepted credentials**        | Which credential types are accepted for tokenization              |
+| **Token lifecycle policy**      | Single-use, TTL, or session-scoped                                |
+| **Security acknowledgements**   | Participants receiving raw credentials must accept responsibility |
+
+### Example Specification Outline
+
+```markdown
+**Handler Name:** `com.acme.tokenization_payment`
+**OpenAPI:** not published in this BCP release.
+
+| Environment | Base URL                           |
+| :---------- | :--------------------------------- |
+| Production  | `https://api.acme.com/ucp`         |
+| Sandbox     | `https://sandbox.api.acme.com/ucp` |
+
+**Supported Instruments:**
+
+| Instrument | Source Credentials           | Checkout Credentials |
+| :--------- | :--------------------------- | :------------------- |
+| `card`     | `card` (fpan, network_token) | `token`              |
+
+**Token Lifecycle:** Single-use (invalidated after detokenization)
+
+**Authentication:** OAuth 2.0 client credentials
+
+**Onboarding:** Register at portal.acme.com. Businesses receive `access_token` for handler identity.
+```
+
+---
+
+## Conformance Checklist
+
+A tokenizer handler conforms to this pattern if it:
+
+- [ ] Publishes a handler specification at a stable URL with a unique, reverse-DNS `handler_name`
+- [ ] Implements `/tokenize` and/or `/detokenize` per the OpenAPI
+- [ ] Defines authentication and onboarding requirements
+- [ ] Documents credential transformation between source and checkout forms
+- [ ] Produces tokens compatible with the `TokenCredential` schema
+- [ ] Specifies token lifecycle policy (TTL, single-use, etc.)
+- [ ] Requires `binding` with `checkout_id` on tokenization requests
+- [ ] Uses `PaymentIdentity` for participant identification
+- [ ] Verifies `binding` matches on detokenization requests
+- [ ] Requires security acknowledgements from participants receiving raw credentials
+
+---
+
+## References
+
+| Resource                | URL                                                                                                             |
+| :---------------------- | :-------------------------------------------------------------------------------------------------------------- |
+| Tokenization OpenAPI    | Not published in this BCP release.                                                                             |
+| Identity Schema         | [schemas/shopping/types/payment_identity.json](site:schemas/shopping/types/payment_identity.json)               |
+| Binding Schema          | [schemas/shopping/types/binding.json](site:schemas/shopping/types/binding.json)                                 |
+| Token Credential Schema | [schemas/shopping/types/token_credential.json](site:schemas/shopping/types/token_credential.json)               |
+| Card Instrument Schema  | [schemas/shopping/types/card_payment_instrument.json](site:schemas/shopping/types/card_payment_instrument.json) |
+
+---
+
+## See Also
+
+- **Encrypted Credential Handler (not included in this BCP release)** — Alternative pattern using encryption instead of tokenize/detokenize round-trips
+- **[AP2 Mandates Extension](ap2-mandates.md)** — Add cryptographic proof of checkout agreement for PSP verification

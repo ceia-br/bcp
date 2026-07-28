@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/description.json",
+  "title": "Description",
+  "description": "Description content in one or more formats. At least one format must be provided.",
+  "description_pt": "Conteúdo de descrição em um ou mais formatos. Pelo menos um formato deve ser fornecido.",
+  "type": "object",
+  "properties": {
+    "plain": {
+      "type": "string",
+      "description": "Plain text content.",
+      "description_pt": "Conteúdo em texto puro."
+    },
+    "html": {
+      "type": "string",
+      "description": "HTML-formatted content. Security: Platforms MUST sanitize before rendering—strip scripts, event handlers, and untrusted elements. Treat all rich text as untrusted input.",
+      "description_pt": "Conteúdo formatado em HTML. Segurança: As plataformas DEVEM sanitizar antes de renderizar—remover scripts, event handlers e elementos não confiáveis. Trate todo rich text como entrada não confiável."
+    },
+    "markdown": {
+      "type": "string",
+      "description": "Markdown-formatted content.",
+      "description_pt": "Conteúdo formatado em Markdown."
+    }
+  },
+  "minProperties": 1
+}

@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/nfe.json",
+  "name": "br.dev.bcp.shopping.nfe",
+  "title": "NF-e Extension",
+  "description": "Extends Order with a reference to the issued Brazilian electronic invoice (NF-e): only the document reference (access key, links, issuance timestamp). Optional, since not every sale issues an NF-e and issuance obligations vary per seller.",
+  "description_pt": "Estende o Order com uma referência à nota fiscal eletrônica brasileira (NF-e) emitida: apenas a referência do documento (chave de acesso, links, timestamp de emissão). Opcional, já que nem toda venda emite NF-e e as obrigações de emissão variam por vendedor.",
+  "$defs": {
+    "nfe": {
+      "type": "object",
+      "description": "Reference to the issued fiscal document: the document identifiers only.",
+      "description_pt": "Referência ao documento fiscal emitido: apenas os identificadores do documento.",
+      "required": ["access_key"],
+      "properties": {
+        "access_key": {
+          "type": "string",
+          "description": "NF-e access key, 44 digits. Uniquely identifies the document at SEFAZ.",
+          "description_pt": "Chave de acesso da NF-e, 44 dígitos. Identifica o documento de forma única na SEFAZ."
+        },
+        "danfe_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL of the DANFE (human-readable auxiliary document, PDF).",
+          "description_pt": "URL do DANFE (documento auxiliar legível por humanos, PDF)."
+        },
+        "xml_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL of the authorized XML document.",
+          "description_pt": "URL do documento XML autorizado."
+        },
+        "issued_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "RFC 3339 timestamp of issuance.",
+          "description_pt": "Timestamp de emissão RFC 3339."
+        }
+      }
+    },
+    "br.dev.bcp.shopping.order": {
+      "title": "Order with NF-e",
+      "description": "Order extended with the fiscal document reference.",
+      "description_pt": "Order estendido com a referência do documento fiscal.",
+      "allOf": [
+        { "$ref": "order.json" },
+        {
+          "type": "object",
+          "properties": {
+            "nfe": {
+              "$ref": "#/$defs/nfe",
+              "description": "Reference to the NF-e issued for this order. Absent while not yet issued, or when the seller is exempt (MEI selling to a natural person).",
+              "description_pt": "Referência à NF-e emitida para este pedido. Ausente enquanto ainda não emitida, ou quando o vendedor é isento (MEI vendendo a pessoa física).",
+              "ucp_request": "omit"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

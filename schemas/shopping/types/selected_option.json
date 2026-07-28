@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/selected_option.json",
+  "title": "Selected Option",
+  "description": "A specific option selection on a variant (e.g., Size: Large).",
+  "description_pt": "Uma seleção específica de opção em uma variante (por exemplo, Tamanho: Grande).",
+  "type": "object",
+  "required": [
+    "name",
+    "label"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Option name (e.g., 'Size').",
+      "description_pt": "Nome da opção (por exemplo, 'Tamanho')."
+    },
+    "id": {
+      "type": "string",
+      "description": "Optional option value identifier from option_value.id. When present, the server SHOULD use it for matching; name and label remain required for display.",
+      "description_pt": "Identificador opcional do valor da opção, vindo de option_value.id. Quando presente, o servidor DEVERIA usá-lo para correspondência; name e label continuam obrigatórios para exibição."
+    },
+    "label": {
+      "type": "string",
+      "description": "Selected option label (e.g., 'Large').",
+      "description_pt": "Rótulo da opção selecionada (por exemplo, 'Grande')."
+    }
+  }
+}

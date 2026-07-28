@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/input_correlation.json",
+  "title": "Input Correlation",
+  "description": "Maps a request identifier to the variant it resolved to, with match semantics.",
+  "description_pt": "Mapeia um identificador de requisição para a variante à qual ele foi resolvido, com semântica de correspondência.",
+  "type": "object",
+  "required": ["id"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The identifier from the lookup request that resolved to this variant.",
+      "description_pt": "O identificador da requisição de lookup que foi resolvido para esta variante."
+    },
+    "match": {
+      "type": "string",
+      "description": "How the request identifier resolved to this variant. Well-known values: `exact` (input directly identifies this variant, e.g., variant ID, SKU), `featured` (server selected this variant as representative, e.g., product ID resolved to best match). Businesses MAY implement and provide additional resolution strategies.",
+      "description_pt": "Como o identificador da requisição foi resolvido para esta variante. Valores conhecidos: `exact` (a entrada identifica diretamente esta variante, ex.: ID da variante, SKU), `featured` (o servidor selecionou esta variante como representativa, ex.: ID do produto resolvido para a melhor correspondência). As empresas PODEM implementar e fornecer estratégias adicionais de resolução.",
+      "examples": ["exact", "featured"]
+    }
+  }
+}

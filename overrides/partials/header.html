@@ -1,0 +1,56 @@
+{% set home_url = config.extra.homepage | d(nav.homepage.url, true) | url %}
+<header class="md-header bcp-site-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="{{ lang.t('header') }}">
+    <a href="{{ home_url }}" class="bcp-brand" aria-label="{{ config.site_name }}">
+      <svg class="bcp-brand__mark" viewBox="0 0 96 80" aria-hidden="true">
+        <path d="M30 12 L14 12 Q8 12 8 18 L8 62 Q8 68 14 68 L30 68" fill="none" stroke="#00c07a" stroke-width="9" stroke-linecap="round" />
+        <path d="M66 12 L82 12 Q88 12 88 18 L88 62 Q88 68 82 68 L66 68" fill="none" stroke="#ffcf33" stroke-width="9" stroke-linecap="round" />
+        <circle cx="37" cy="40" r="7" fill="#00c07a" />
+        <circle cx="59" cy="40" r="7" fill="#ffcf33" />
+        <line x1="37" y1="40" x2="59" y2="40" stroke="#f4f5f2" stroke-width="5" stroke-linecap="round" />
+      </svg>
+      <span class="bcp-brand__copy">
+        <strong>bcp</strong>
+        <small>BRAZILIAN COMMERCE PROTOCOL</small>
+      </span>
+    </a>
+
+    <div class="md-header__title bcp-header__title-compat" data-md-component="header-title" aria-hidden="true">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">{{ config.site_name }}</span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            {% if page.meta and page.meta.title %}
+              {{ page.meta.title }}
+            {% else %}
+              {{ page.title }}
+            {% endif %}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <label class="md-header__button md-icon bcp-menu-button" for="__drawer">
+      {% set icon = config.theme.icon.menu or "material/menu" %}
+      {% include ".icons/" ~ icon ~ ".svg" %}
+    </label>
+
+    {% if "navigation.tabs" in features %}
+      {% include "partials/tabs.html" %}
+    {% endif %}
+
+    <div class="bcp-header__utilities">
+      {% if config.extra.alternate %}
+        {% include "partials/alternate.html" %}
+      {% endif %}
+      {% if config.repo_url %}
+        <a class="bcp-repo-link" href="{{ config.repo_url }}" target="_blank" rel="noopener">
+          <span class="bcp-repo-link__code" aria-hidden="true">&lt;/&gt;</span>
+          <span>GitHub</span>
+        </a>
+      {% endif %}
+    </div>
+  </nav>
+</header>

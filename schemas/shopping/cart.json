@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/cart.json",
+  "name": "br.dev.bcp.shopping.cart",
+  "title": "Cart",
+  "description": "Shopping cart with estimated pricing before checkout. Lightweight pre-purchase exploration with no payment info or complex status states.",
+  "description_pt": "Carrinho de compras com preços estimados antes do checkout. Exploração leve de pré-compra, sem informações de pagamento nem estados de status complexos.",
+  "$defs": {
+    "checkout": {
+      "title": "Checkout with Cart",
+      "description": "Checkout extended with cart capability. Adds cart_id to create_checkout for cart-to-checkout conversion.",
+      "description_pt": "Checkout estendido com a capability de carrinho. Adiciona cart_id a create_checkout para a conversão de carrinho em checkout.",
+      "allOf": [
+        {
+          "$ref": "checkout.json"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "cart_id": {
+              "type": "string",
+              "description": "Cart ID to convert to checkout. Business MUST use cart contents (line_items, context, buyer) and MUST ignore overlapping fields in checkout payload.",
+              "description_pt": "ID do carrinho a converter em checkout. A Empresa DEVE usar o conteúdo do carrinho (line_items, context, buyer) e DEVE ignorar campos sobrepostos no payload do checkout.",
+              "ucp_request": {
+                "create": "optional",
+                "update": "omit"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "type": "object",
+  "required": [
+    "ucp",
+    "id",
+    "line_items",
+    "currency",
+    "totals"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "ucp": {
+      "$ref": "../ucp.json#/$defs/response_cart_schema",
+      "ucp_request": "omit"
+    },
+    "id": {
+      "type": "string",
+      "description": "Unique cart identifier.",
+      "description_pt": "Identificador único do carrinho.",
+      "ucp_request": {
+        "create": "omit",
+        "update": "required"
+      }
+    },
+    "line_items": {
+      "type": "array",
+      "items": {
+        "$ref": "types/line_item.json"
+      },
+      "description": "Cart line items. Same structure as checkout. Full replacement on update.",
+      "description_pt": "Itens de linha do carrinho. Mesma estrutura do checkout. Substituição total na atualização.",
+      "ucp_request": {
+        "create": "required",
+        "update": "required"
+      }
+    },
+    "context": {
+      "$ref": "types/context.json",
+      "description": "Buyer signals for localization (country, region, postal_code). Merchant uses for pricing, availability, currency. Falls back to geo-IP if omitted.",
+      "description_pt": "Sinais do comprador para localização (country, region, postal_code). O lojista os usa para preço, disponibilidade e moeda. Recorre a geo-IP se omitidos.",
+      "ucp_request": {
+        "create": "optional",
+        "update": "optional"
+      }
+    },
+    "signals": {
+      "$ref": "types/signals.json",
+      "ucp_request": {
+        "create": "optional",
+        "update": "optional"
+      }
+    },
+    "attribution": {
+      "$ref": "types/attribution.json",
+      "ucp_request": {
+        "create": "optional",
+        "update": "optional"
+      }
+    },
+    "buyer": {
+      "$ref": "types/buyer.json",
+      "description": "Optional buyer information for personalized estimates.",
+      "description_pt": "Informações opcionais do comprador para estimativas personalizadas.",
+      "ucp_request": {
+        "create": "optional",
+        "update": "optional"
+      }
+    },
+    "currency": {
+      "type": "string",
+      "description": "ISO 4217 currency code. Determined by merchant based on context or geo-IP.",
+      "description_pt": "Código de moeda ISO 4217. Determinado pelo lojista com base no contexto ou em geo-IP.",
+      "ucp_request": "omit"
+    },
+    "totals": {
+      "$ref": "types/totals.json",
+      "description": "Estimated cost breakdown. May be partial if shipping/tax not yet calculable.",
+      "description_pt": "Detalhamento estimado de custos. Pode ser parcial se frete/imposto ainda não forem calculáveis.",
+      "ucp_request": "omit"
+    },
+    "messages": {
+      "type": "array",
+      "items": {
+        "$ref": "types/message.json"
+      },
+      "description": "Validation messages, warnings, or informational notices.",
+      "description_pt": "Mensagens de validação, avisos ou notas informativas.",
+      "ucp_request": "omit"
+    },
+    "links": {
+      "type": "array",
+      "items": {
+        "$ref": "types/link.json"
+      },
+      "description": "Optional merchant links (policies, FAQs).",
+      "description_pt": "Links opcionais do lojista (políticas, FAQs).",
+      "ucp_request": "omit"
+    },
+    "continue_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL for cart handoff and session recovery. Enables sharing and human-in-the-loop flows.",
+      "description_pt": "URL para handoff do carrinho e recuperação de sessão. Habilita compartilhamento e fluxos com humano no circuito (human-in-the-loop).",
+      "ucp_request": "omit"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Cart expiry timestamp (RFC 3339). Optional.",
+      "description_pt": "Timestamp de expiração do carrinho (RFC 3339). Opcional.",
+      "ucp_request": "omit"
+    }
+  }
+}

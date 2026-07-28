@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/shipping_destination.json",
+  "title": "Shipping Destination",
+  "description": "Shipping destination.",
+  "description_pt": "Destino de envio.",
+  "type": "object",
+  "ucp_shared_request": true,
+  "allOf": [
+    {
+      "$ref": "postal_address.json"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "ID specific to this shipping destination.",
+          "description_pt": "ID específico deste destino de envio.",
+          "ucp_request": "optional"
+        }
+      },
+      "required": [
+        "id"
+      ]
+    }
+  ]
+}

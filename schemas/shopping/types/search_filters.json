@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/search_filters.json",
+  "title": "Search Filters",
+  "description": "Filter criteria to narrow search results. All specified filters combine with AND logic.",
+  "description_pt": "Critérios de filtro para restringir os resultados de busca. Todos os filtros especificados se combinam com lógica AND.",
+  "type": "object",
+  "properties": {
+    "categories": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Filter by product categories (OR logic — matches products in any listed categories). Values match against the value field in product category entries. Valid values can be discovered from the categories field in search results, merchant documentation, or standard taxonomies that businesses may align with.",
+      "description_pt": "Filtra por categorias de produto (lógica OR — corresponde a produtos em qualquer das categorias listadas). Os valores correspondem ao campo value nas entradas de categoria do produto. Valores válidos podem ser descobertos a partir do campo categories nos resultados de busca, da documentação do lojista ou de taxonomias padrão às quais as empresas podem se alinhar."
+    },
+    "price": {
+      "$ref": "price_filter.json"
+    }
+  },
+  "additionalProperties": true
+}

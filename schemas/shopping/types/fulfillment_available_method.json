@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/fulfillment_available_method.json",
+  "title": "Fulfillment Available Method",
+  "description": "Inventory availability hint for a fulfillment method type.",
+  "description_pt": "Dica de disponibilidade de estoque para um tipo de método de fulfillment.",
+  "type": "object",
+  "ucp_shared_request": true,
+  "required": ["type", "line_item_ids"],
+  "additionalProperties": true,
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": ["shipping", "pickup"],
+      "description": "Fulfillment method type this availability applies to.",
+      "description_pt": "Tipo de método de fulfillment ao qual esta disponibilidade se aplica.",
+      "ucp_request": "omit"
+    },
+    "line_item_ids": {
+      "type": "array",
+      "description": "Line items available for this fulfillment method.",
+      "description_pt": "Itens de linha disponíveis para este método de fulfillment.",
+      "items": { "type": "string" },
+      "ucp_request": "omit"
+    },
+    "fulfillable_on": {
+      "type": ["string", "null"],
+      "description": "'now' for immediate availability, or ISO 8601 date for future (preorders, transfers).",
+      "description_pt": "'now' para disponibilidade imediata, ou data ISO 8601 para o futuro (pré-vendas, transferências).",
+      "ucp_request": "omit"
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable availability info (e.g., 'Available for pickup at Downtown Store today').",
+      "description_pt": "Informação de disponibilidade legível por humanos (ex.: 'Disponível para pickup na Loja Centro hoje').",
+      "ucp_request": "omit"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/order_confirmation.json",
+  "title": "Order Confirmation",
+  "description": "Order details available at the time of checkout completion.",
+  "description_pt": "Detalhes do pedido disponíveis no momento da conclusão do checkout.",
+  "type": "object",
+  "required": [
+    "id",
+    "permalink_url"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique order identifier.",
+      "description_pt": "Identificador único do pedido."
+    },
+    "label": {
+      "type": "string",
+      "description": "Human-readable label for identifying the order. MUST only be provided by the business.",
+      "description_pt": "Rótulo legível por humanos para identificar o pedido. DEVE ser fornecido apenas pela empresa."
+    },
+    "permalink_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Permalink to access the order on merchant site.",
+      "description_pt": "Permalink para acessar o pedido no site do lojista."
+    }
+  }
+}

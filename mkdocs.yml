@@ -1,0 +1,235 @@
+---
+#   Copyright 2026 UCP Authors
+#
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+
+site_name: Protocolo Comercial Brasileiro
+site_url: !ENV [SITE_URL, "https://bcp.dev.br/"]
+site_description: >-
+  O Brazilian Commerce Protocol (BCP) é um protocolo aberto para comércio
+  agêntico descentralizado no Brasil, forkado independentemente do UCP sob
+  br.dev.bcp.
+docs_dir: docs
+site_dir: !ENV [MKDOCS_SITE_DIR, "site"]
+edit_uri: edit/main/docs/
+
+nav:
+  - Início: index.md
+  - Playground: playground.md
+  - Conceitos básicos: core-concepts.md
+  - Especificação:
+      - Visão geral: specification/overview.md
+      - Glossário: specification/glossary.md
+      - Capacidade de checkout:
+          - Visão geral: specification/checkout.md
+          - Transportes:
+              - Protocolo embarcado: specification/embedded-protocol.md
+              - MCP: specification/checkout-mcp.md
+              - A2A: specification/checkout-a2a.md
+              - Embarcado: specification/embedded-checkout.md
+          - Extensão de mandatos AP2: specification/ap2-mandates.md
+          - Extensão de consentimento do comprador: specification/buyer-consent.md
+          - Extensão de descontos: specification/discount.md
+          - Extensão de fulfillment: specification/fulfillment.md
+          - Extensão brasileira de identidade fiscal: specification/fiscal-identity.md
+          - Extensão brasileira de tributos: specification/tax.md
+      - Capacidade de carrinho:
+          - Visão geral: specification/cart.md
+          - Transportes:
+              - MCP: specification/cart-mcp.md
+              - Embarcado: specification/embedded-cart.md
+      - Capacidade de catálogo:
+          - Visão geral: specification/catalog/index.md
+          - Busca: specification/catalog/search.md
+          - Consulta: specification/catalog/lookup.md
+          - Transportes:
+              - MCP: specification/catalog/mcp.md
+      - Capacidade de pedido:
+          - Visão geral: specification/order.md
+          - Transportes:
+              - MCP: specification/order-mcp.md
+          - Extensão brasileira de NF-e: specification/nfe.md
+          - Extensão brasileira de devoluções: specification/returns.md
+      - Capacidade de vínculo de identidade: specification/identity-linking.md
+      - Manipuladores de pagamento:
+          - Guia: specification/payment-handler-guide.md
+          - Modelo: specification/payment-handler-template.md
+          - Guia de tokenização: specification/tokenization-guide.md
+          - Manipulador de pagamento Pix: specification/pix-payment-handler.md
+      - Assinaturas: specification/signatures.md
+      - Referência: specification/reference.md
+      - Atribuição: specification/attribution.md
+  - Roteiro: roadmap.md
+  - Parceiros: partners.md
+
+repo_name: BCP on GitHub
+repo_url: https://github.com/Brazilian-Commerce-Protocol/bcp
+
+copyright: >-
+  Copyright 2026 BCP Authors. Trechos derivados do Universal Commerce Protocol
+  (UCP), Apache License 2.0. Consulte LICENSE e NOTICE.
+
+extra_css:
+  - https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css
+  - stylesheets/custom.css
+
+extra_javascript:
+  - https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js
+  - javascripts/sponsors-carousel.js
+
+extra:
+  bcp_version: draft
+  ucp_version: draft
+  bcp_url: https://bcp.dev.br
+  ucp_url: https://bcp.dev.br
+  scope: /
+  alternate:
+    - name: Português (Brasil)
+      link: !ENV [BCP_PT_URL, "/latest/"]
+      lang: pt-BR
+    - name: English
+      link: !ENV [BCP_EN_URL, "/latest/en/"]
+      lang: en
+  version:
+    provider: mike
+
+theme:
+  name: material
+  custom_dir: overrides
+  language: pt-BR
+  logo: assets/bcp-logo.svg
+  favicon: assets/favicon.svg
+  font:
+    text: Space Grotesk
+    code: IBM Plex Mono
+  icon:
+    repo: fontawesome/brands/github
+    view: material/pencil-box-multiple
+    admonition:
+      note: fontawesome/solid/note-sticky
+      abstract: fontawesome/solid/book
+      info: fontawesome/solid/circle-info
+      tip: fontawesome/solid/bullhorn
+      success: fontawesome/solid/check
+      question: fontawesome/solid/circle-question
+      warning: fontawesome/solid/triangle-exclamation
+      failure: fontawesome/solid/bomb
+      danger: fontawesome/solid/skull
+      bug: fontawesome/solid/robot
+      example: fontawesome/solid/flask
+      quote: fontawesome/solid/quote-left
+  palette:
+    - scheme: slate
+      primary: black
+      accent: green
+  features:
+    - announce.dismiss
+    - content.code.annotate
+    - content.code.copy
+    - content.code.select
+    - content.tabs.link
+    - content.tooltips
+    - navigation.footer
+    - navigation.top
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - toc.follow
+
+markdown_extensions:
+  - meta
+  - footnotes
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets:
+      base_path: .
+      url_download: true
+      dedent_subsections: true
+      check_paths: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - toc:
+      permalink: true
+
+hooks:
+  - hooks.py
+
+plugins:
+  - search
+  - macros:
+      on_error_fail: true
+      on_undefined: strict
+  - site-urls
+  - social
+  - llmstxt:
+      full_output: llms-full.txt
+      markdown_description: |
+        Este é o diretório de documentação do Brazilian Commerce Protocol (BCP),
+        um protocolo aberto para comércio agêntico descentralizado no Brasil.
+
+        ### Índices técnicos da especificação (llms.txt)
+
+        Para índices brutos e otimizados para LLM das especificações versionadas:
+
+        - [Índice da especificação BCP mais recente](https://bcp.dev.br/latest/llms.txt):
+          especificação estável mais recente para uso em produção.
+      sections:
+        Visão geral:
+          - index.md: >-
+              Ponto de entrada da documentação do Brazilian Commerce Protocol.
+          - core-concepts.md: >-
+              Papéis, capacidades, sessões de checkout e extensões brasileiras.
+          - roadmap.md: >-
+              Roteiro público para protocolo, SDKs e trabalho no ecossistema.
+          - partners.md: >-
+              Patrocinadores, parceiros e formas de participar do grupo de trabalho.
+        Especificação:
+          - specification/overview.md: >-
+              Especificação técnica principal do BCP: descoberta, transportes,
+              capacidades, extensões e regras de schema.
+          - specification/signatures.md: >-
+              Requisitos de assinatura para autenticação segura de requisições e
+              proteção contra repetição.
+          - specification/reference.md: >-
+              Referência completa gerada a partir dos JSON Schemas do BCP.
+        Extensões brasileiras:
+          - specification/fiscal-identity.md: >-
+              Extensão de identidade fiscal brasileira para checkout e pedido.
+          - specification/tax.md: >-
+              Extensão brasileira de transparência tributária para checkout e pedido.
+          - specification/nfe.md: >-
+              Extensão brasileira de referência à NF-e para pedidos.
+          - specification/returns.md: >-
+              Extensão brasileira de devoluções e direito de arrependimento.
+          - specification/pix-payment-handler.md: >-
+              Manipulador de pagamento Pix para cobrança dinâmica avulsa.

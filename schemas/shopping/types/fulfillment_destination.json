@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/fulfillment_destination.json",
+  "title": "Fulfillment Destination",
+  "description": "A destination for fulfillment.",
+  "description_pt": "Um destino para fulfillment.",
+  "type": "object",
+  "ucp_shared_request": true,
+  "oneOf": [
+    {
+      "$ref": "shipping_destination.json"
+    },
+    {
+      "$ref": "retail_location.json"
+    }
+  ]
+}

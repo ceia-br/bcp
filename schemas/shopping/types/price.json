@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/price.json",
+  "title": "Price",
+  "description": "Price with explicit currency.",
+  "description_pt": "Preço com moeda explícita.",
+  "type": "object",
+  "required": [
+    "amount",
+    "currency"
+  ],
+  "properties": {
+    "amount": {
+      "$ref": "amount.json",
+      "description": "Amount in ISO 4217 minor units. Use 0 for free items.",
+      "description_pt": "Valor em unidades menores ISO 4217. Use 0 para itens gratuitos."
+    },
+    "currency": {
+      "type": "string",
+      "description": "ISO 4217 currency code (e.g., 'USD', 'EUR', 'GBP').",
+      "description_pt": "Código de moeda ISO 4217 (por exemplo, 'BRL', 'USD', 'EUR').",
+      "pattern": "^[A-Z]{3}$"
+    }
+  }
+}
