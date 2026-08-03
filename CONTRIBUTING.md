@@ -27,7 +27,7 @@ Achou um bug, um erro na documentação ou sente falta de algo? Abra uma issue.
 É assim que rastreamos os problemas. Para bug em schema, inclua o schema ou o
 fixture afetado e o que você esperava que acontecesse. Para puxar uma
 conversa, compartilhar uma ideia ou tirar uma dúvida, use as
-[Discussões](https://github.com/Brazilian-Commerce-Protocol/bcp/discussions).
+[Discussões](https://github.com/ceia-br/bcp/discussions).
 
 ## Processo de contribuição
 
