@@ -27,7 +27,7 @@ identidade fiscal e tributos como cidadãos de primeira classe do protocolo.**
 [Especificação](https://bcp.dev.br/latest/specification/overview/) ·
 [Playground](https://bcp.dev.br/latest/playground/) ·
 [English](https://bcp.dev.br/latest/en/) ·
-[Discussões](https://github.com/Brazilian-Commerce-Protocol/bcp/discussions)
+[Discussões](https://github.com/ceia-br/bcp/discussions)
 
 [![Licença](https://img.shields.io/badge/licen%C3%A7a-Apache%202.0-blue.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/status-draft-orange.svg)](https://bcp.dev.br)
@@ -108,7 +108,7 @@ o protocolo traz o payment handler de Pix Cobrança (`br.dev.bcp.pix`).
 ## Contribuindo
 
 - Dúvidas e propostas: use as
-  [Discussões](https://github.com/Brazilian-Commerce-Protocol/bcp/discussions).
+  [Discussões](https://github.com/ceia-br/bcp/discussions).
 - Bugs e melhorias: abra uma issue neste repositório.
 - Fluxo de PR, commits, convenções de schema e código de conduta: veja o
   [CONTRIBUTING.md](CONTRIBUTING.md).
