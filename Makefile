@@ -6,7 +6,7 @@ DOCS_EN_CONFIG := mkdocs.en.yml
 DOCS_SITE_ROOT ?= $(CURDIR)/site
 DOCS_SITE_DIR ?= $(DOCS_SITE_ROOT)/$(DOCS_LABEL)
 
-.PHONY: help install check validate playground-check docs-build docs-serve docs-clean
+.PHONY: help install check validate playground-check playground-fonts docs-build docs-serve docs-clean
 
 help: ## Lista os comandos disponiveis
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
@@ -22,6 +22,9 @@ validate: ## Validador local dos schemas e fixtures (+ lint ucp-schema, se insta
 
 playground-check: ## Valida e compara os snapshots estaticos do playground
 	uv run --group playground python playground/generate.py --check
+
+playground-fonts: ## Regenera os subsets WOFF2 das fontes do playground
+	uv run --group fonts python scripts/vendor_playground_fonts.py
 
 docs-build: ## Monta o rascunho do site local em site/draft
 	SITE_URL=$${SITE_URL:-https://bcp.dev.br/$(DOCS_LABEL)/} \

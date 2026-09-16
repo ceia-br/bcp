@@ -1,0 +1,87 @@
+timeout: 1800s
+
+steps:
+  - name: gcr.io/cloud-builders/docker
+    id: build-bcp-docs-image
+    args:
+      - build
+      - --platform=linux/amd64
+      - --build-arg
+      - SITE_URL=${_SITE_URL}
+      - -t
+      - ${_AR_REGION}-docker.pkg.dev/${PROJECT_ID}/${_AR_REPOSITORY}/${_IMAGE_NAME}:${SHORT_SHA}
+      - -t
+      - ${_AR_REGION}-docker.pkg.dev/${PROJECT_ID}/${_AR_REPOSITORY}/${_IMAGE_NAME}:latest
+      - -f
+      - ${_DOCKERFILE_PATH}
+      - ${_BUILD_CONTEXT}
+
+  - name: gcr.io/cloud-builders/docker
+    id: push-bcp-docs-image-sha
+    args:
+      - push
+      - ${_AR_REGION}-docker.pkg.dev/${PROJECT_ID}/${_AR_REPOSITORY}/${_IMAGE_NAME}:${SHORT_SHA}
+    waitFor:
+      - build-bcp-docs-image
+
+  - name: gcr.io/cloud-builders/docker
+    id: push-bcp-docs-image-latest
+    args:
+      - push
+      - ${_AR_REGION}-docker.pkg.dev/${PROJECT_ID}/${_AR_REPOSITORY}/${_IMAGE_NAME}:latest
+    waitFor:
+      - build-bcp-docs-image
+
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    id: deploy-bcp-docs-cloud-run
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - ${_SERVICE_NAME}
+      - --image
+      - ${_AR_REGION}-docker.pkg.dev/${PROJECT_ID}/${_AR_REPOSITORY}/${_IMAGE_NAME}:${SHORT_SHA}
+      - --region
+      - ${_REGION}
+      - --platform
+      - managed
+      - --execution-environment
+      - gen2
+      - --port
+      - ${_PORT}
+      - --cpu
+      - ${_CPU}
+      - --memory
+      - ${_MEMORY}
+      - --min-instances
+      - ${_MIN_INSTANCES}
+      - --max-instances
+      - ${_MAX_INSTANCES}
+      - --timeout
+      - ${_TIMEOUT}
+      - --ingress
+      - all
+      - --allow-unauthenticated
+    waitFor:
+      - push-bcp-docs-image-sha
+      - push-bcp-docs-image-latest
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+
+substitutions:
+  _AR_REGION: us-central1
+  _AR_REPOSITORY: bcp
+  _IMAGE_NAME: bcp-docs
+  _SERVICE_NAME: bcp-docs
+  _REGION: us-central1
+  _DOCKERFILE_PATH: infra/docker/Dockerfile
+  _BUILD_CONTEXT: .
+  _PORT: "8080"
+  _CPU: "1"
+  _MEMORY: 512Mi
+  _MIN_INSTANCES: "0"
+  _MAX_INSTANCES: "2"
+  _TIMEOUT: 300s
+  _SITE_URL: ""
