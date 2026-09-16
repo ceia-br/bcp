@@ -121,19 +121,17 @@ intactas. Agentes podem resolvê-las em runtime com o CLI
 [ucp-schema](https://github.com/universal-commerce-protocol/ucp-schema), que
 aceita o namespace `br.dev.bcp` sem fork.
 
-1. Garanta o `ucp-schema` instalado:
-
-   ```bash
-   cargo install ucp-schema
-   ```
+1. Instale as dependências: `make install`
 
 2. Edite os JSON em `schemas/` seguindo as convenções do
    [CONTRIBUTING.md](CONTRIBUTING.md).
 
-3. Valide (lint de todos os schemas e fixtures de ponta a ponta):
+3. Valide schemas, fixtures e snapshots do playground (offline, sem
+   toolchain externa; se o `ucp-schema` estiver instalado, o `lint` dele
+   roda junto):
 
    ```bash
-   make validate
+   make check
    ```
 
 ### Desenvolvimento da documentação
@@ -141,8 +139,8 @@ aceita o namespace `br.dev.bcp` sem fork.
 O projeto usa [uv](https://docs.astral.sh/uv/) para as dependências Python.
 
 1. Instale as dependências: `make install`
-2. Garanta o `ucp-schema` instalado (ver acima; o build da página de
-   referência o usa).
+2. Instale o `ucp-schema` (`cargo install ucp-schema`); as macros de schema
+   da página de referência dependem dele.
 3. Rode o servidor de desenvolvimento (versão pt-BR, com live reload):
 
    ```bash

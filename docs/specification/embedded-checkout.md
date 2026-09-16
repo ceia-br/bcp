@@ -645,7 +645,7 @@ via `ec.payment.credential_request` (veja abaixo).
 Se o host não puder completar o handshake (por exemplo, falha na validação de origem ou
 violação do estado do protocolo), ele **DEVE** responder com um resultado `error_response`:
 
-<!-- ucp:example schema=common/types/error_response op=read direction=response extract=$.result -->
+<!-- ucp:example schema=shopping/types/error_response op=read direction=response extract=$.result -->
 ```json
 {
     "jsonrpc": "2.0",
@@ -1088,7 +1088,7 @@ estado existente.
 
 **Exemplo de resposta de erro:**
 
-<!-- ucp:example schema=common/types/error_response op=read direction=response extract=$.result -->
+<!-- ucp:example schema=shopping/types/error_response op=read direction=response extract=$.result -->
 ```json
 {
     "jsonrpc": "2.0",
@@ -1198,7 +1198,7 @@ novos dados com o estado existente.
 
 **Exemplo de resposta de erro:**
 
-<!-- ucp:example schema=common/types/error_response op=read direction=response extract=$.result -->
+<!-- ucp:example schema=shopping/types/error_response op=read direction=response extract=$.result -->
 ```json
 {
     "jsonrpc": "2.0",
@@ -1385,7 +1385,7 @@ existente.
 
 **Exemplo de resposta de erro:**
 
-<!-- ucp:example schema=common/types/error_response op=read direction=response extract=$.result -->
+<!-- ucp:example schema=shopping/types/error_response op=read direction=response extract=$.result -->
 ```json
 {
     "jsonrpc": "2.0",
@@ -1507,7 +1507,7 @@ Solicita ao anfitrião que administre um link ativado pelo comprador na finaliza
 
 **Exemplo de resposta de erro:**
 
-<!-- ucp:example schema=common/types/error_response op=read direction=response extract=$.result -->
+<!-- ucp:example schema=shopping/types/error_response op=read direction=response extract=$.result -->
 ```json
 {
     "jsonrpc": "2.0",

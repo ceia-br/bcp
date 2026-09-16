@@ -7,7 +7,7 @@
 This extension carries the fiscal identity of both parties in a Brazilian
 transaction:
 
-- **Buyer**: CPF or CNPJ in `buyer.tax_id`, used when an identified NF-e must be
+- **Buyer**: CPF or CNPJ in `buyer.taxpayer_id`, used when an identified NF-e must be
   issued.
 - **Seller**: CNPJ, legal name, and address in `seller_identity`, required for
   consumer-facing offers, pre-closing summaries, and receipts under Brazilian
@@ -41,19 +41,19 @@ validation baseline:
 
 ## Schema Composition
 
-- `checkout.buyer` is extended with `tax_id`.
+- `checkout.buyer` is extended with `taxpayer_id`.
 - `checkout.seller_identity` and `order.seller_identity` are top-level objects
   required in every response while the capability is active.
 - Schema: `schemas/shopping/fiscal_identity.json`.
 
 ## Fields
 
-### `tax_id` on `buyer`
+### `taxpayer_id` on `buyer`
 
 | Field | Type | Required | Description |
 | :---- | :--- | :------- | :---------- |
-| `kind` | open string | Yes | `cpf` for individuals or `cnpj` for companies. |
-| `value` | string | Yes | Digits only: 11 for CPF or 14 for CNPJ. |
+| `kind` | closed enum | Yes | `cpf` (natural person), `cnpj` (legal entity), or `id_estrangeiro` (buyer without CPF/CNPJ). |
+| `value` | string | Yes | Punctuation-free: 11 digits for CPF, 14 for CNPJ (alphanumeric from 2026), free-form for `id_estrangeiro`. |
 
 ### `seller_identity` on `checkout` and `order`
 
@@ -69,7 +69,7 @@ validation baseline:
    while this capability is active.
 2. Buyer agents **MUST** present the seller CNPJ and legal name to the consumer
    before completion and on the receipt.
-3. `buyer.tax_id` **MUST** be collected by `complete` when the sale requires an
+3. `buyer.taxpayer_id` **MUST** be collected by `complete` when the sale requires an
    identified NF-e. See [NF-e](nfe.md).
 
 ## Example
@@ -81,7 +81,7 @@ Checkout response excerpt:
   "id": "chk_123",
   "buyer": {
     "first_name": "Ana",
-    "tax_id": { "kind": "cpf", "value": "39053344705" }
+    "taxpayer_id": { "kind": "cpf", "value": "39053344705" }
   },
   "seller_identity": {
     "cnpj": "19131243000197",

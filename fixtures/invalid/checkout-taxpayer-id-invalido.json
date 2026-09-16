@@ -25,14 +25,17 @@
     },
     "payment_handlers": {}
   },
-  "id": "chk_bcp_001",
+  "id": "chk_bcp_invalido_kind",
   "status": "ready_for_complete",
   "currency": "BRL",
   "buyer": {
     "first_name": "Ana",
     "last_name": "Silva",
     "email": "ana@example.com.br",
-    "taxpayer_id": { "kind": "cpf", "value": "39053344705" }
+    "taxpayer_id": {
+      "kind": "rg",
+      "value": "39053344705"
+    }
   },
   "seller_identity": {
     "cnpj": "19131243000197",
@@ -41,23 +44,62 @@
   "line_items": [
     {
       "id": "li_1",
-      "item": { "id": "prod_1", "title": "Vaso de ceramica", "price": 10000 },
+      "item": {
+        "id": "prod_1",
+        "title": "Vaso de ceramica",
+        "price": 10000
+      },
       "quantity": 1,
       "ncm": "69120000",
       "taxes": [
-        { "type": "cbs", "rate": 0.009, "base": 10000, "amount": 90, "authority": "federal", "behavior": "inclusive" },
-        { "type": "ibs", "rate": 0.001, "base": 10000, "amount": 10, "authority": "state", "behavior": "inclusive" }
+        {
+          "type": "cbs",
+          "rate": 0.009,
+          "base": 10000,
+          "amount": 90,
+          "authority": "federal",
+          "behavior": "inclusive"
+        },
+        {
+          "type": "ibs",
+          "rate": 0.001,
+          "base": 10000,
+          "amount": 10,
+          "authority": "state",
+          "behavior": "inclusive"
+        }
       ],
-      "totals": [{ "type": "subtotal", "amount": 10000 }]
+      "totals": [
+        {
+          "type": "subtotal",
+          "amount": 10000
+        }
+      ]
     }
   ],
   "totals": [
-    { "type": "subtotal", "amount": 10000 },
-    { "type": "tax", "display_text": "Tributos (Lei 12.741/2012)", "amount": 100 },
-    { "type": "total", "amount": 10000 }
+    {
+      "type": "subtotal",
+      "amount": 10000
+    },
+    {
+      "type": "tax",
+      "display_text": "Tributos (Lei 12.741/2012)",
+      "amount": 100
+    },
+    {
+      "type": "total",
+      "amount": 10000
+    }
   ],
   "links": [
-    { "type": "privacy_policy", "url": "https://loja.example.com.br/privacidade" },
-    { "type": "terms_of_service", "url": "https://loja.example.com.br/termos" }
+    {
+      "type": "privacy_policy",
+      "url": "https://loja.example.com.br/privacidade"
+    },
+    {
+      "type": "terms_of_service",
+      "url": "https://loja.example.com.br/termos"
+    }
   ]
 }

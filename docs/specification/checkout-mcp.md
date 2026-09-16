@@ -364,7 +364,7 @@ Mapeia para a operação [Criar Checkout](checkout.md#criar-check-out).
 
     Todos os itens fora de estoque — nenhum recurso de checkout é criado:
 
-    <!-- ucp:example schema=common/types/error_response op=read direction=response extract=$.result.structuredContent -->
+    <!-- ucp:example schema=shopping/types/error_response op=read direction=response extract=$.result.structuredContent -->
     ```json
     {
       "jsonrpc": "2.0",
@@ -717,7 +717,7 @@ como JSON-RPC `result` com `structuredContent` contendo o envelope BCP e
 Para `create_checkout`, quando todos os itens estiverem indisponíveis e nenhum checkout puder ser criado,
 JSON-RPC `result` com `structuredContent` contendo o envelope BCP e `messages`:
 
-<!-- ucp:example schema=common/types/error_response op=read direction=response extract=$.result.structuredContent -->
+<!-- ucp:example schema=shopping/types/error_response op=read direction=response extract=$.result.structuredContent -->
 ```json
 {
   "jsonrpc": "2.0",
@@ -773,7 +773,7 @@ Content-Type: application/json
 BCP-Agent: profile="https://platform.example/.well-known/bcp"
 Idempotency-Key: 550e8400-e29b-41d4-a716-446655440000
 Content-Digest: sha-256=:RK/0qy18MlBSVnWgjwz6lZEWjP/lF5HF9bvEF8FabDg=:
-Signature-Input: sig1=("@method" "@authority" "@path" "content-digest" "content-type" "ucp-agent" "idempotency-key");keyid="platform-2026"
+Signature-Input: sig1=("@method" "@authority" "@path" "content-digest" "content-type" "bcp-agent" "idempotency-key");keyid="platform-2026"
 Signature: sig1=:MEUCIQDXyK9N3p5Rt...:
 
 {"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"complete_checkout","arguments":{"id":"checkout_abc123","checkout":{"payment":{...}}}}}

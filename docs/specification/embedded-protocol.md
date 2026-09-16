@@ -114,7 +114,7 @@ códigos de erro no nível do aplicativo.
 
 **Resposta de erro:**
 
-<!-- ucp:example schema=common/types/error_response op=read direction=response extract=$.result -->
+<!-- ucp:example schema=shopping/types/error_response op=read direction=response extract=$.result -->
 ```json
 {
   "jsonrpc": "2.0",
@@ -276,7 +276,7 @@ ou um `error_response`.
 
 **Exemplo de resposta de erro:**
 
-<!-- ucp:example schema=common/types/error_response op=read direction=response extract=$.result -->
+<!-- ucp:example schema=shopping/types/error_response op=read direction=response extract=$.result -->
 ```json
 {
     "jsonrpc": "2.0",
@@ -307,7 +307,7 @@ a credencial está corrompida). O erro de sessão **DEVE** incluir um
 
 **Exemplo — falha de autenticação escalonada para erro de sessão:**
 
-<!-- ucp:example schema=common/types/error_response op=read direction=response extract=$.params.error -->
+<!-- ucp:example schema=shopping/types/error_response op=read direction=response extract=$.params.error -->
 ```json
 {
     "jsonrpc": "2.0",
@@ -353,7 +353,7 @@ impede a sessão de continuar. Cada recurso define seu próprio método de notif
 
 **Exemplo:**
 
-<!-- ucp:example schema=common/types/error_response op=read direction=response extract=$.params.error -->
+<!-- ucp:example schema=shopping/types/error_response op=read direction=response extract=$.params.error -->
 ```json
 {
     "jsonrpc": "2.0",

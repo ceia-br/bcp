@@ -272,7 +272,7 @@ BCP-Agent: profile="https://platform.example/.well-known/bcp"
 Signature-Agent: sig1="https://platform.example/.well-known/bcp";type=jwks_uri
 Idempotency-Key: 550e8400-e29b-41d4-a716-446655440000
 Content-Digest: sha-256=:X48E9q...:
-Signature-Input: sig1=("@method" "@authority" "@path" "signature-agent";key="sig1" "ucp-agent" "idempotency-key" "content-digest" "content-type");keyid="poqkLGiymh_W0uP6PZFw-dvez3QJT5SolqXBCW38r0U";created=1738617600;expires=1738621200;tag="web-bot-auth"
+Signature-Input: sig1=("@method" "@authority" "@path" "signature-agent";key="sig1" "bcp-agent" "idempotency-key" "content-digest" "content-type");keyid="poqkLGiymh_W0uP6PZFw-dvez3QJT5SolqXBCW38r0U";created=1738617600;expires=1738621200;tag="web-bot-auth"
 Signature: sig1=:base64_ed25519_signature_value:
 
 {
@@ -286,7 +286,7 @@ Signature: sig1=:base64_ed25519_signature_value:
 ```
 
 One signature on the wire, two audiences. BCP-shape verifiers resolve via
-`BCP-Agent`, find their expected components (`ucp-agent`,
+`BCP-Agent`, find their expected components (`bcp-agent`,
 `idempotency-key`), and ignore the rest; WBA-shape verifiers resolve via
 `Signature-Agent` and find theirs (`@authority`, `signature-agent`,
 `tag`, `created`/`expires`). Both verify the same bytes against the same
@@ -436,7 +436,7 @@ verification.
 | `@authority`      | Yes          | Target host (prevents cross-host relay)                      |
 | `@path`           | Yes          | Request path                                                 |
 | `@query`          | Cond. `*`    | Query string (if present)                                    |
-| `ucp-agent`       | Cond. `**`   | Profile URL (binds identity)                                 |
+| `bcp-agent`       | Cond. `**`   | Profile URL (binds identity)                                 |
 | `signature-agent` | Cond. `***`  | WBA key source (when [WBA Interop](#wba-interop) opted into) |
 | `idempotency-key` | Cond. `****` | Idempotency header (state-changing)                          |
 | `content-digest`  | Cond. `†`    | Body digest (if body present)                                |
@@ -464,7 +464,7 @@ sign_rest_request(method, path, query, body_bytes, idempotency_key, private_key,
     // 2. Build component list
     components = ["@method", "@authority", "@path"]
     if query: components.append("@query")
-    if ucp_agent: components.append("ucp-agent")
+    if bcp_agent: components.append("bcp-agent")
     if idempotency_key: components.append("idempotency-key")
     if body: components.extend(["content-digest", "content-type"])
 
@@ -517,7 +517,7 @@ Content-Type: application/json
 BCP-Agent: profile="https://platform.example/.well-known/bcp"
 Idempotency-Key: 550e8400-e29b-41d4-a716-446655440000
 Content-Digest: sha-256=:X48E9q...:
-Signature-Input: sig1=("@method" "@authority" "@path" "ucp-agent" "idempotency-key" "content-digest" "content-type");keyid="platform-2026"
+Signature-Input: sig1=("@method" "@authority" "@path" "bcp-agent" "idempotency-key" "content-digest" "content-type");keyid="platform-2026"
 Signature: sig1=:MEUCIQDTxNq8h7LGHpvVZQp1iHkFp9+3N8Mxk2zH1wK4YuVN8w...:
 
 {
@@ -717,7 +717,7 @@ verify_rest_request(request):
     if request.query:                        required += ["@query"]
     if request.has_body:                     required += ["content-digest", "content-type"]
     if "Idempotency-Key" in request.headers: required += ["idempotency-key"]
-    if "BCP-Agent" in request.headers:       required += ["ucp-agent"]
+    if "BCP-Agent" in request.headers:       required += ["bcp-agent"]
     if "Signature-Agent" in request.headers: required += ["signature-agent"]
     for component in required:
         if component not in components:
@@ -905,7 +905,7 @@ Content-Type: application/json
 BCP-Agent: profile="https://platform.example/.well-known/bcp"
 Idempotency-Key: 550e8400-e29b-41d4-a716-446655440000
 Content-Digest: sha-256=:RK/0qy18MlBSVnWgjwz6lZEWjP/lF5HF9bvEF8FabDg=:
-Signature-Input: sig1=("@method" "@authority" "@path" "content-digest" "content-type" "ucp-agent" "idempotency-key");keyid="platform-2026"
+Signature-Input: sig1=("@method" "@authority" "@path" "content-digest" "content-type" "bcp-agent" "idempotency-key");keyid="platform-2026"
 Signature: sig1=:MEUCIQDXyK9N3p5Rt...:
 
 {"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"complete_checkout","arguments":{"id":"chk_123","checkout":{...}}}}

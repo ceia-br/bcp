@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bcp.dev.br/schemas/discovery/profile.json",
+  "$id": "https://bcp.dev.br/discovery/profile.json",
   "title": "BCP Discovery Profile",
   "description": "Schema for BCP discovery profiles. Business profiles are hosted at /.well-known/bcp; platform profiles are hosted at URIs advertised in request headers.",
   "description_pt": "Schema para perfis de discovery BCP. Perfis de empresa são hospedados em /.well-known/bcp; perfis de plataforma são hospedados em URIs anunciadas nos cabeçalhos da requisição.",

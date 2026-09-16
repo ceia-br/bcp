@@ -1,0 +1,72 @@
+{
+  "valid": {
+    "profile-business.json": {
+      "reason": "Perfil de discovery nao e entidade comercial: ucp.capabilities anuncia o que a loja faz, nao o que valida o proprio documento.",
+      "schemas": ["https://bcp.dev.br/discovery/profile.json"]
+    },
+    "catalog-search-response.json": {
+      "reason": "Resposta de busca e payload de tool MCP, composta pelo $defs do proprio catalog_search.",
+      "schemas": [
+        "https://bcp.dev.br/schemas/shopping/catalog_search.json#/$defs/search_response"
+      ]
+    }
+  },
+  "invalid": {
+    "checkout-sem-seller-identity.json": {
+      "reason": "A extensao fiscal_identity torna seller_identity obrigatorio no checkout: sem ele o consumidor nao identifica o emissor da NF-e.",
+      "schema": "https://bcp.dev.br/schemas/shopping/fiscal_identity.json#/$defs/br.dev.bcp.shopping.checkout",
+      "instance_path": "",
+      "keyword": "required",
+      "message_contains": "'seller_identity' is a required property"
+    },
+    "checkout-taxpayer-id-invalido.json": {
+      "reason": "taxpayer_id.kind e enum fechado espelhando a identificacao do destinatario na NF-e; 'rg' nao existe.",
+      "schema": "https://bcp.dev.br/schemas/shopping/fiscal_identity.json#/$defs/br.dev.bcp.shopping.checkout",
+      "instance_path": "buyer/taxpayer_id/kind",
+      "keyword": "enum",
+      "message_contains": "is not one of ['cpf', 'cnpj', 'id_estrangeiro']"
+    },
+    "checkout-status-desconhecido.json": {
+      "reason": "status e enum fechado do ciclo de vida do checkout; 'paid' nao pertence ao conjunto.",
+      "schema": "https://bcp.dev.br/schemas/shopping/checkout.json",
+      "instance_path": "status",
+      "keyword": "enum",
+      "message_contains": "is not one of"
+    },
+    "pix-instrument-sem-credential.json": {
+      "reason": "O instrumento Pix precisa carregar a cobranca: pix_payment_instrument exige credential. Fixa a divergencia com checkout-a2a.md, que descreve conclusao sem reenviar a credencial.",
+      "schema": "https://bcp.dev.br/schemas/handlers/pix/pix.json#/$defs/pix_payment_instrument",
+      "instance_path": "",
+      "keyword": "required",
+      "message_contains": "'credential' is a required property"
+    },
+    "order-sem-seller-identity.json": {
+      "reason": "fiscal_identity congela a identidade do fornecedor tambem no registro duravel: Order exige seller_identity.",
+      "schema": "https://bcp.dev.br/schemas/shopping/fiscal_identity.json#/$defs/br.dev.bcp.shopping.order",
+      "instance_path": "",
+      "keyword": "required",
+      "message_contains": "'seller_identity' is a required property"
+    },
+    "order-nfe-sem-chave.json": {
+      "reason": "A referencia da NF-e sem access_key nao identifica o documento na SEFAZ.",
+      "schema": "https://bcp.dev.br/schemas/shopping/nfe.json#/$defs/br.dev.bcp.shopping.order",
+      "instance_path": "nfe",
+      "keyword": "required",
+      "message_contains": "'access_key' is a required property"
+    },
+    "profile-sem-payment-handlers.json": {
+      "reason": "O perfil de empresa precisa anunciar como recebe: business_schema exige payment_handlers.",
+      "schema": "https://bcp.dev.br/discovery/profile.json#/$defs/business_profile",
+      "instance_path": "ucp",
+      "keyword": "required",
+      "message_contains": "'payment_handlers' is a required property"
+    },
+    "catalog-search-sem-ucp.json": {
+      "reason": "A resposta de busca carrega os metadados BCP negociados; sem ucp o consumidor nao sabe qual versao respondeu.",
+      "schema": "https://bcp.dev.br/schemas/shopping/catalog_search.json#/$defs/search_response",
+      "instance_path": "",
+      "keyword": "required",
+      "message_contains": "'ucp' is a required property"
+    }
+  }
+}

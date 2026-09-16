@@ -6,7 +6,7 @@ DOCS_EN_CONFIG := mkdocs.en.yml
 DOCS_SITE_ROOT ?= $(CURDIR)/site
 DOCS_SITE_DIR ?= $(DOCS_SITE_ROOT)/$(DOCS_LABEL)
 
-.PHONY: help install validate playground-check docs-build docs-serve docs-clean
+.PHONY: help install check validate playground-check docs-build docs-serve docs-clean
 
 help: ## Lista os comandos disponiveis
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
@@ -15,7 +15,9 @@ help: ## Lista os comandos disponiveis
 install: ## Instala as dependencias de docs
 	uv sync --group docs
 
-validate: ## Lint dos schemas + fixtures de ponta a ponta (ucp-schema)
+check: validate playground-check ## Valida protocolo e snapshots do playground
+
+validate: ## Validador local dos schemas e fixtures (+ lint ucp-schema, se instalado)
 	scripts/validate.sh
 
 playground-check: ## Valida e compara os snapshots estaticos do playground

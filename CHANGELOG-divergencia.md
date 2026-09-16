@@ -26,7 +26,10 @@ completa de cada uma vive em `docs/specification/`.
 - O BCP deriva do UCP `2026-04-08` (spec vendorada em `schemas/` e
   `discovery/`).
 - `discovery/profile_schema.json` (documento de well-known) vendorado com o
-  mesmo rename de `$id`.
+  mesmo rename de `$id`. O `$id` fica em
+  `https://bcp.dev.br/discovery/profile.json`: o `$ref` herdado
+  (`../schemas/ucp.json`) só resolve com base em `/discovery/`, que também é
+  onde o arquivo mora no repo e onde o site o publica.
 - `services/` (OpenAPI/OpenRPC) ainda não vendorados.
 - `handlers/` contém apenas material original do BCP, nada vendorado do UCP.
 

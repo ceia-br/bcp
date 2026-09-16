@@ -20,7 +20,7 @@
    Protocol fork. See NOTICE and CHANGELOG-divergencia.md.
 -->
 
-# Catálogo - Ligação MCP
+# Catálogo - vinculação MCP
 
 Este documento especifica a ligação do Model Context Protocol (MCP) para o
 [Capacidade de catálogo](index.md).
@@ -608,7 +608,7 @@ Quando o identificador não é resolvido para um produto, o servidor retorna um
 resultado JSON-RPC bem-sucedido com `ucp.status: "error"` e um descritivo
 mensagem. Este é um resultado do aplicativo, não um erro de transporte.
 
-<!-- ucp:example schema=common/types/error_response op=read direction=response extract=$.result.structuredContent -->
+<!-- ucp:example schema=shopping/types/error_response op=read direction=response extract=$.result.structuredContent -->
 ```json
 {
   "jsonrpc": "2.0",

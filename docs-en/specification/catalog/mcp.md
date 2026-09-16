@@ -607,7 +607,7 @@ When the identifier does not resolve to a product, the server returns a
 successful JSON-RPC result with `ucp.status: "error"` and a descriptive
 message. This is an application outcome, not a transport error.
 
-<!-- ucp:example schema=common/types/error_response op=read direction=response extract=$.result.structuredContent -->
+<!-- ucp:example schema=shopping/types/error_response op=read direction=response extract=$.result.structuredContent -->
 ```json
 {
   "jsonrpc": "2.0",

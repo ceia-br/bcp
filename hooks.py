@@ -28,8 +28,11 @@ log = logging.getLogger("mkdocs")
 type Config = MutableMapping[str, object]
 
 BASE_DIR = Path(__file__).resolve().parent
-BCP_SCHEMA_PREFIX = "https://bcp.dev.br/schemas/"
 BCP_AUTHORITY = "https://bcp.dev.br"
+# Protocol artifact families published under their own $id base: the commercial
+# schemas and the network-layer discovery profile. Both get the version segment.
+BCP_SCHEMA_PREFIX = f"{BCP_AUTHORITY}/schemas/"
+BCP_ARTIFACT_PREFIXES = (BCP_SCHEMA_PREFIX, f"{BCP_AUTHORITY}/discovery/")
 DATE_VERSION_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 
@@ -62,9 +65,13 @@ def _docs_version(config: Config) -> tuple[str, str]:
     return url_version, schema_version
 
 
-def _versioned_schema_url(url_version: str) -> str:
-    """Return the versioned schema URL prefix."""
-    return f"https://bcp.dev.br/{url_version}/schemas/"
+def _versioned_artifact_url(value: str, url_version: str) -> str | None:
+    """Insert the version segment into a protocol artifact URL, or None if unrelated."""
+    for prefix in BCP_ARTIFACT_PREFIXES:
+        if value.startswith(prefix):
+            family = prefix.removeprefix(f"{BCP_AUTHORITY}/")
+            return value.replace(prefix, f"{BCP_AUTHORITY}/{url_version}/{family}", 1)
+    return None
 
 
 def _process_refs(data: object, current_file_dir: Path, url_version: str | None) -> None:
@@ -93,12 +100,8 @@ def _process_refs(data: object, current_file_dir: Path, url_version: str | None)
 
                 ref_id = ref_data.get("$id")
                 if ref_id:
-                    if url_version and ref_id.startswith(BCP_SCHEMA_PREFIX):
-                        ref_id = ref_id.replace(
-                            BCP_SCHEMA_PREFIX,
-                            _versioned_schema_url(url_version),
-                            1,
-                        )
+                    if url_version:
+                        ref_id = _versioned_artifact_url(ref_id, url_version) or ref_id
                     values[key] = ref_id + fragment
                 else:
                     log.warning("No '$id' found in %s", ref_file_path)
@@ -114,16 +117,13 @@ def _rewrite_version_urls(data: object, url_version: str) -> None:
     if isinstance(data, dict):
         values = cast("dict[str, object]", data)
         for key, value in values.items():
-            if (
-                key in ("$id", "$ref", "schema", "spec")
-                and isinstance(value, str)
-                and value.startswith(BCP_SCHEMA_PREFIX)
-            ):
-                values[key] = value.replace(
-                    BCP_SCHEMA_PREFIX,
-                    _versioned_schema_url(url_version),
-                    1,
-                )
+            versioned = (
+                _versioned_artifact_url(value, url_version)
+                if key in ("$id", "$ref", "schema", "spec") and isinstance(value, str)
+                else None
+            )
+            if versioned is not None:
+                values[key] = versioned
             else:
                 _rewrite_version_urls(value, url_version)
     elif isinstance(data, list):

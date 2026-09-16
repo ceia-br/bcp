@@ -30,7 +30,7 @@
     "first_name": "Ana",
     "last_name": "Silva",
     "email": "ana@example.com.br",
-    "tax_id": { "kind": "cpf", "value": "39053344705" }
+    "taxpayer_id": { "kind": "cpf", "value": "39053344705" }
   },
   "seller_identity": {
     "cnpj": "19131243000197",
