@@ -1,0 +1,63 @@
+{
+  "ucp": {
+    "version": "2026-04-08",
+    "services": {
+      "br.dev.bcp.shopping": [
+        {
+          "version": "2026-04-08",
+          "spec": "https://bcp.dev.br/2026-04-08/specification/overview",
+          "transport": "a2a",
+          "endpoint": "https://loja.example.com.br/.well-known/agent-card.json"
+        }
+      ]
+    },
+    "capabilities": {
+      "br.dev.bcp.shopping.checkout": [
+        {
+          "version": "2026-04-08",
+          "spec": "https://bcp.dev.br/2026-04-08/specification/checkout",
+          "schema": "https://bcp.dev.br/schemas/shopping/checkout.json"
+        }
+      ],
+      "br.dev.bcp.shopping.fiscal_identity": [
+        {
+          "version": "2026-07-03",
+          "extends": "br.dev.bcp.shopping.checkout",
+          "spec": "https://bcp.dev.br/2026-04-08/specification/fiscal-identity",
+          "schema": "https://bcp.dev.br/schemas/shopping/fiscal_identity.json"
+        }
+      ],
+      "br.dev.bcp.shopping.tax": [
+        {
+          "version": "2026-07-14",
+          "extends": "br.dev.bcp.shopping.checkout",
+          "spec": "https://bcp.dev.br/2026-04-08/specification/tax",
+          "schema": "https://bcp.dev.br/schemas/shopping/tax.json"
+        }
+      ]
+    },
+    "payment_handlers": {
+      "br.dev.bcp.pix": [
+        {
+          "id": "pix_recebedor_001",
+          "version": "2026-07-08",
+          "available_instruments": [{ "type": "pix" }],
+          "spec": "https://bcp.dev.br/2026-04-08/specification/pix-payment-handler",
+          "schema": "https://bcp.dev.br/schemas/handlers/pix/pix.json",
+          "config": { "environment": "production" }
+        }
+      ]
+    }
+  },
+  "keys": [
+    {
+      "kid": "merchant-2026",
+      "kty": "EC",
+      "crv": "P-256",
+      "x": "f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU",
+      "y": "x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0",
+      "use": "sig",
+      "alg": "ES256"
+    }
+  ]
+}

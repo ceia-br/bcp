@@ -229,7 +229,7 @@ Maps to the [Create Cart](cart.md#create-cart) operation.
 
     All items out of stock — no cart resource is created:
 
-    <!-- ucp:example schema=common/types/error_response op=read direction=response extract=$.result.structuredContent -->
+    <!-- ucp:example schema=shopping/types/error_response op=read direction=response extract=$.result.structuredContent -->
     ```json
     {
       "jsonrpc": "2.0",
@@ -348,7 +348,7 @@ Maps to the [Get Cart](cart.md#get-cart) operation.
 
 === "Not Found"
 
-    <!-- ucp:example schema=common/types/error_response op=read direction=response extract=$.result.structuredContent -->
+    <!-- ucp:example schema=shopping/types/error_response op=read direction=response extract=$.result.structuredContent -->
     ```json
     {
       "jsonrpc": "2.0",
@@ -620,7 +620,7 @@ Business outcomes (including not found and validation errors) are returned as
 JSON-RPC `result` with `structuredContent` containing the BCP envelope and
 `messages`:
 
-<!-- ucp:example schema=common/types/error_response op=read direction=response extract=$.result.structuredContent -->
+<!-- ucp:example schema=shopping/types/error_response op=read direction=response extract=$.result.structuredContent -->
 ```json
 {
   "jsonrpc": "2.0",

@@ -1042,7 +1042,7 @@ tarefa através da interface web padrão.
 
     **Capacidades incompatíveis (resultado JSON-RPC):**
 
-    <!-- ucp:example schema=common/types/error_response extract=$.result.structuredContent -->
+    <!-- ucp:example schema=shopping/types/error_response extract=$.result.structuredContent -->
     ```json
     {
       "jsonrpc": "2.0",
@@ -1968,10 +1968,10 @@ O BCP define um conjunto de capacidades padrão:
 
 | Nome da capacidade | ID (URI) | Descrição |
 | :------------------- | :---------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------- |
-| **Carrinho**            | [esquemas/shopping/cart.json](site:esquemas/shopping/cart.json) | Permite a construção da cesta antes que a intenção de compra seja estabelecida.                                               |
-| **Finalização de compra** | [esquemas/shopping/checkout.json](site:esquemas/shopping/checkout.json) | Facilita a criação e gestão de sessões de checkout, incluindo gestão de carrinho e cálculo de impostos. |
+| **Carrinho**            | [schemas/shopping/cart.json](site:schemas/shopping/cart.json) | Permite a construção da cesta antes que a intenção de compra seja estabelecida.                                               |
+| **Finalização de compra** | [schemas/shopping/checkout.json](site:schemas/shopping/checkout.json) | Facilita a criação e gestão de sessões de checkout, incluindo gestão de carrinho e cálculo de impostos. |
 | **Vinculação de identidade** | - | Permite que as plataformas obtenham autorização via OAuth 2.0 para executar ações em nome de um usuário.               |
-| **Encomenda** | [esquemas/shopping/order.json](site:esquemas/shopping/order.json) | Permite que as empresas enviem atualizações assíncronas sobre o ciclo de vida de um pedido (envio, entrega, devoluções).     |
+| **Encomenda** | [schemas/shopping/order.json](site:schemas/shopping/order.json) | Permite que as empresas enviem atualizações assíncronas sobre o ciclo de vida de um pedido (envio, entrega, devoluções).     |
 
 ### Definição e extensões
 
@@ -2248,7 +2248,7 @@ Resposta com confirmação de versão:
 
 Erro de versão não suportada — nenhum recurso é criado:
 
-<!-- ucp:example schema=common/types/error_response op=read -->
+<!-- ucp:example schema=shopping/types/error_response op=read -->
 ```json
 {
   "ucp": { "version": "2026-01-11", "status": "error" },

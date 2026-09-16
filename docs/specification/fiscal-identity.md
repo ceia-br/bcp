@@ -7,7 +7,7 @@
 Esta extensão carrega a identidade fiscal de ambas as partes em uma transação
 brasileira:
 
-- **Comprador**: CPF ou CNPJ em `buyer.tax_id`, utilizado quando uma NF-e identificada deve ser
+- **Comprador**: CPF ou CNPJ em `buyer.taxpayer_id`, utilizado quando uma NF-e identificada deve ser
   emitida.
 - **Vendedor**: CNPJ, razão social e endereço em `seller_identity`, obrigatório para
   ofertas voltadas ao consumidor, resumos pré-fechamento e recibos no âmbito do
@@ -42,19 +42,19 @@ linha de base de validação:
 
 ## Composição do esquema
 
-- `checkout.buyer` é estendido com `tax_id`.
+- `checkout.buyer` é estendido com `taxpayer_id`.
 - `checkout.seller_identity` e `order.seller_identity` são objetos de nível superior
   exigidos em cada resposta enquanto o recurso estiver ativo.
 - Esquema: `schemas/shopping/fiscal_identity.json`.
 
 ## Campos
 
-### `tax_id` em `buyer`
+### `taxpayer_id` em `buyer`
 
 | Campo | Tipo | Obrigatório | Descrição |
 | :---- | :--- | :------- | :---------- |
-| `kind` | string aberta | Sim | `cpf` para pessoas físicas ou `cnpj` para pessoas jurídicas. |
-| `value` | string | Sim | Apenas dígitos: 11 para CPF ou 14 para CNPJ. |
+| `kind` | enum fechada | Sim | `cpf` (pessoa física), `cnpj` (pessoa jurídica) ou `id_estrangeiro` (comprador sem CPF/CNPJ). |
+| `value` | string | Sim | Sem pontuação: 11 dígitos para CPF, 14 para CNPJ (alfanumérico a partir de 2026), livre para `id_estrangeiro`. |
 
 ### `seller_identity` em `checkout` e `order`
 
@@ -70,7 +70,7 @@ linha de base de validação:
    enquanto esse recurso estiver ativo.
 2. Os agentes compradores **DEVEM** apresentar o CNPJ e a razão social do vendedor ao consumidor
    antes da conclusão e no recebimento.
-3. `buyer.tax_id` **DEVE** ser recolhido por `complete` quando a venda exigir um
+3. `buyer.taxpayer_id` **DEVE** ser recolhido por `complete` quando a venda exigir um
    NF-e identificada. Veja [NF-e](nfe.md).
 
 ## Exemplo
@@ -82,7 +82,7 @@ Trecho da resposta de checkout:
   "id": "chk_123",
   "buyer": {
     "first_name": "Ana",
-    "tax_id": { "kind": "cpf", "value": "39053344705" }
+    "taxpayer_id": { "kind": "cpf", "value": "39053344705" }
   },
   "seller_identity": {
     "cnpj": "19131243000197",

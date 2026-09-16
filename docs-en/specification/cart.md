@@ -151,7 +151,7 @@ error response instead of creating a cart resource. `ucp.status` is the
 primary discriminator; the absence of `id` is a consistent secondary
 indicator:
 
-<!-- ucp:example schema=common/types/error_response op=read -->
+<!-- ucp:example schema=shopping/types/error_response op=read -->
 ```json
 {
   "ucp": { "version": "{{ bcp_schema_version }}", "status": "error" },

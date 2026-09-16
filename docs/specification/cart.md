@@ -152,7 +152,7 @@ resposta de erro em vez de criar um recurso de carrinho. `ucp.status` é o
 discriminador primário; a ausência de `id` é um indicador secundário
 consistente:
 
-<!-- ucp:example schema=common/types/error_response op=read -->
+<!-- ucp:example schema=shopping/types/error_response op=read -->
 ```json
 {
   "ucp": { "version": "{{ bcp_schema_version }}", "status": "error" },

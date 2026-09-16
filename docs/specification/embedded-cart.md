@@ -20,7 +20,7 @@
    Protocol fork. See NOTICE and CHANGELOG-divergencia.md.
 -->
 
-# Capacidade do carrinho - Encadernação EP
+# Capacidade do carrinho - Vinculação EP
 
 ## Introdução
 

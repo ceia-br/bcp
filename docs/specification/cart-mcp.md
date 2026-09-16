@@ -230,7 +230,7 @@ Mapeia para a operação [Criar carrinho](cart.md#criar-carrinho).
 
     Todos os itens fora de estoque — nenhum recurso de carrinho é criado:
 
-    <!-- ucp:example schema=common/types/error_response op=read direction=response extract=$.result.structuredContent -->
+    <!-- ucp:example schema=shopping/types/error_response op=read direction=response extract=$.result.structuredContent -->
     ```json
     {
       "jsonrpc": "2.0",
@@ -349,7 +349,7 @@ Mapeia para a operação [Get Cart](cart.md#obter-carrinho).
 
 === "Não encontrado"
 
-    <!-- ucp:example schema=common/types/error_response op=read direction=response extract=$.result.structuredContent -->
+    <!-- ucp:example schema=shopping/types/error_response op=read direction=response extract=$.result.structuredContent -->
     ```json
     {
       "jsonrpc": "2.0",
@@ -621,7 +621,7 @@ Os resultados de negócios (incluindo erros não encontrados e de validação) s
 JSON-RPC `result` com `structuredContent` contendo o envelope BCP e
 `messages`:
 
-<!-- ucp:example schema=common/types/error_response op=read direction=response extract=$.result.structuredContent -->
+<!-- ucp:example schema=shopping/types/error_response op=read direction=response extract=$.result.structuredContent -->
 ```json
 {
   "jsonrpc": "2.0",

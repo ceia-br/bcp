@@ -216,7 +216,7 @@ instantâneo do estado atual de um pedido.
 
 === "Não encontrado"
 
-    <!-- ucp:example schema=common/types/error_response op=read direction=response extract=$.result.structuredContent -->
+    <!-- ucp:example schema=shopping/types/error_response op=read direction=response extract=$.result.structuredContent -->
     ```json
     {
       "jsonrpc": "2.0",
@@ -251,7 +251,7 @@ instantâneo do estado atual de um pedido.
 
 === "Não autorizado"
 
-    <!-- ucp:example schema=common/types/error_response op=read direction=response extract=$.result.structuredContent -->
+    <!-- ucp:example schema=shopping/types/error_response op=read direction=response extract=$.result.structuredContent -->
     ```json
     {
       "jsonrpc": "2.0",

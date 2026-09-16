@@ -21,20 +21,30 @@ SNAPSHOTS_DIR = PLAYGROUND_DIR / "snapshots"
 STEPS_DIR = SNAPSHOTS_DIR / "steps"
 
 _BCP_EXTENSION_URI = "https://bcp.dev.br/2026-04-08/specification/reference"
-_PROFILE_SCHEMA_URI = "https://bcp.dev.br/schemas/discovery/profile.json"
+_PROFILE_SCHEMA_URI = "https://bcp.dev.br/discovery/profile.json"
 _CATALOG_SEARCH_SCHEMA_URI = "https://bcp.dev.br/schemas/shopping/catalog_search.json"
 _CHECKOUT_SCHEMA_URI = "https://bcp.dev.br/schemas/shopping/checkout.json"
 _PIX_SCHEMA_URI = "https://bcp.dev.br/schemas/handlers/pix/pix.json"
 _ORDER_CONFIRMATION_SCHEMA_URI = "https://bcp.dev.br/schemas/shopping/types/order_confirmation.json"
 _ORDER_SCHEMA_URI = "https://bcp.dev.br/schemas/shopping/order.json"
-_NFE_SCHEMA_URI = "https://bcp.dev.br/schemas/shopping/nfe.json"
+_UCP_SCHEMA_URI = "https://bcp.dev.br/schemas/ucp.json"
+_PAYMENT_SCHEMA_URI = "https://bcp.dev.br/schemas/shopping/payment.json"
+_SIGNALS_SCHEMA_URI = "https://bcp.dev.br/schemas/shopping/types/signals.json"
 _CHECKOUT_CAPABILITY = "br.dev.bcp.shopping.checkout"
+_ORDER_CAPABILITY = "br.dev.bcp.shopping.order"
 _CHECKOUT_EXTENSIONS = (
     "fiscal_identity",
     "tax",
     "fulfillment",
     "buyer_consent",
 )
+# The durable record carries the same fiscal extensions as the checkout that
+# produced it: fiscal_identity makes seller_identity mandatory on Order too.
+_ORDER_EXTENSIONS = ("fiscal_identity", "tax", "nfe")
+_EXTENSION_VERSIONS = {
+    "fiscal_identity": "2026-07-03",
+    "tax": "2026-07-14",
+}
 
 _P256_N = 0xFFFFFFFF00000000FFFFFFFFFFFFFFFFBCE6FAADA7179E84F3B9CAC2FC632551
 
@@ -50,6 +60,11 @@ def _load_json(path: Path) -> JsonObject:
 
 def _base64url(value: bytes) -> str:
     return base64.urlsafe_b64encode(value).rstrip(b"=").decode()
+
+
+def _brl(amount: int) -> str:
+    """Format an amount in cents as pt-BR currency text, for payloads shown to the payer."""
+    return f"{amount / 100:.2f}".replace(".", ",")
 
 
 def _private_key(label: str) -> ec.EllipticCurvePrivateKey:
@@ -78,19 +93,7 @@ def _schema_registry() -> Registry[Any]:
         schema = _load_json(path)
         schema_id = schema.get("$id")
         if isinstance(schema_id, str):
-            resource = Resource.from_contents(schema)
-            registry = registry.with_resource(schema_id, resource)
-            if schema_id.startswith("https://bcp.dev.br/schemas/"):
-                # profile_schema.json has a legacy ../schemas ref; its dependency graph
-                # consequently resolves under /schemas/schemas/ during local validation.
-                registry = registry.with_resource(
-                    schema_id.replace(
-                        "https://bcp.dev.br/schemas/",
-                        "https://bcp.dev.br/schemas/schemas/",
-                        1,
-                    ),
-                    resource,
-                )
+            registry = registry.with_resource(schema_id, Resource.from_contents(schema))
     return registry
 
 
@@ -109,8 +112,8 @@ def _validate_schema(value: Any, schema_uri: str, registry: Registry[Any]) -> No
 def _capability_definitions(version: str, *, full: bool, advertise_all: bool = False) -> JsonObject:
     versions = {
         "checkout": version,
-        "fiscal_identity": "2026-07-03",
-        "tax": "2026-07-14",
+        "fiscal_identity": _EXTENSION_VERSIONS["fiscal_identity"],
+        "tax": _EXTENSION_VERSIONS["tax"],
         "fulfillment": version,
         "buyer_consent": version,
     }
@@ -403,7 +406,7 @@ def _pix_checkout(scenario: Mapping[str, Any], ready: JsonObject) -> JsonObject:
                 },
                 "display": {
                     "payee_name": scenario["seller"]["display_name"],
-                    "description": f"Pague R$ {total / 100:.2f} via Pix. Cobrança demonstrativa.",
+                    "description": f"Pague R$ {_brl(total)} via Pix. Cobrança demonstrativa.",
                 },
             }
         ]
@@ -685,11 +688,23 @@ def _order(scenario: Mapping[str, Any], checkout: Mapping[str, Any]) -> JsonObje
         "ucp": {
             "version": version,
             "capabilities": {
-                "br.dev.bcp.shopping.order": [{"version": version}],
+                _ORDER_CAPABILITY: [{"version": version}],
+                "br.dev.bcp.shopping.fiscal_identity": [
+                    {
+                        "version": _EXTENSION_VERSIONS["fiscal_identity"],
+                        "extends": _ORDER_CAPABILITY,
+                    }
+                ],
+                "br.dev.bcp.shopping.tax": [
+                    {
+                        "version": _EXTENSION_VERSIONS["tax"],
+                        "extends": _ORDER_CAPABILITY,
+                    }
+                ],
                 "br.dev.bcp.shopping.nfe": [
                     {
                         "version": version,
-                        "extends": "br.dev.bcp.shopping.order",
+                        "extends": _ORDER_CAPABILITY,
                     }
                 ],
             },
@@ -699,6 +714,10 @@ def _order(scenario: Mapping[str, Any], checkout: Mapping[str, Any]) -> JsonObje
         "checkout_id": scenario["fixed"]["checkout_id"],
         "permalink_url": scenario["seller"]["order_url"],
         "currency": "BRL",
+        "seller_identity": {
+            "cnpj": scenario["seller"]["cnpj"],
+            "legal_name": scenario["seller"]["legal_name"],
+        },
         "line_items": [
             {
                 "id": scenario["fixed"]["line_item_id"],
@@ -708,6 +727,8 @@ def _order(scenario: Mapping[str, Any], checkout: Mapping[str, Any]) -> JsonObje
                     "price": product["price"],
                 },
                 "quantity": {"original": 1, "total": 1, "fulfilled": 0},
+                "ncm": product["ncm"],
+                "taxes": copy.deepcopy(product["taxes"]),
                 "totals": [
                     {"type": "subtotal", "amount": product["price"]},
                     {"type": "total", "amount": product["price"]},
@@ -1410,11 +1431,9 @@ def _build_files(scenario: JsonObject) -> dict[Path, JsonObject]:
     protocols = _step_protocols(scenario, profile, card, checkouts)
     order = protocols[8]["order"]
     _validate_schema(order, _ORDER_SCHEMA_URI, registry)
-    _validate_schema(
-        order,
-        f"{_NFE_SCHEMA_URI}#/$defs/br.dev.bcp.shopping.order",
-        registry,
-    )
+    for extension in _ORDER_EXTENSIONS:
+        uri = f"https://bcp.dev.br/schemas/shopping/{extension}.json#/$defs/{_ORDER_CAPABILITY}"
+        _validate_schema(order, uri, registry)
     catalog_internal = protocols[2]["internal"]
     catalog_arguments = catalog_internal["request"]["params"]["arguments"]["catalog"]
     catalog_result = catalog_internal["response"]["result"]["structuredContent"]
@@ -1428,6 +1447,17 @@ def _build_files(scenario: JsonObject) -> dict[Path, JsonObject]:
         f"{_CATALOG_SEARCH_SCHEMA_URI}#/$defs/search_response",
         registry,
     )
+    # The negotiation result has no schema of its own, so it borrows the checkout
+    # response envelope. Validating it here keeps the borrowing visible instead of
+    # leaving the payload unchecked; see docs/features/playground-a2a-pendencias.md.
+    _validate_schema(
+        protocols[1]["response"]["negotiated"]["ucp"],
+        f"{_UCP_SCHEMA_URI}#/$defs/response_checkout_schema",
+        registry,
+    )
+    complete_data = protocols[8]["request"]["body"]["params"]["message"]["parts"][0]["data"]
+    _validate_schema(complete_data["a2a.bcp.checkout.payment"], _PAYMENT_SCHEMA_URI, registry)
+    _validate_schema(complete_data["a2a.bcp.checkout.signals"], _SIGNALS_SCHEMA_URI, registry)
     for protocol in protocols.values():
         if not protocol:
             continue

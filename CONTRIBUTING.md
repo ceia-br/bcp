@@ -88,7 +88,7 @@ Exemplos:
 
 1. Faça fork do repositório e crie sua branch a partir de `main`.
 2. Faça as mudanças seguindo o setup abaixo.
-3. Rode `make validate` e `make docs-build` e confirme que passam.
+3. Rode `make check` e `make docs-build` e confirme que passam.
 4. Confira se o título do PR segue o formato de Conventional Commits.
 5. Abra o PR descrevendo a motivação e a mudança; referencie a issue ou a
    discussão de origem.
@@ -103,33 +103,44 @@ intactas. Agentes podem resolvê-las em runtime com o CLI
 [ucp-schema](https://github.com/universal-commerce-protocol/ucp-schema), que
 aceita o namespace `br.dev.bcp` sem fork.
 
-1. Garanta o `ucp-schema` instalado:
-
-   ```bash
-   cargo install ucp-schema
-   ```
-
+1. Instale as dependências: `make install`
 2. Edite os JSON em `schemas/` seguindo as convenções abaixo.
-3. Valide (lint de todos os schemas e fixtures de ponta a ponta):
+3. Valide:
 
    ```bash
-   make validate
+   make check
    ```
 
-O `validate` usa o mapeamento `--schema-local-base` para resolver as URLs
-`bcp.dev.br` nos arquivos locais, então funciona offline.
+A trava é `scripts/validate_protocol.py`, que só usa `jsonschema` e
+`referencing` e roda offline, sem toolchain externa. Ela rejeita `version`
+literal na raiz, exige `$id` único e coerente com o diretório do arquivo,
+resolve todo `$ref` por URI relativa ao `$id`, confere as anotações
+`ucp_request`/`ucp_response`, valida os `examples` embutidos e roda os
+`fixtures/`. O `make check` também compara os snapshots do playground.
 
-Se você adicionar ou mudar um recurso, inclua fixtures: payloads que devem
-passar em `fixtures/valid/` e payloads que devem falhar em
-`fixtures/invalid/`. São eles que protegem o protocolo contra regressão.
+O `ucp-schema` (`cargo install ucp-schema`) é reforço opcional no
+`make check`: quando está instalado, o `lint` dele roda junto. Para o
+`make docs-build` ele é obrigatório, porque as macros de schema da doc
+dependem do `ucp-schema resolve`.
+
+Se você adicionar ou mudar um recurso, inclua fixtures:
+
+- `fixtures/valid/`: payloads que devem passar. São compostos a partir do
+  próprio `ucp.capabilities` do payload; declare os schemas em
+  `fixtures/expectations.json` quando o documento não for entidade comercial
+  (perfil de discovery, resposta de tool MCP).
+- `fixtures/invalid/`: payloads que devem falhar. Cada um precisa de uma
+  entrada em `fixtures/expectations.json` dizendo por que falha: schema,
+  caminho da instância, keyword e trecho da mensagem. Falhar pelo motivo
+  errado é erro de fixture.
 
 ### Documentação
 
 O projeto usa [uv](https://docs.astral.sh/uv/) para as dependências Python.
 
 1. Instale as dependências: `make install`
-2. Garanta o `ucp-schema` instalado (ver acima; o build da página de
-   referência o usa).
+2. Instale o `ucp-schema` (`cargo install ucp-schema`); as macros de schema
+   da página de referência dependem dele.
 3. Rode o servidor de desenvolvimento (versão pt-BR, com live reload):
 
    ```bash
@@ -164,7 +175,8 @@ discovery/
 └── profile_schema.json   # documento de /.well-known (perfil do agente)
 docs/ e docs-en/          # spec em prosa (mkdocs, pt-BR e en)
 fixtures/                 # payloads de exemplo: valid/ passam, invalid/ falham
-scripts/validate.sh       # lint + validação dos fixtures com o ucp-schema
+│                         #   expectations.json diz o motivo exato de cada falha
+scripts/validate.sh       # validador local (trava) + lint ucp-schema (opcional)
 ```
 
 Por que a divisão raiz vs pasta:

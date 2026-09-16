@@ -1,0 +1,47 @@
+{
+  "products": [
+    {
+      "id": "vaso-ceramica-p",
+      "handle": "vaso-ceramica-p",
+      "title": "Vaso de ceramica pequeno",
+      "description": {
+        "plain": "Vaso de ceramica esmaltada, 15 cm."
+      },
+      "url": "https://loja.example.com.br/produtos/vaso-ceramica-p",
+      "price_range": {
+        "min": {
+          "amount": 10000,
+          "currency": "BRL"
+        },
+        "max": {
+          "amount": 10000,
+          "currency": "BRL"
+        }
+      },
+      "variants": [
+        {
+          "id": "vaso-ceramica-p",
+          "title": "Vaso de ceramica pequeno",
+          "description": {
+            "plain": "Vaso de ceramica esmaltada, 15 cm."
+          },
+          "price": {
+            "amount": 10000,
+            "currency": "BRL"
+          },
+          "availability": {
+            "available": true,
+            "status": "in_stock"
+          }
+        }
+      ],
+      "tags": [
+        "ceramica",
+        "decoracao"
+      ]
+    }
+  ],
+  "pagination": {
+    "has_more": false
+  }
+}

@@ -201,7 +201,7 @@
                         },
                         "display": {
                           "payee_name": "Loja Vermelho",
-                          "description": "Pague R$ 79.80 via Pix. Cobrança demonstrativa."
+                          "description": "Pague R$ 79,80 via Pix. Cobrança demonstrativa."
                         }
                       }
                     ]
@@ -467,7 +467,7 @@
                         },
                         "display": {
                           "payee_name": "Loja Vermelho",
-                          "description": "Pague R$ 79.80 via Pix. Cobrança demonstrativa."
+                          "description": "Pague R$ 79,80 via Pix. Cobrança demonstrativa."
                         }
                       }
                     ]
@@ -724,7 +724,7 @@
             },
             "display": {
               "payee_name": "Loja Vermelho",
-              "description": "Pague R$ 79.80 via Pix. Cobrança demonstrativa."
+              "description": "Pague R$ 79,80 via Pix. Cobrança demonstrativa."
             }
           }
         ]
@@ -744,6 +744,18 @@
               "version": "2026-04-08"
             }
           ],
+          "br.dev.bcp.shopping.fiscal_identity": [
+            {
+              "version": "2026-07-03",
+              "extends": "br.dev.bcp.shopping.order"
+            }
+          ],
+          "br.dev.bcp.shopping.tax": [
+            {
+              "version": "2026-07-14",
+              "extends": "br.dev.bcp.shopping.order"
+            }
+          ],
           "br.dev.bcp.shopping.nfe": [
             {
               "version": "2026-04-08",
@@ -757,6 +769,10 @@
       "checkout_id": "chk_playground_001",
       "permalink_url": "https://loja.exemplo/pedidos/BCP-2026-000142",
       "currency": "BRL",
+      "seller_identity": {
+        "cnpj": "19131243000197",
+        "legal_name": "Loja Vermelho Comércio de Vestuário Ltda"
+      },
       "line_items": [
         {
           "id": "li_playground_001",
@@ -770,6 +786,25 @@
             "total": 1,
             "fulfilled": 0
           },
+          "ncm": "61091000",
+          "taxes": [
+            {
+              "type": "icms",
+              "rate": 0.10217,
+              "base": 5990,
+              "amount": 612,
+              "authority": "state",
+              "behavior": "inclusive"
+            },
+            {
+              "type": "pis_cofins",
+              "rate": 0.03706,
+              "base": 5990,
+              "amount": 222,
+              "authority": "federal",
+              "behavior": "inclusive"
+            }
+          ],
           "totals": [
             {
               "type": "subtotal",
@@ -903,7 +938,7 @@
                                 },
                                 "display": {
                                   "payee_name": "Loja Vermelho",
-                                  "description": "Pague R$ 79.80 via Pix. Cobrança demonstrativa."
+                                  "description": "Pague R$ 79,80 via Pix. Cobrança demonstrativa."
                                 }
                               }
                             ]
@@ -1173,7 +1208,7 @@
                                 },
                                 "display": {
                                   "payee_name": "Loja Vermelho",
-                                  "description": "Pague R$ 79.80 via Pix. Cobrança demonstrativa."
+                                  "description": "Pague R$ 79,80 via Pix. Cobrança demonstrativa."
                                 }
                               }
                             ]
@@ -1219,6 +1254,18 @@
                       "version": "2026-04-08"
                     }
                   ],
+                  "br.dev.bcp.shopping.fiscal_identity": [
+                    {
+                      "version": "2026-07-03",
+                      "extends": "br.dev.bcp.shopping.order"
+                    }
+                  ],
+                  "br.dev.bcp.shopping.tax": [
+                    {
+                      "version": "2026-07-14",
+                      "extends": "br.dev.bcp.shopping.order"
+                    }
+                  ],
                   "br.dev.bcp.shopping.nfe": [
                     {
                       "version": "2026-04-08",
@@ -1232,6 +1279,10 @@
               "checkout_id": "chk_playground_001",
               "permalink_url": "https://loja.exemplo/pedidos/BCP-2026-000142",
               "currency": "BRL",
+              "seller_identity": {
+                "cnpj": "19131243000197",
+                "legal_name": "Loja Vermelho Comércio de Vestuário Ltda"
+              },
               "line_items": [
                 {
                   "id": "li_playground_001",
@@ -1245,6 +1296,25 @@
                     "total": 1,
                     "fulfilled": 0
                   },
+                  "ncm": "61091000",
+                  "taxes": [
+                    {
+                      "type": "icms",
+                      "rate": 0.10217,
+                      "base": 5990,
+                      "amount": 612,
+                      "authority": "state",
+                      "behavior": "inclusive"
+                    },
+                    {
+                      "type": "pis_cofins",
+                      "rate": 0.03706,
+                      "base": 5990,
+                      "amount": 222,
+                      "authority": "federal",
+                      "behavior": "inclusive"
+                    }
+                  ],
                   "totals": [
                     {
                       "type": "subtotal",

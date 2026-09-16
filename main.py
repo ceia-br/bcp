@@ -34,6 +34,9 @@ DISCOVERY_DIR = BASE_DIR / "discovery"
 COMMON_SCHEMAS_DIR = SCHEMAS_DIR / "common"
 COMMON_TYPES_DIR = COMMON_SCHEMAS_DIR / "types"
 UCP_SCHEMA_PATH = SCHEMAS_DIR / "ucp.json"
+# CLI que resolve op/direcao para as tabelas de campos da doc. Mantido em sincronia
+# com UCP_SCHEMA_VERSION no workflow da CI.
+UCP_SCHEMA_VERSION = "1.3.0"
 
 
 # common/ is the protocol namespace; every other immediate subdir of
@@ -191,11 +194,21 @@ def _resolve_schema(
   # subprocess text mode defaults to the platform encoding (cp1252 on
   # Windows), which fails on accented characters introduced by the pt-BR
   # `description_pt` fields. Capture bytes and decode ourselves.
-  result = subprocess.run(
-    cmd,
-    capture_output=True,
-    check=False,
-  )
+  try:
+    result = subprocess.run(
+      cmd,
+      capture_output=True,
+      check=False,
+    )
+  except FileNotFoundError as exc:
+    # These macros need the CLI's op/direction semantics, which the local
+    # protocol validator does not replicate, so the docs build depends on it
+    # even though `make check` does not.
+    raise RuntimeError(
+      "ucp-schema nao encontrado no PATH, e as macros de schema da doc dependem "
+      "dele para resolver op/direcao. Instale com "
+      f"'cargo install ucp-schema --locked --version {UCP_SCHEMA_VERSION}'."
+    ) from exc
   if result.returncode == 0:
     data = json.loads(result.stdout.decode("utf-8"))
     _resolved_schema_cache[cache_key] = data

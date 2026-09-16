@@ -354,7 +354,7 @@ que inclui uma matriz `messages` descrevendo o resultado:
 
 **Pedido não encontrado:**
 
-<!-- ucp:example schema=common/types/error_response op=read -->
+<!-- ucp:example schema=shopping/types/error_response op=read -->
 ```json
 {
   "ucp": {
@@ -377,7 +377,7 @@ que inclui uma matriz `messages` descrevendo o resultado:
 
 **Não autorizado:**
 
-<!-- ucp:example schema=common/types/error_response op=read -->
+<!-- ucp:example schema=shopping/types/error_response op=read -->
 ```json
 {
   "ucp": {

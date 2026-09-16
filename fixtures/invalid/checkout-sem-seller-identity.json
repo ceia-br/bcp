@@ -23,7 +23,7 @@
   "currency": "BRL",
   "buyer": {
     "first_name": "Ana",
-    "tax_id": {
+    "taxpayer_id": {
       "kind": "cpf",
       "value": "39053344705"
     }

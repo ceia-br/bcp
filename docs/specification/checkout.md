@@ -159,7 +159,7 @@ corpo de resposta. Quando não existe nenhum recurso para agir, as mensagens DEV
 Por exemplo, uma empresa pode rejeitar uma solicitação de criação de checkout em que todos
 itens não estão disponíveis:
 
-<!-- ucp:example schema=common/types/error_response op=read -->
+<!-- ucp:example schema=shopping/types/error_response op=read -->
 ```json
 {
   "ucp": { "version": "2026-01-11", "status": "error" },

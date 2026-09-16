@@ -112,7 +112,7 @@ application-level error codes.
 
 **Error Response:**
 
-<!-- ucp:example schema=common/types/error_response op=read direction=response extract=$.result -->
+<!-- ucp:example schema=shopping/types/error_response op=read direction=response extract=$.result -->
 ```json
 {
   "jsonrpc": "2.0",
@@ -274,7 +274,7 @@ data or an `error_response`.
 
 **Example Error Response:**
 
-<!-- ucp:example schema=common/types/error_response op=read direction=response extract=$.result -->
+<!-- ucp:example schema=shopping/types/error_response op=read direction=response extract=$.result -->
 ```json
 {
     "jsonrpc": "2.0",
@@ -305,7 +305,7 @@ the credential is corrupted). The session error **SHOULD** include a
 
 **Example — auth failure escalated to session error:**
 
-<!-- ucp:example schema=common/types/error_response op=read direction=response extract=$.params.error -->
+<!-- ucp:example schema=shopping/types/error_response op=read direction=response extract=$.params.error -->
 ```json
 {
     "jsonrpc": "2.0",
@@ -350,7 +350,7 @@ continuing. Each capability defines its own session error notification method
 
 **Example:**
 
-<!-- ucp:example schema=common/types/error_response op=read direction=response extract=$.params.error -->
+<!-- ucp:example schema=shopping/types/error_response op=read direction=response extract=$.params.error -->
 ```json
 {
     "jsonrpc": "2.0",
