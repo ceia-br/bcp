@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  UV_FROZEN: "1"
+  UCP_SCHEMA_VERSION: "1.3.0"
+
+jobs:
+  check:
+    name: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Validar protocolo e snapshots do playground
+        run: make check
+
+  docs:
+    name: docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Restaurar ucp-schema do cache
+        id: cache-ucp-schema
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/ucp-schema
+          key: ucp-schema-${{ env.UCP_SCHEMA_VERSION }}-${{ runner.os }}
+
+      - name: Instalar ucp-schema
+        if: steps.cache-ucp-schema.outputs.cache-hit != 'true'
+        run: cargo install ucp-schema --locked --version "$UCP_SCHEMA_VERSION"
+
+      - name: Conferir que ucp-schema esta disponivel
+        run: ucp-schema --version
+
+      - name: Instalar dependencias de docs
+        run: make install
+
+      - name: Build estrito do site
+        run: make docs-build

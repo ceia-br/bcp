@@ -154,6 +154,17 @@ O projeto usa [uv](https://docs.astral.sh/uv/) para as dependências Python.
    make docs-build
    ```
 
+### CI e publicação do site
+
+- O GitHub Actions (`.github/workflows/ci.yml`) roda `make check` e
+  `make docs-build` em todo PR e push na `main`.
+- Cada push na `main` publica o site em <https://bcp.dev.br> pelo Cloud Build
+  (`infra/ci/cloud-build.yaml`): a imagem de `infra/docker/Dockerfile` monta o
+  site com `make docs-build` e é implantada no Cloud Run.
+- A versão do `ucp-schema` precisa ficar igual em `ci.yml`,
+  `infra/docker/Dockerfile` e `main.py`.
+- `make playground-fonts` regenera os subsets WOFF2 das fontes do playground.
+
 ## Estrutura do repositório
 
 ```
@@ -177,6 +188,7 @@ docs/ e docs-en/          # spec em prosa (mkdocs, pt-BR e en)
 fixtures/                 # payloads de exemplo: valid/ passam, invalid/ falham
 │                         #   expectations.json diz o motivo exato de cada falha
 scripts/validate.sh       # validador local (trava) + lint ucp-schema (opcional)
+infra/                    # Dockerfile e cloud-build.yaml da publicação do site
 ```
 
 Por que a divisão raiz vs pasta:
