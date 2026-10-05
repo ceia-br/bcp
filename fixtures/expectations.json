@@ -9,6 +9,48 @@
       "schemas": [
         "https://bcp.dev.br/schemas/shopping/catalog_search.json#/$defs/search_response"
       ]
+    },
+    "catalog-publication-replace.json": {
+      "reason": "PUT declara todos os produtos; exemplo minimo valido sem campos opcionais.",
+      "schemas": [
+        "https://bcp.dev.br/schemas/shopping/catalog_publication.json#/$defs/replace_request"
+      ]
+    },
+    "catalog-publication-update.json": {
+      "reason": "PATCH envia produto completo com variantes e revisao atual para substituir sua oferta.",
+      "schemas": [
+        "https://bcp.dev.br/schemas/shopping/catalog_publication.json#/$defs/update_request"
+      ]
+    },
+    "catalog-publication-snapshot.json": {
+      "reason": "GET devolve o catalogo aceito com identidade e revisao atribuida pelo indice.",
+      "schemas": [
+        "https://bcp.dev.br/schemas/shopping/catalog_publication.json#/$defs/catalog"
+      ]
+    },
+    "catalog-publication-response.json": {
+      "reason": "Recibo de publicacao usa envelope de sucesso, revisao e contagem de produtos.",
+      "schemas": [
+        "https://bcp.dev.br/schemas/shopping/catalog_publication.json#/$defs/publication_response"
+      ]
+    },
+    "catalog-publication-empty.json": {
+      "reason": "Catalogo vazio e valido e representa retirada de todas as suas ofertas da descoberta.",
+      "schemas": [
+        "https://bcp.dev.br/schemas/shopping/catalog_publication.json#/$defs/replace_request"
+      ]
+    },
+    "catalog-publication-options.json": {
+      "reason": "Opcoes genericas permitem volumes distintos e preco zero; nao existem exigencias especificas de vestuario.",
+      "schemas": [
+        "https://bcp.dev.br/schemas/shopping/catalog_publication.json#/$defs/replace_request"
+      ]
+    },
+    "catalog-publication-error.json": {
+      "reason": "Rejeicao de conformidade reutiliza o error_response existente com codigo e localizacao do campo.",
+      "schemas": [
+        "https://bcp.dev.br/schemas/shopping/catalog_publication.json#/$defs/error_response"
+      ]
     }
   },
   "invalid": {
@@ -67,6 +109,69 @@
       "instance_path": "",
       "keyword": "required",
       "message_contains": "'ucp' is a required property"
+    },
+    "catalog-publication-missing-ncm.json": {
+      "reason": "Cada variante publicada precisa declarar seu NCM; o perfil fiscal exige ncm mesmo quando ausente no produto base.",
+      "schema": "https://bcp.dev.br/schemas/shopping/catalog_publication.json#/$defs/replace_request",
+      "instance_path": "products/0/variants/0",
+      "keyword": "required",
+      "message_contains": "'ncm' is a required property"
+    },
+    "catalog-publication-malformed-ncm.json": {
+      "reason": "NCM deve ser uma string com oito digitos, sem pontuacao; classificacao fiscal valida nao e certificada offline.",
+      "schema": "https://bcp.dev.br/schemas/shopping/catalog_publication.json#/$defs/replace_request",
+      "instance_path": "products/0/variants/0/ncm",
+      "keyword": "pattern",
+      "message_contains": "does not match"
+    },
+    "catalog-publication-missing-description.json": {
+      "reason": "O produto publicado preserva a descricao obrigatoria do tipo Product; sua ausencia deve gerar pendencia de coleta.",
+      "schema": "https://bcp.dev.br/schemas/shopping/catalog_publication.json#/$defs/replace_request",
+      "instance_path": "products/0",
+      "keyword": "required",
+      "message_contains": "'description' is a required property"
+    },
+    "catalog-publication-negative-price.json": {
+      "reason": "Preco de oferta nao pode ser negativo; amount reutiliza o inteiro nao negativo herdado, com zero valido.",
+      "schema": "https://bcp.dev.br/schemas/shopping/catalog_publication.json#/$defs/replace_request",
+      "instance_path": "products/0/variants/0/price/amount",
+      "keyword": "minimum",
+      "message_contains": "less than the minimum"
+    },
+    "catalog-publication-fractional-price.json": {
+      "reason": "amount expressa unidades menores da moeda como inteiro; um valor fracionario e inconforme.",
+      "schema": "https://bcp.dev.br/schemas/shopping/catalog_publication.json#/$defs/replace_request",
+      "instance_path": "products/0/variants/0/price/amount",
+      "keyword": "type",
+      "message_contains": "not of type 'integer'"
+    },
+    "catalog-publication-no-variants.json": {
+      "reason": "Um produto publicado deve possuir pelo menos uma variante vendavel, mesmo sem opcoes comerciais.",
+      "schema": "https://bcp.dev.br/schemas/shopping/catalog_publication.json#/$defs/replace_request",
+      "instance_path": "products/0/variants",
+      "keyword": "minItems",
+      "message_contains": "should be non-empty"
+    },
+    "catalog-publication-missing-capability.json": {
+      "reason": "O envelope deve declarar a capability de publicacao; capacidades de busca ou consulta nao substituem esse contrato.",
+      "schema": "https://bcp.dev.br/schemas/shopping/catalog_publication.json#/$defs/replace_request",
+      "instance_path": "ucp/capabilities",
+      "keyword": "required",
+      "message_contains": "'br.dev.bcp.shopping.catalog.publish' is a required property"
+    },
+    "catalog-publication-invalid-revision.json": {
+      "reason": "PATCH exige revisao corrente inteira positiva; zero nao representa um catalogo aceito pelo indice.",
+      "schema": "https://bcp.dev.br/schemas/shopping/catalog_publication.json#/$defs/update_request",
+      "instance_path": "base_revision",
+      "keyword": "minimum",
+      "message_contains": "less than the minimum"
+    },
+    "catalog-publication-duplicate-removals.json": {
+      "reason": "remove_product_ids deve possuir IDs distintos; remover um ID inexistente e permitido, repeti-lo no lote nao.",
+      "schema": "https://bcp.dev.br/schemas/shopping/catalog_publication.json#/$defs/update_request",
+      "instance_path": "remove_product_ids",
+      "keyword": "uniqueItems",
+      "message_contains": "has non-unique elements"
     }
   }
 }

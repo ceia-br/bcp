@@ -52,6 +52,7 @@ nav:
           - Visão geral: specification/catalog/index.md
           - Busca: specification/catalog/search.md
           - Consulta: specification/catalog/lookup.md
+          - Criação e publicação: specification/catalog/publication.md
           - Transportes:
               - MCP: specification/catalog/mcp.md
       - Capacidade de pedido:

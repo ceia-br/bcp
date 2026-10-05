@@ -38,6 +38,7 @@ Isso permite a descoberta do produto antes da finalização da compra, suportand
 | :--- | :--- |
 | [`br.dev.bcp.shopping.catalog.search`](search.md) | Pesquise produtos usando texto de consulta e filtros. |
 | [`br.dev.bcp.shopping.catalog.lookup`](lookup.md) | Recuperar produtos ou variantes por identificador. |
+| [`br.dev.bcp.shopping.catalog.publish`](publication.md) | Criar e atualizar catálogos no índice com admissão automática. |
 
 ## Conceitos-chave
 
@@ -352,5 +353,6 @@ escopos personalizados são definidos em [Vinculação de identidade — Escopos
 
 Os recursos acima estão vinculados a protocolos de transporte específicos:
 
-* REST Binding: não publicado nesta versão do BCP.
+* Binding REST de busca/consulta: não publicado nesta versão do BCP.
+* [Binding REST de publicação](publication.md#binding-rest-de-publicacao): criação e atualização de catálogos no índice.
 * [MCP Binding](mcp.md): mapeamento do protocolo de contexto do modelo via JSON-RPC.

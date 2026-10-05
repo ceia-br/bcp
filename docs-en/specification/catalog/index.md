@@ -37,6 +37,7 @@ This enables product discovery before checkout, supporting use cases like:
 | :--- | :--- |
 | [`br.dev.bcp.shopping.catalog.search`](search.md) | Search for products using query text and filters. |
 | [`br.dev.bcp.shopping.catalog.lookup`](lookup.md) | Retrieve products or variants by identifier. |
+| [`br.dev.bcp.shopping.catalog.publish`](publication.md) | Create and update index catalogs with automatic admission. |
 
 ## Key Concepts
 
@@ -350,5 +351,6 @@ custom scopes are defined in [Identity Linking — Scopes](../identity-linking.m
 
 The capabilities above are bound to specific transport protocols:
 
-* REST Binding: not published in this BCP release.
+* Search/lookup REST binding: not published in this BCP release.
+* [Publication REST binding](publication.md#publication-rest-binding): catalog creation and product updates at an index.
 * [MCP Binding](mcp.md): Model Context Protocol mapping via JSON-RPC.

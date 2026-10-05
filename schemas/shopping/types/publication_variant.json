@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/publication_variant.json",
+  "title": "Publication Variant",
+  "description": "A catalog variant published to a BCP index. NCM is mandatory for the merchandise publication profile; its format does not certify the fiscal classification.",
+  "description_pt": "Variante de catálogo publicada em um índice BCP. NCM é obrigatório no perfil de publicação de mercadorias; seu formato não certifica a classificação fiscal.",
+  "allOf": [
+    { "$ref": "variant.json" },
+    {
+      "type": "object",
+      "required": ["id", "title", "ncm"],
+      "properties": {
+        "id": { "type": "string", "pattern": "\\S" },
+        "title": { "type": "string", "pattern": "\\S" },
+        "ncm": { "$ref": "ncm.json", "maxLength": 8 }
+      }
+    }
+  ]
+}

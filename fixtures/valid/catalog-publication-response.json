@@ -1,0 +1,17 @@
+{
+  "ucp": {
+    "version": "2026-04-08",
+    "capabilities": {
+      "br.dev.bcp.shopping.catalog.publish": [
+        {
+          "version": "2026-10-04"
+        }
+      ]
+    },
+    "status": "success"
+  },
+  "catalog_id": "catalogo-loja-exemplo",
+  "merchant_id": "merchant:loja-exemplo",
+  "revision": 1,
+  "product_count": 1
+}

@@ -74,6 +74,11 @@ recursos base, sem editar nenhum schema vendorado:
 - `br.dev.bcp.shopping.nfe`: referência da nota fiscal eletrônica no pedido.
 - `br.dev.bcp.shopping.returns`: devoluções e direito de arrependimento, com
   política declarável no perfil.
+- `br.dev.bcp.shopping.catalog.publish` (rascunho `2026-10-04`): criação e
+  publicação de catálogos de mercadorias no índice, com substituição completa,
+  atualizações atômicas por produto, revisão e idempotência. Compõe produto e
+  variante existentes; acrescenta NCM obrigatório às variantes de publicação.
+  A documentação e os schemas definem a conformidade.
 - `br.dev.bcp.pix`: payment handler de Pix Cobrança única (QR dinâmico,
   fluxo push).
 

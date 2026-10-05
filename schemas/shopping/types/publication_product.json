@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/types/publication_product.json",
+  "title": "Publication Product",
+  "description": "The existing BCP product composed with fiscal publication variants. Generic product options and all optional product fields remain available.",
+  "description_pt": "Produto BCP existente composto com variantes fiscais de publicação. Opções genéricas e todos os campos opcionais de produto continuam disponíveis.",
+  "allOf": [
+    { "$ref": "product.json" },
+    {
+      "type": "object",
+      "required": ["id", "title", "variants"],
+      "properties": {
+        "id": { "type": "string", "pattern": "\\S" },
+        "title": { "type": "string", "pattern": "\\S" },
+        "variants": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "publication_variant.json" }
+        }
+      }
+    }
+  ]
+}
