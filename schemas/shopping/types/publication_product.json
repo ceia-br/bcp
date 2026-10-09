@@ -8,13 +8,11 @@
     { "$ref": "product.json" },
     {
       "type": "object",
-      "required": ["id", "title", "variants"],
       "properties": {
         "id": { "type": "string", "pattern": "\\S" },
         "title": { "type": "string", "pattern": "\\S" },
         "variants": {
           "type": "array",
-          "minItems": 1,
           "items": { "$ref": "publication_variant.json" }
         }
       }

@@ -98,7 +98,6 @@
       "properties": {
         "ucp": {
           "allOf": [
-            { "$ref": "../ucp.json#/$defs/response_catalog_schema" },
             { "$ref": "#/$defs/metadata" },
             { "required": ["status"] }
           ]

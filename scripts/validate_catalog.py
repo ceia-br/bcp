@@ -69,7 +69,7 @@ def _jsonpath(parts: Any) -> str:
 
 def schema_issues(payload: Any, definition: str) -> list[Issue]:
     """Validate structural constraints against the local draft 2020-12 registry."""
-    issues: list[Issue] = []
+    issues: set[Issue] = set()
     for error in _validator(definition).iter_errors(payload):
         parts = list(error.absolute_path)
         if error.validator == "required":
@@ -77,7 +77,7 @@ def schema_issues(payload: Any, definition: str) -> list[Issue]:
                 if error.message == f"{field!r} is a required property":
                     parts.append(field)
                     break
-        issues.append(Issue("catalog_schema_invalid", _jsonpath(parts), error.message))
+        issues.add(Issue("catalog_schema_invalid", _jsonpath(parts), error.message))
     return sorted(issues, key=lambda issue: (issue.path, issue.content))
 
 

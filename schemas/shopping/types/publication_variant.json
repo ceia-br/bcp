@@ -8,7 +8,7 @@
     { "$ref": "variant.json" },
     {
       "type": "object",
-      "required": ["id", "title", "ncm"],
+      "required": ["ncm"],
       "properties": {
         "id": { "type": "string", "pattern": "\\S" },
         "title": { "type": "string", "pattern": "\\S" },
