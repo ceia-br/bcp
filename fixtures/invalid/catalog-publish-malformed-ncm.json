@@ -1,9 +1,4 @@
 {
-  "ucp": {
-    "version": "2026-04-08",
-    "capabilities": {}
-  },
-  "merchant_id": "merchant:loja-exemplo",
   "base_revision": null,
   "products": [
     {
@@ -33,7 +28,7 @@
             "amount": 2500,
             "currency": "BRL"
           },
-          "ncm": "69120000"
+          "ncm": "6912"
         }
       ]
     }

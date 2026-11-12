@@ -1,16 +1,5 @@
 {
-  "ucp": {
-    "version": "2026-04-08",
-    "capabilities": {
-      "br.dev.bcp.shopping.catalog.publish": [
-        {
-          "version": "2026-10-04"
-        }
-      ]
-    }
-  },
-  "merchant_id": "merchant:loja-exemplo",
-  "base_revision": 0,
+  "base_revision": 1,
   "upsert_products": [
     {
       "id": "gid://loja.example/Product/caneca",
@@ -44,5 +33,8 @@
       ]
     }
   ],
-  "remove_product_ids": []
+  "remove_product_ids": [
+    "same",
+    "same"
+  ]
 }

@@ -37,7 +37,7 @@ nav:
           - Overview: specification/catalog/index.md
           - Search: specification/catalog/search.md
           - Lookup: specification/catalog/lookup.md
-          - Creation and Publication: specification/catalog/publication.md
+          - Creation and Publication: specification/catalog/publish.md
           - Transports:
               - MCP: specification/catalog/mcp.md
       - Order Capability:

@@ -16,10 +16,12 @@ Os termos **DEVE**, **NÃO DEVE** e **PODE** indicam requisitos normativos.
 
 ## Jornada da empresa
 
-A empresa escolhe um criador de catálogo: BIA, ERP, plataforma ou aplicação
-própria. O criador prepara os dados; o **publicador** é o serviço que assina e
-envia as requisições, podendo ser operado pela própria empresa ou por um terceiro.
-O **índice** valida, armazena e disponibiliza as ofertas para descoberta.
+A empresa escolhe um **criador de catálogo**: ERP, plataforma de e-commerce,
+assistente de cadastro ou aplicação própria. O criador prepara os dados; o
+**publicador** é o serviço que assina e envia as requisições, podendo ser
+operado pela própria empresa ou por um terceiro. O **índice** valida, armazena
+e disponibiliza as ofertas para descoberta, sob responsabilidade do **operador
+do índice**. Os papéis estão definidos no [glossário](../glossary.md#comercio).
 
 Antes da primeira publicação, o operador DEVE estabelecer a identidade do
 lojista e autorizar o publicador a agir pelo `merchant_id`. O publicador
@@ -27,6 +29,12 @@ disponibiliza seu perfil BCP e suas chaves. Assinar uma mensagem prova a
 identidade do signatário; não prova, por si só, sua representação da empresa.
 O mecanismo de comprovação e delegação pertence ao cadastro do operador, como
 pré-requisito deste contrato; esta especificação não cria uma API de onboarding.
+
+O `merchant_id` é o identificador do lojista no índice, atribuído pelo operador
+nesse cadastro. O operador DEVE vinculá-lo ao CNPJ do lojista, o mesmo que o
+lojista declara em `seller_identity` (ver [Identidade fiscal](../fiscal-identity.md)),
+e, quando o lojista tiver perfil BCP, à URL desse perfil. O `merchant_id` não
+substitui o CNPJ: checkouts e pedidos continuam declarando `seller_identity`.
 
 ```mermaid
 flowchart TD
@@ -56,17 +64,27 @@ flowchart TD
     P --> F
 ```
 
+## Descoberta
+
+O índice DEVE publicar seu perfil em `/.well-known/bcp` declarando a capability
+`br.dev.bcp.shopping.catalog.publish` e um serviço `br.dev.bcp.shopping` com
+`transport: rest`. O `endpoint` desse serviço é a base das URLs do
+[binding REST](#binding-rest-de-publicacao). O publicador DEVE declarar a mesma
+capability no perfil que anuncia em `BCP-Agent`. As versões do protocolo e da
+capability são negociadas por esses perfis, conforme o
+[protocolo de negociação](../overview.md#protocolo-de-negociacao).
+
 ## Cobertura dos schemas
 
 | Conceito | Cobertura existente | Composição para publicação |
 | :-- | :-- | :-- |
-| Produto | `product.json`: descrição, opções, variantes e faixas de preço | `publication_product.json` referencia o produto e suas variantes fiscais |
-| Variante | `variant.json`: preço, opções genéricas, SKU e disponibilidade | `publication_variant.json` acrescenta NCM obrigatório |
+| Produto | `product.json`: descrição, opções, variantes e faixas de preço | `publish_product` referencia o produto e suas variantes de publicação |
+| Variante | `variant.json`: preço, opções genéricas, SKU e disponibilidade | `publish_variant` acrescenta NCM obrigatório |
 | Preço | `price.json` e `amount.json`: moeda explícita e inteiro não negativo | Reutilizados sem alteração; zero é permitido |
 | Classificação fiscal | `ncm.json`: string com oito dígitos; `tax.json` associa NCM a checkout/pedido | O perfil de publicação associa NCM a cada variante vendável |
 | Busca e consulta | `catalog_search.json` e `catalog_lookup.json` | Contratos de leitura existentes preservados |
 
-O [schema de publicação](https://bcp.dev.br/{{ bcp_version }}/schemas/shopping/catalog_publication.json)
+O [schema de publicação](https://bcp.dev.br/{{ bcp_version }}/schemas/shopping/catalog_publish.json)
 define os documentos completos e os corpos de cada operação. Os tipos
 vendorados não são modificados; as adições usam `$ref`/`allOf`.
 Cada corpo DEVE ser validado pela `$defs` correspondente da tabela de operações;
@@ -74,16 +92,17 @@ a raiz do arquivo é um container de contratos, como nas capabilities de leitura
 
 | Entidade | Obrigatórios | Opcionais |
 | :-- | :-- | :-- |
-| Produto | `id`, `title`, `description`, `price_range`, `variants` com ao menos um item | Todos os demais campos do produto BCP, incluindo categorias, mídia, opções, tags e metadata |
-| Variante | `id`, `title`, `description`, `price`, `ncm` | Demais campos de variante, incluindo SKU, códigos de barras, opções, mídia e disponibilidade |
+| Produto | `id`, `title`, `description`, `price_range`, `variants` com ao menos um item | Todos os demais campos de [Produto](index.md#produto), incluindo categorias, mídia, opções, tags e metadata |
+| Variante | `id`, `title`, `description`, `price`, `ncm` | Demais campos de [Variante](index.md#variante), incluindo SKU, códigos de barras, opções, mídia e disponibilidade |
 | Preço | `amount`, `currency` | Conforme os tipos existentes |
 | NCM | String com exatamente oito dígitos | — |
 
-IDs e títulos DEVEM conter caracteres além de espaços. IDs de produto e
-variante DEVEM ser estáveis, identificar globalmente a origem e ser únicos
-entre todos os produtos e variantes do catálogo. Recomenda-se um namespace
-do publicador/lojista, como `gid://loja.example/Variant/caneca-250`. Nome e SKU
-não substituem IDs. O ID da variante continua sendo o ID do item no checkout.
+IDs NÃO DEVEM conter espaços em branco; títulos DEVEM conter caracteres além de
+espaços. IDs de produto e variante DEVEM ser estáveis, identificar globalmente
+a origem e ser únicos entre todos os produtos e variantes do catálogo.
+Recomenda-se um namespace do publicador/lojista, como
+`gid://loja.example/Variant/caneca-250`. Nome e SKU não substituem IDs. O ID da
+variante continua sendo o ID do item no checkout.
 
 Descrição DEVE conter texto não vazio em ao menos um formato reconhecido:
 `plain`, `html` ou `markdown`. Clientes DEVEM sanitizar conteúdo rico antes
@@ -95,35 +114,49 @@ R$ 25,00 corresponde a `2500`/`BRL`. Preço zero é válido.
 
 ## Binding REST de publicação
 
-O binding a seguir é próprio da publicação no índice. Não altera os bindings
-de busca/consulta. URLs são relativas à base HTTPS anunciada pelo operador.
-O `catalog_id` é escolhido pelo publicador, permanece estável dentro do índice
-e é codificado como segmento da URL. A criação o vincula imutavelmente ao
-`merchant_id` autorizado. A quantidade de catálogos por lojista não é fixada.
+O binding a seguir é próprio da publicação no índice e não altera os bindings
+de busca/consulta. URLs são relativas ao `endpoint` anunciado no perfil do
+índice. Um catálogo é identificado pelo par `(merchant_id, catalog_id)`: o
+`catalog_id` é escolhido pelo publicador, é único dentro do lojista e permanece
+estável. Ambos são codificados como segmentos da URL. A quantidade de catálogos
+por lojista não é fixada.
 
 | Operação | Corpo/schema | Resultado |
 | :-- | :-- | :-- |
-| `PUT /catalogs/{catalog_id}` | `replace_request`: `ucp`, `merchant_id`, `base_revision`, `products` | `201` na criação; `200` na substituição |
-| `PATCH /catalogs/{catalog_id}` | `update_request`: `ucp`, `merchant_id`, `base_revision`, `upsert_products`, `remove_product_ids` | `200`; exige catálogo existente |
-| `GET /catalogs/{catalog_id}` | Sem corpo; publicador autenticado e autorizado | `200` com `catalog`, ou `404` se inexistente |
+| `PUT /merchants/{merchant_id}/catalogs/{catalog_id}` | `replace_request`: `base_revision`, `products` | `201` na criação; `200` na substituição |
+| `PATCH /merchants/{merchant_id}/catalogs/{catalog_id}` | `update_request`: `base_revision`, `upsert_products`, `remove_product_ids` | `200`; exige catálogo existente |
+| `GET /merchants/{merchant_id}/catalogs/{catalog_id}` | Sem corpo; publicador autenticado e autorizado | `200` com `catalog`, ou `404` se inexistente |
 
-O envelope `ucp` DEVE declarar a versão do protocolo por data e exatamente
-uma versão da capability de publicação em `ucp.capabilities`. Versões sem
-suporte são rejeitadas com `422`/`version_unsupported`. Os exemplos usam a
-base `2026-04-08` e a capability `2026-10-04`; esses são também os valores
-suportados pelo validador de referência deste rascunho.
+As requisições não carregam o envelope `ucp`: as versões do protocolo e da
+capability vêm da negociação pelo perfil do publicador. Falhas de negociação
+seguem o [tratamento de erros](../overview.md#tratamento-de-erros) da visão
+geral, incluindo `422`/`version_unsupported`. Respostas e o snapshot do GET
+carregam `ucp` com a versão usada e exatamente uma versão da capability de
+publicação. Os exemplos usam a base `2026-04-08` e a capability `2026-10-04`.
 
 Publicação completa:
 
 ```json
---8<-- "fixtures/valid/catalog-publication-replace.json"
+--8<-- "fixtures/valid/catalog-publish-replace.json"
 ```
 
 Atualização de preço com produto completo:
 
 ```json
---8<-- "fixtures/valid/catalog-publication-update.json"
+--8<-- "fixtures/valid/catalog-publish-update.json"
 ```
+
+### Corpo do PUT
+
+{{ extension_schema_fields('catalog_publish.json#/$defs/replace_request', 'catalog') }}
+
+### Corpo do PATCH
+
+{{ extension_schema_fields('catalog_publish.json#/$defs/update_request', 'catalog') }}
+
+### Snapshot do GET
+
+{{ extension_schema_fields('catalog_publish.json#/$defs/catalog', 'catalog') }}
 
 ### Revisões, atualização e atomicidade
 
@@ -151,8 +184,8 @@ Atualização de preço com produto completo:
 ### Idempotência e respostas
 
 Toda escrita DEVE incluir `Idempotency-Key`. O escopo da chave é
-`(identidade autenticada do publicador, catalog_id, chave)`. O índice DEVE
-autenticar e autorizar cada tentativa, inclusive repetições.
+`(identidade autenticada do publicador, merchant_id, catalog_id, chave)`. O
+índice DEVE autenticar e autorizar cada tentativa, inclusive repetições.
 
 Repetir o mesmo método, catálogo e corpo JSON com uma chave já processada DEVE
 devolver o status HTTP e o recibo originais, antes de conferir a revisão
@@ -163,9 +196,9 @@ sob a mesma chave retorna `409`/`idempotency_conflict`. JSON com membros
 duplicados ou números não finitos é inválido.
 
 O índice DEVE registrar atomicamente o resultado de cada tentativa processada,
-incluindo rejeições `404`, `409` de revisão/identidade e `422`. Uma rejeição não
-altera o catálogo, mas reserva sua chave; corrigir os dados ou a revisão exige
-uma chave nova. Conflito de idempotência NÃO DEVE substituir o registro original.
+incluindo rejeições `404`, `409` de revisão e `422`. Uma rejeição não altera o
+catálogo, mas reserva sua chave; corrigir os dados ou a revisão exige uma chave
+nova. Conflito de idempotência NÃO DEVE substituir o registro original.
 Falhas de autenticação, autorização, parsing ou armazenamento não constituem
 tentativas processadas neste registro; a autorização sempre é reavaliada.
 
@@ -178,8 +211,10 @@ revisão nova apenas porque perdeu a resposta. O recibo confirma persistência
 e ativação do catálogo no índice, sem prometer exibição por outros operadores.
 
 ```json
---8<-- "fixtures/valid/catalog-publication-response.json"
+--8<-- "fixtures/valid/catalog-publish-response.json"
 ```
+
+{{ extension_schema_fields('catalog_publish.json#/$defs/publish_response', 'catalog') }}
 
 GET retorna o snapshot aceito, incluindo todos os produtos, `catalog_id`,
 `merchant_id`, `revision` e `ucp`. Uma repetição de escrita devolve o recibo
@@ -195,19 +230,25 @@ query quando presente seguem a mesma spec. Respostas seguem suas regras de
 assinatura. A verificação de ES256 é obrigatória; outros algoritmos seguem o
 suporte já definido pelo BCP.
 
-O índice DEVE verificar autorização para o `merchant_id` antes de revelar ou
-alterar seu catálogo. GET exige autorização de leitura; PUT/PATCH exigem
-autorização de escrita. Uma assinatura válida sem autorização retorna `403`.
-A autorização é reavaliada em repetições e deve respeitar revogação.
+O índice DEVE verificar a autorização do publicador para o `merchant_id` do
+caminho antes de consultar o catálogo. GET exige autorização de leitura;
+PUT/PATCH exigem autorização de escrita. Sem autorização, a resposta é
+`403`/`publisher_not_authorized`, exista ou não o catálogo, para não revelar
+catálogos de outros lojistas. Como o `catalog_id` é escopado pelo lojista, um
+publicador não consegue ocupar o identificador de catálogo de outro lojista.
+A autorização é reavaliada em repetições e DEVE respeitar revogação.
+
+`publisher_not_authorized` indica falta de delegação do publicador, autenticado
+por assinatura. É distinto de `insufficient_scope`, que se refere a escopos de
+token de usuário em [Vinculação de identidade](../identity-linking.md).
 
 | Falha | HTTP/código |
 | :-- | :-- |
 | JSON inválido ou identificadores de requisição ausentes | `400` |
 | Assinatura ausente/inválida ou chave não encontrada | `401`, códigos da spec de assinaturas |
 | Digest divergente, algoritmo sem suporte ou falha de descoberta de perfil | Status e códigos já definidos pelo protocolo |
-| Publicador sem autorização | `403`/`insufficient_scope` |
+| Publicador sem autorização para o lojista | `403`/`publisher_not_authorized` |
 | Catálogo inexistente em GET/PATCH | `404`/`catalog_not_found` |
-| Mudança da identidade de catálogo/lojista | `409`/`catalog_identity_conflict` |
 | Revisão ou idempotência em conflito | `409`/`revision_conflict` ou `idempotency_conflict` |
 | Payload ou catálogo resultante inconforme | `422`, códigos abaixo |
 
@@ -228,12 +269,13 @@ Depois de validar o schema, o índice DEVE aplicar estas regras:
 | Moedas diferentes dentro do mesmo produto, incluindo preços opcionais | `catalog_currency_mismatch` |
 | `price_range` diferente do mínimo/máximo dos preços das variantes | `catalog_price_range_mismatch` |
 | Nomes de opções ou valores vazios/ambíguos | `catalog_options_invalid` |
-| Seleções sem definição, incompletas, repetidas ou incompatíveis | `catalog_option_selection_invalid` |
+| Seleções sem definição, incompletas, repetidas, incompatíveis ou iguais às de outra variante | `catalog_option_selection_invalid` |
 | PATCH sem alteração nem remoção | `catalog_update_empty` |
 | Produto incluído e removido no mesmo lote | `catalog_update_overlap` |
 
 Opções são genéricas. Cada variante DEVE selecionar exatamente uma vez cada
-opção declarada pelo produto. Valores são identificados por `id` quando informado;
+opção declarada pelo produto, e duas variantes do mesmo produto NÃO DEVEM ter a
+mesma combinação de valores. Valores são identificados por `id` quando informado;
 seu `label` também DEVE corresponder à definição. Sem ID, o label identifica o
 valor. Nomes de opções e labels são comparados exatamente; não se exige que
 todas as combinações cartesianas estejam disponíveis. Produtos diferentes
@@ -246,46 +288,37 @@ nem disponibilidade comercial ou habilitação para negociar.
 
 ### Validador de referência
 
-O CLI roda offline, sem persistência, autenticação, autorização ou comunicação
-com o índice. É uma referência executável de conformidade e transições; não
-é a API de produção. Usa os schemas locais e não busca `$ref` na rede.
+O CLI roda offline e sem estado: não autentica, não persiste e não se comunica
+com o índice. Ele confere um documento contra o schema e as regras de
+conformidade acima. Revisão, idempotência e autorização dependem do estado do
+índice e ficam fora dele. Usa os schemas locais e não busca `$ref` na rede.
 
 ```bash
 uv run --group playground python scripts/validate_catalog.py \
-  fixtures/valid/catalog-publication-replace.json \
-  --catalog-id catalogo-loja-exemplo --idempotency-key criacao-1
+  fixtures/valid/catalog-publish-replace.json
 
 uv run --group playground python scripts/validate_catalog.py \
-  fixtures/valid/catalog-publication-update.json --operation update \
-  --catalog-id catalogo-loja-exemplo --idempotency-key atualizacao-1 \
-  --current fixtures/valid/catalog-publication-snapshot.json
+  fixtures/valid/catalog-publish-update.json --operation update
 
 uv run --group playground python scripts/validate_catalog.py \
-  fixtures/valid/catalog-publication-snapshot.json --operation catalog
+  fixtures/valid/catalog-publish-snapshot.json --operation catalog
 ```
 
-A saída JSON tem `http_status`, `response`, `catalog` e `receipt`. `catalog`
-é o novo snapshot candidato quando há escrita aceita; numa repetição, é `null`
-para indicar que nada deve ser reaplicado. `receipt` registra a requisição
-processada e seu resultado, inclusive rejeições; o CLI calcula o digest dos
-bytes do arquivo original.
-Para simular uma repetição, mantenha esses bytes e extraia o objeto de recibo para
-um arquivo e informe `--receipt`; use `--publisher-id` para distinguir publicadores.
-Snapshot e recibo são **estado confiável do índice**, nunca campos enviados
-pelo cliente HTTP. O CLI não mantém histórico por conta própria.
+A saída JSON tem `conformant` e `messages`, estas no formato de `message_error`.
+Num PATCH, o CLI confere apenas os produtos enviados; a unicidade de IDs contra
+o catálogo atual é verificada pelo índice no catálogo resultante.
 
-Códigos de saída: `0` para conformidade/aceitação; `1` para rejeição com erros
-estruturados; `2` para erro de uso, leitura ou JSON inválido.
-`make check` valida os schemas e as fixtures estruturais, além de verificar
-os snapshots do playground.
+Códigos de saída: `0` para documento conforme; `1` para inconformidade com erros
+estruturados; `2` para erro de uso, leitura ou JSON inválido. O `make check`
+roda o CLI sobre as fixtures (`--fixtures`): as válidas de publicação precisam
+estar conformes, e cada fixture em `fixtures/conformance/` precisa falhar com o
+código e o `path` declarados em `fixtures/expectations.json`.
 
-## Integração futura do índice e da BIA
+## Cenários de conformidade do índice
 
-Esta entrega especifica o contrato; não implementa os serviços do índice nem
-muda o cadastro local da BIA. O índice futuro deve colocar os schemas/SDK na
-fronteira de transport e manter seus modelos internos independentes do protocolo.
-Os testes de aceitação da API futura DEVEM comprovar estes cenários. Em toda
-rejeição, catálogo, revisão e recibos de sucesso anteriores permanecem intactos.
+Implementações de índice DEVEM comprovar estes cenários em seus testes de
+aceitação. Em toda rejeição, catálogo, revisão e recibos de sucesso anteriores
+permanecem intactos.
 
 | Cenário HTTP | Resultado esperado |
 | :-- | :-- |
@@ -294,8 +327,8 @@ rejeição, catálogo, revisão e recibos de sucesso anteriores permanecem intac
 | Assinatura ausente ou adulterada, incluindo alteração de `Idempotency-Key` | `401`/`signature_missing` ou `signature_invalid` |
 | `keyid` ausente do perfil após revogação | `401`/`key_not_found` |
 | Corpo alterado sem recalcular `Content-Digest` | `400`/`digest_mismatch` |
-| Assinatura válida sem delegação de escrita para `merchant_id` | `403`/`insufficient_scope` |
-| GET de catálogo de outro lojista sem delegação de leitura | `403`, sem expor o catálogo |
+| Assinatura válida sem delegação de escrita para o `merchant_id` do caminho | `403`/`publisher_not_authorized` |
+| GET em lojista sem delegação de leitura, exista ou não o catálogo | `403`/`publisher_not_authorized`, sem revelar se o catálogo existe |
 | Repetição idêntica autorizada após outra revisão aceita, inclusive de uma rejeição anterior | Resultado e status originais; revisão não avança |
 | Repetição após revogação da delegação, mesmo com recibo existente | `403`; recibo não é revelado |
 | Mesmo escopo e chave com outro método ou bytes do corpo | `409`/`idempotency_conflict` |
@@ -303,27 +336,6 @@ rejeição, catálogo, revisão e recibos de sucesso anteriores permanecem intac
 | Lote com inclusões válidas e produto inconforme | `422` com código e `path`; nenhuma parte é aplicada |
 | Falha ao persistir catálogo/revisão/recibo na mesma transação | Falha fechada; `503` para indisponibilidade, sem aceite parcial |
 
-O adapter da BIA DEVE:
-
-- Preservar os IDs de produto/variante persistidos, com namespace estável. Os
-  modelos públicos atuais não carregam esses IDs; o adapter deve recuperá-los
-  da persistência em vez de derivá-los do nome ou da ordem da conversa.
-- Converter `name` em `title`, `description` em conteúdo BCP e `price_cents`
-  em `price.amount`/`currency: BRL`. O preço atual do produto é copiado às
-  variantes; `price_range` é calculado a partir dos preços enviados.
-- Criar a variante vendável persistida para produtos sem opções; mapear cor,
-  tamanho ou outras dimensões para opções genéricas, sem torná-las obrigatórias
-  no protocolo. Copiar o NCM do produto a cada variante; variantes poderão
-  posteriormente ter classificação própria.
-- Expor imagens por URLs adequadas à descoberta, em vez de enviar `image_ref`
-  interno. Campos específicos do cliente podem usar `metadata`; não viram
-  requisitos universais de admissão.
-- Coletar campos obrigatórios ausentes e informar pendências, sem inventar
-  descrição ou NCM. A confirmação local e a aceitação no índice DEVEM ter
-  estados distintos. Somente o recibo de sucesso registra a aceitação na rede.
-- Guardar catálogo, revisão e chave de tentativa, permitindo correção, retry
-  idempotente e atualização sem depender do prompt da BIA.
-
-Qualquer outro criador segue os mesmos contratos, exemplos e testes. A
-especificação do BCP é a fonte normativa; regras locais de conversa e a
-implementação da BIA não definem o padrão.
+Qualquer criador de catálogo segue os mesmos contratos, exemplos e fixtures.
+A especificação do BCP é a fonte normativa; implementações de criadores ou de
+índices não definem o padrão.

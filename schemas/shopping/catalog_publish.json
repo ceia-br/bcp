@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bcp.dev.br/schemas/shopping/catalog_publish.json",
+  "name": "br.dev.bcp.shopping.catalog.publish",
+  "title": "Catalog Publish",
+  "description": "Merchandise catalog publication to a BCP index. Validate operation payloads against the named $defs: replace_request, update_request, catalog and publish_response. Authentication and semantic conformance are defined in the specification.",
+  "description_pt": "Publicação de catálogo de mercadorias em um índice BCP. Valide os payloads nas $defs nomeadas: replace_request, update_request, catalog e publish_response. Autenticação e conformidade semântica são definidas na especificação.",
+  "type": "object",
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "not": { "pattern": "\\s" },
+      "description": "Stable identifier without whitespace. Product and variant IDs must identify their origin globally; SKU and display titles are not identity keys.",
+      "description_pt": "Identificador estável, sem espaços em branco. IDs de produto e variante devem identificar sua origem globalmente; SKU e títulos não são chaves de identidade."
+    },
+    "metadata": {
+      "allOf": [
+        { "$ref": "../ucp.json#/$defs/response_catalog_schema" },
+        {
+          "type": "object",
+          "required": ["capabilities"],
+          "properties": {
+            "status": { "const": "success" },
+            "capabilities": {
+              "type": "object",
+              "required": ["br.dev.bcp.shopping.catalog.publish"],
+              "properties": {
+                "br.dev.bcp.shopping.catalog.publish": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 1,
+                  "items": { "$ref": "../capability.json#/$defs/response_schema" }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Index-assigned catalog revision, independent of date-based protocol versions.",
+      "description_pt": "Revisão de catálogo atribuída pelo índice, independente das versões do protocolo por data."
+    },
+    "publish_variant": {
+      "description": "A catalog variant published to a BCP index. NCM is mandatory for the merchandise publication profile; its format does not certify the fiscal classification.",
+      "description_pt": "Variante de catálogo publicada em um índice BCP. NCM é obrigatório no perfil de publicação de mercadorias; seu formato não certifica a classificação fiscal.",
+      "allOf": [
+        { "$ref": "types/variant.json" },
+        {
+          "type": "object",
+          "required": ["ncm"],
+          "properties": {
+            "id": { "$ref": "#/$defs/identifier" },
+            "title": { "type": "string", "pattern": "\\S" },
+            "ncm": { "$ref": "types/ncm.json" }
+          }
+        }
+      ]
+    },
+    "publish_product": {
+      "description": "The existing BCP product composed with publication variants. Generic product options and all optional product fields remain available.",
+      "description_pt": "Produto BCP existente composto com variantes de publicação. Opções genéricas e todos os campos opcionais de produto continuam disponíveis.",
+      "allOf": [
+        { "$ref": "types/product.json" },
+        {
+          "type": "object",
+          "properties": {
+            "id": { "$ref": "#/$defs/identifier" },
+            "title": { "type": "string", "pattern": "\\S" },
+            "variants": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/publish_variant" }
+            }
+          }
+        }
+      ]
+    },
+    "products": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/publish_product" },
+      "description": "Complete products (publish_product) with all variants, each declaring its NCM. An empty catalog has no discoverable offers.",
+      "description_pt": "Produtos completos (publish_product) com todas as variantes, cada uma declarando seu NCM. Um catálogo vazio não tem ofertas descobríveis."
+    },
+    "replace_request": {
+      "type": "object",
+      "description": "Body of PUT /merchants/{merchant_id}/catalogs/{catalog_id}.",
+      "description_pt": "Corpo de PUT /merchants/{merchant_id}/catalogs/{catalog_id}.",
+      "required": ["base_revision", "products"],
+      "properties": {
+        "base_revision": {
+          "anyOf": [
+            { "$ref": "#/$defs/revision" },
+            { "type": "null" }
+          ],
+          "description": "Null for creation; the current revision for replacement.",
+          "description_pt": "Null na criação; a revisão atual na substituição."
+        },
+        "products": { "$ref": "#/$defs/products" }
+      }
+    },
+    "update_request": {
+      "type": "object",
+      "description": "Body of PATCH /merchants/{merchant_id}/catalogs/{catalog_id}.",
+      "description_pt": "Corpo de PATCH /merchants/{merchant_id}/catalogs/{catalog_id}.",
+      "required": ["base_revision", "upsert_products", "remove_product_ids"],
+      "properties": {
+        "base_revision": { "$ref": "#/$defs/revision" },
+        "upsert_products": { "$ref": "#/$defs/products" },
+        "remove_product_ids": {
+          "type": "array",
+          "description": "IDs of products to remove; removing an absent product has no effect.",
+          "description_pt": "IDs dos produtos a remover; remover um produto inexistente não tem efeito.",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/identifier" }
+        }
+      }
+    },
+    "catalog": {
+      "type": "object",
+      "description": "Accepted catalog snapshot returned by GET.",
+      "description_pt": "Snapshot do catálogo aceito, devolvido pelo GET.",
+      "required": ["ucp", "catalog_id", "merchant_id", "revision", "products"],
+      "properties": {
+        "ucp": {
+          "$ref": "#/$defs/metadata",
+          "description": "BCP metadata with the protocol version used and exactly one publication capability version.",
+          "description_pt": "Metadados BCP com a versão do protocolo usada e exatamente uma versão da capability de publicação."
+        },
+        "catalog_id": { "$ref": "#/$defs/identifier" },
+        "merchant_id": { "$ref": "#/$defs/identifier" },
+        "revision": { "$ref": "#/$defs/revision" },
+        "products": { "$ref": "#/$defs/products" }
+      }
+    },
+    "publish_response": {
+      "type": "object",
+      "description": "Receipt of an accepted write.",
+      "description_pt": "Recibo de uma escrita aceita.",
+      "required": ["ucp", "catalog_id", "merchant_id", "revision", "product_count"],
+      "properties": {
+        "ucp": {
+          "description": "BCP metadata with status success, the protocol version used and exactly one publication capability version.",
+          "description_pt": "Metadados BCP com status success, a versão do protocolo usada e exatamente uma versão da capability de publicação.",
+          "allOf": [
+            { "$ref": "#/$defs/metadata" },
+            { "required": ["status"] }
+          ]
+        },
+        "catalog_id": { "$ref": "#/$defs/identifier" },
+        "merchant_id": { "$ref": "#/$defs/identifier" },
+        "revision": { "$ref": "#/$defs/revision" },
+        "product_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of products in the accepted revision.",
+          "description_pt": "Quantidade de produtos na revisão aceita."
+        },
+        "messages": {
+          "type": "array",
+          "items": { "$ref": "types/message.json" },
+          "description": "Warnings or informational messages about the accepted write.",
+          "description_pt": "Avisos ou mensagens informativas sobre a escrita aceita."
+        }
+      }
+    },
+    "error_response": { "$ref": "types/error_response.json" }
+  }
+}

@@ -1,15 +1,4 @@
 {
-  "ucp": {
-    "version": "2026-04-08",
-    "capabilities": {
-      "br.dev.bcp.shopping.catalog.publish": [
-        {
-          "version": "2026-10-04"
-        }
-      ]
-    }
-  },
-  "merchant_id": "merchant:loja-exemplo",
   "base_revision": null,
   "products": [
     {
@@ -30,13 +19,13 @@
       },
       "variants": [
         {
-          "id": "gid://loja.example/Variant/caneca-250",
+          "id": "gid://loja.example/Product/caneca",
           "title": "250 ml",
           "description": {
             "plain": "Caneca de 250 ml."
           },
           "price": {
-            "amount": 2.5,
+            "amount": 2500,
             "currency": "BRL"
           },
           "ncm": "69120000"

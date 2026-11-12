@@ -51,6 +51,10 @@ acrônimo em cada arquivo Markdown de especificação indique o termo completo (
 | **Comerciante de Registro** | MoR | A entidade legal responsável pela venda, incluindo responsabilidade financeira e propriedade do pedido.                                                         |
 | **Provedor de serviços de pagamento** | PSP | O provedor de infraestrutura financeira que processa pagamentos, autorizações e liquidações em nome da empresa.                             |
 | **Plataforma** | - | A superfície voltada para o consumidor (agente de IA, aplicativo, site) que atua em nome do usuário para descobrir empresas e facilitar o comércio.                     |
+| **Criador de catálogo** | - | Aplicação que monta o catálogo de um lojista no formato BCP: ERP, plataforma de e-commerce, assistente de cadastro ou aplicação própria. Ver [Criação e publicação de catálogos](catalog/publish.md). |
+| **Índice** | - | Serviço que recebe catálogos publicados, valida sua conformidade, armazena uma cópia e disponibiliza as ofertas para descoberta. Declara `br.dev.bcp.shopping.catalog.publish` em seu perfil. |
+| **Operador do índice** | - | Entidade responsável por um índice. Identifica os lojistas, atribui o `merchant_id` e registra quais publicadores podem agir por cada lojista. |
+| **Publicador** | - | Serviço que assina e envia ao índice as requisições de publicação em nome de um lojista. Pode ser operado pelo próprio lojista ou por terceiro, como o criador de catálogo. |
 
 ## Pagamentos
 

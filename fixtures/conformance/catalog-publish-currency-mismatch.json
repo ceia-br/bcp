@@ -1,15 +1,4 @@
 {
-  "ucp": {
-    "version": "2026-04-08",
-    "capabilities": {
-      "br.dev.bcp.shopping.catalog.publish": [
-        {
-          "version": "2026-10-04"
-        }
-      ]
-    }
-  },
-  "merchant_id": "merchant:loja-exemplo",
   "base_revision": null,
   "products": [
     {
@@ -38,6 +27,11 @@
           "price": {
             "amount": 2500,
             "currency": "BRL"
+          },
+          "ncm": "69120000",
+          "list_price": {
+            "amount": 3000,
+            "currency": "USD"
           }
         }
       ]

@@ -47,9 +47,13 @@ acronym in each specification Markdown file spells out the full term (e.g.,
 | Term                         | Acronym | Definition                                                                                                                                            |
 | :--------------------------- | :------ | :---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Business**                 | -       | The entity selling goods or services. In BCP, they act as the **Merchant of Record (MoR)**, retaining financial liability and ownership of the order. |
+| **Catalog builder**          | -       | Application that assembles a merchant's catalog in BCP format: an ERP, an e-commerce platform, a registration assistant or the merchant's own application. See [Catalog creation and publication](catalog/publish.md). |
+| **Index**                    | -       | Service that receives published catalogs, checks their conformance, stores a copy and makes the offers discoverable. Declares `br.dev.bcp.shopping.catalog.publish` in its profile. |
+| **Index operator**           | -       | Entity responsible for an index. Identifies merchants, assigns `merchant_id` and records which publishers may act for each merchant. |
 | **Merchant of Record**       | MoR     | The legal entity responsible for the sale, including financial liability and order ownership.                                                         |
 | **Payment Service Provider** | PSP     | The financial infrastructure provider that processes payments, authorizations, and settlements on behalf of the business.                             |
 | **Platform**                 | -       | The consumer-facing surface (AI agent, app, website) acting on behalf of the user to discover businesses and facilitate commerce.                     |
+| **Publisher**                | -       | Service that signs and sends publication requests to an index on behalf of a merchant. May be operated by the merchant or a third party, such as the catalog builder. |
 
 ## Payments
 

@@ -134,14 +134,13 @@ aceita o namespace `br.dev.bcp` sem fork.
    make check
    ```
 
-O padrão de [criação e publicação de catálogos](docs/specification/catalog/publication.md)
+O padrão de [criação e publicação de catálogos](docs/specification/catalog/publish.md)
 define como os criadores enviam produtos ao índice, com NCM por
 variante e admissão automática. O validador de referência roda offline:
 
 ```bash
 uv run --group playground python scripts/validate_catalog.py \
-  fixtures/valid/catalog-publication-replace.json \
-  --catalog-id catalogo-loja-exemplo --idempotency-key criacao-1
+  fixtures/valid/catalog-publish-replace.json
 ```
 
 ### Desenvolvimento da documentação
