@@ -1,0 +1,22 @@
+{
+  "ucp": {
+    "version": "2026-04-08",
+    "capabilities": {
+      "br.dev.bcp.shopping.catalog.publish": [
+        {
+          "version": "2026-10-04"
+        }
+      ]
+    },
+    "status": "error"
+  },
+  "messages": [
+    {
+      "type": "error",
+      "code": "catalog_price_range_mismatch",
+      "path": "$.products[0].price_range",
+      "severity": "recoverable",
+      "content": "A faixa deve corresponder aos preços das variantes."
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "ucp": {
+    "version": "2026-04-08",
+    "capabilities": {}
+  },
+  "catalog_id": "catalogo-loja-exemplo",
+  "merchant_id": "merchant:loja-exemplo",
+  "revision": 1,
+  "products": [
+    {
+      "id": "gid://loja.example/Product/caneca",
+      "title": "Caneca de cerâmica",
+      "description": {
+        "plain": "Caneca de cerâmica de 250 ml."
+      },
+      "price_range": {
+        "min": {
+          "amount": 2500,
+          "currency": "BRL"
+        },
+        "max": {
+          "amount": 2500,
+          "currency": "BRL"
+        }
+      },
+      "variants": [
+        {
+          "id": "gid://loja.example/Variant/caneca-250",
+          "title": "250 ml",
+          "description": {
+            "plain": "Caneca de 250 ml."
+          },
+          "price": {
+            "amount": 2500,
+            "currency": "BRL"
+          },
+          "ncm": "69120000"
+        }
+      ]
+    }
+  ]
+}

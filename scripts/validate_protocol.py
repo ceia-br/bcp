@@ -92,6 +92,11 @@ def _registry(files: Sequence[SchemaFile]) -> Registry[Any]:
     return registry
 
 
+def load_registry() -> Registry[Any]:
+    """Load the protocol's local schemas without retrieving remote resources."""
+    return _registry(_schema_files())
+
+
 def _walk(node: Any, pointer: str = "") -> Iterator[tuple[str, Any]]:
     yield pointer, node
     if isinstance(node, dict):
