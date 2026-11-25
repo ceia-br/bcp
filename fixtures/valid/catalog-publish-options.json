@@ -1,0 +1,77 @@
+{
+  "base_revision": null,
+  "products": [
+    {
+      "id": "gid://loja.example/Product/caneca",
+      "title": "Caneca de cerâmica",
+      "description": {
+        "plain": "Caneca de cerâmica de 250 ml."
+      },
+      "price_range": {
+        "min": {
+          "amount": 0,
+          "currency": "BRL"
+        },
+        "max": {
+          "amount": 4000,
+          "currency": "BRL"
+        }
+      },
+      "variants": [
+        {
+          "id": "gid://loja.example/Variant/caneca-250",
+          "title": "250 ml",
+          "description": {
+            "plain": "Caneca de 250 ml."
+          },
+          "price": {
+            "amount": 0,
+            "currency": "BRL"
+          },
+          "ncm": "69120000",
+          "options": [
+            {
+              "name": "Volume",
+              "id": "volume-250",
+              "label": "250 ml"
+            }
+          ]
+        },
+        {
+          "id": "gid://loja.example/Variant/caneca-500",
+          "title": "500 ml",
+          "description": {
+            "plain": "Caneca de 500 ml."
+          },
+          "price": {
+            "amount": 4000,
+            "currency": "BRL"
+          },
+          "ncm": "69120000",
+          "options": [
+            {
+              "name": "Volume",
+              "id": "volume-500",
+              "label": "500 ml"
+            }
+          ]
+        }
+      ],
+      "options": [
+        {
+          "name": "Volume",
+          "values": [
+            {
+              "id": "volume-250",
+              "label": "250 ml"
+            },
+            {
+              "id": "volume-500",
+              "label": "500 ml"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

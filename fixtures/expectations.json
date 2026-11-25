@@ -9,6 +9,48 @@
       "schemas": [
         "https://bcp.dev.br/schemas/shopping/catalog_search.json#/$defs/search_response"
       ]
+    },
+    "catalog-publish-replace.json": {
+      "reason": "PUT declara todos os produtos; exemplo minimo valido sem campos opcionais.",
+      "schemas": [
+        "https://bcp.dev.br/schemas/shopping/catalog_publish.json#/$defs/replace_request"
+      ]
+    },
+    "catalog-publish-update.json": {
+      "reason": "PATCH envia produto completo com variantes e revisao atual para substituir sua oferta.",
+      "schemas": [
+        "https://bcp.dev.br/schemas/shopping/catalog_publish.json#/$defs/update_request"
+      ]
+    },
+    "catalog-publish-snapshot.json": {
+      "reason": "GET devolve o catalogo aceito com identidade e revisao atribuida pelo indice.",
+      "schemas": [
+        "https://bcp.dev.br/schemas/shopping/catalog_publish.json#/$defs/catalog"
+      ]
+    },
+    "catalog-publish-response.json": {
+      "reason": "Recibo de publicacao usa envelope de sucesso, revisao e contagem de produtos.",
+      "schemas": [
+        "https://bcp.dev.br/schemas/shopping/catalog_publish.json#/$defs/publish_response"
+      ]
+    },
+    "catalog-publish-empty.json": {
+      "reason": "Catalogo vazio e valido e representa retirada de todas as suas ofertas da descoberta.",
+      "schemas": [
+        "https://bcp.dev.br/schemas/shopping/catalog_publish.json#/$defs/replace_request"
+      ]
+    },
+    "catalog-publish-options.json": {
+      "reason": "Opcoes genericas permitem volumes distintos e preco zero; nao existem exigencias especificas de vestuario.",
+      "schemas": [
+        "https://bcp.dev.br/schemas/shopping/catalog_publish.json#/$defs/replace_request"
+      ]
+    },
+    "catalog-publish-error.json": {
+      "reason": "Rejeicao de conformidade reutiliza o error_response existente com codigo e localizacao do campo.",
+      "schemas": [
+        "https://bcp.dev.br/schemas/shopping/catalog_publish.json#/$defs/error_response"
+      ]
     }
   },
   "invalid": {
@@ -67,6 +109,125 @@
       "instance_path": "",
       "keyword": "required",
       "message_contains": "'ucp' is a required property"
+    },
+    "catalog-publish-missing-ncm.json": {
+      "reason": "Cada variante publicada precisa declarar seu NCM; o perfil fiscal exige ncm mesmo quando ausente no produto base.",
+      "schema": "https://bcp.dev.br/schemas/shopping/catalog_publish.json#/$defs/replace_request",
+      "instance_path": "products/0/variants/0",
+      "keyword": "required",
+      "message_contains": "'ncm' is a required property"
+    },
+    "catalog-publish-malformed-ncm.json": {
+      "reason": "NCM deve ser uma string com oito digitos, sem pontuacao; classificacao fiscal valida nao e certificada offline.",
+      "schema": "https://bcp.dev.br/schemas/shopping/catalog_publish.json#/$defs/replace_request",
+      "instance_path": "products/0/variants/0/ncm",
+      "keyword": "pattern",
+      "message_contains": "does not match"
+    },
+    "catalog-publish-missing-description.json": {
+      "reason": "O produto publicado preserva a descricao obrigatoria do tipo Product; sua ausencia deve gerar pendencia de coleta.",
+      "schema": "https://bcp.dev.br/schemas/shopping/catalog_publish.json#/$defs/replace_request",
+      "instance_path": "products/0",
+      "keyword": "required",
+      "message_contains": "'description' is a required property"
+    },
+    "catalog-publish-negative-price.json": {
+      "reason": "Preco de oferta nao pode ser negativo; amount reutiliza o inteiro nao negativo herdado, com zero valido.",
+      "schema": "https://bcp.dev.br/schemas/shopping/catalog_publish.json#/$defs/replace_request",
+      "instance_path": "products/0/variants/0/price/amount",
+      "keyword": "minimum",
+      "message_contains": "less than the minimum"
+    },
+    "catalog-publish-fractional-price.json": {
+      "reason": "amount expressa unidades menores da moeda como inteiro; um valor fracionario e inconforme.",
+      "schema": "https://bcp.dev.br/schemas/shopping/catalog_publish.json#/$defs/replace_request",
+      "instance_path": "products/0/variants/0/price/amount",
+      "keyword": "type",
+      "message_contains": "not of type 'integer'"
+    },
+    "catalog-publish-no-variants.json": {
+      "reason": "Um produto publicado deve possuir pelo menos uma variante vendavel, mesmo sem opcoes comerciais.",
+      "schema": "https://bcp.dev.br/schemas/shopping/catalog_publish.json#/$defs/replace_request",
+      "instance_path": "products/0/variants",
+      "keyword": "minItems",
+      "message_contains": "should be non-empty"
+    },
+    "catalog-publish-missing-capability.json": {
+      "reason": "O snapshot deve declarar a capability de publicacao no envelope; capacidades de busca ou consulta nao substituem esse contrato.",
+      "schema": "https://bcp.dev.br/schemas/shopping/catalog_publish.json#/$defs/catalog",
+      "instance_path": "ucp/capabilities",
+      "keyword": "required",
+      "message_contains": "'br.dev.bcp.shopping.catalog.publish' is a required property"
+    },
+    "catalog-publish-invalid-revision.json": {
+      "reason": "PATCH exige revisao corrente inteira positiva; zero nao representa um catalogo aceito pelo indice.",
+      "schema": "https://bcp.dev.br/schemas/shopping/catalog_publish.json#/$defs/update_request",
+      "instance_path": "base_revision",
+      "keyword": "minimum",
+      "message_contains": "less than the minimum"
+    },
+    "catalog-publish-duplicate-removals.json": {
+      "reason": "remove_product_ids deve possuir IDs distintos; remover um ID inexistente e permitido, repeti-lo no lote nao.",
+      "schema": "https://bcp.dev.br/schemas/shopping/catalog_publish.json#/$defs/update_request",
+      "instance_path": "remove_product_ids",
+      "keyword": "uniqueItems",
+      "message_contains": "has non-unique elements"
+    }
+  },
+  "conformance": {
+    "catalog-publish-id-duplicate.json": {
+      "reason": "IDs sao unicos entre todos os produtos e variantes do catalogo, nao so dentro de cada tipo.",
+      "operation": "replace",
+      "code": "catalog_id_duplicate",
+      "path": "$.products[0].variants[0].id"
+    },
+    "catalog-publish-description-empty.json": {
+      "reason": "A descricao precisa de texto em ao menos um formato reconhecido; so espacos nao conta.",
+      "operation": "replace",
+      "code": "catalog_description_empty",
+      "path": "$.products[0].description"
+    },
+    "catalog-publish-currency-mismatch.json": {
+      "reason": "Todos os precos de um produto usam a mesma moeda, incluindo os opcionais como list_price.",
+      "operation": "replace",
+      "code": "catalog_currency_mismatch",
+      "path": "$.products[0].variants[0].list_price.currency"
+    },
+    "catalog-publish-price-range-mismatch.json": {
+      "reason": "price_range precisa ser o minimo e o maximo dos precos das variantes.",
+      "operation": "replace",
+      "code": "catalog_price_range_mismatch",
+      "path": "$.products[0].price_range"
+    },
+    "catalog-publish-options-invalid.json": {
+      "reason": "Labels repetidos tornam os valores de uma opcao ambiguos.",
+      "operation": "replace",
+      "code": "catalog_options_invalid",
+      "path": "$.products[0].options[0]"
+    },
+    "catalog-publish-option-selection-missing.json": {
+      "reason": "Cada variante seleciona exatamente uma vez cada opcao declarada pelo produto.",
+      "operation": "replace",
+      "code": "catalog_option_selection_invalid",
+      "path": "$.products[0].variants[0].options"
+    },
+    "catalog-publish-option-combination-duplicate.json": {
+      "reason": "Duas variantes com a mesma combinacao de valores ficam indistinguiveis por opcao.",
+      "operation": "replace",
+      "code": "catalog_option_selection_invalid",
+      "path": "$.products[0].variants[1].options"
+    },
+    "catalog-publish-update-empty.json": {
+      "reason": "PATCH precisa de ao menos uma inclusao, alteracao ou remocao.",
+      "operation": "update",
+      "code": "catalog_update_empty",
+      "path": "$"
+    },
+    "catalog-publish-update-overlap.json": {
+      "reason": "Um produto nao pode ser incluido e removido no mesmo lote.",
+      "operation": "update",
+      "code": "catalog_update_overlap",
+      "path": "$.remove_product_ids"
     }
   }
 }

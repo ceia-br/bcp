@@ -6,6 +6,8 @@
 #    Cobre $id/$ref por resolução de URI, metaschema, anotações ucp_request/
 #    ucp_response, examples embutidos, fixtures válidas por composição e
 #    fixtures inválidas pelo motivo declarado em fixtures/expectations.json.
+#    `validate_catalog.py --fixtures` completa a trava com as regras semânticas
+#    de publicação de catálogo (fixtures/conformance/).
 # 2. `ucp-schema lint` (cargo install ucp-schema) é reforço opcional: aplica as
 #    regras E### do CLI oficial. Quando o binário não está no ambiente, o passo
 #    é anunciado e pulado — a trava do item 1 já rodou.
@@ -21,6 +23,9 @@ UCP_SCHEMA="${UCP_SCHEMA:-$(command -v ucp-schema || echo "$HOME/.cargo/bin/ucp-
 
 echo "== validador local (trava) =="
 uv run --group playground python scripts/validate_protocol.py
+
+echo "== conformidade de publicacao de catalogo (trava) =="
+uv run --group playground python scripts/validate_catalog.py --fixtures
 
 echo "== lint ucp-schema (reforço opcional) =="
 if [ -x "$UCP_SCHEMA" ]; then

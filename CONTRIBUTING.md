@@ -133,6 +133,10 @@ Se você adicionar ou mudar um recurso, inclua fixtures:
   entrada em `fixtures/expectations.json` dizendo por que falha: schema,
   caminho da instância, keyword e trecho da mensagem. Falhar pelo motivo
   errado é erro de fixture.
+- `fixtures/conformance/`: payloads de publicação de catálogo que passam no
+  schema, mas violam uma regra de conformidade. Cada um declara em
+  `fixtures/expectations.json` a operação, o código e o `path` esperados;
+  `scripts/validate_catalog.py --fixtures` os confere no `make check`.
 
 ### Documentação
 
